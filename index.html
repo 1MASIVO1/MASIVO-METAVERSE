@@ -10,21 +10,31 @@
 <style>
 body{
   margin:0;
-  background:black;
-  color:white;
-  font-family:Arial;
+  background:#000;
+  color:#fff;
+  font-family:Arial, sans-serif;
   text-align:center;
+}
+
+h1{
+  margin-top:40px;
 }
 
 .gallery{
   display:flex;
   justify-content:center;
   gap:40px;
-  margin-top:60px;
+  margin:60px auto;
+  flex-wrap:wrap;
+  max-width:1200px;
 }
 
 .card{
-  width:300px;
+  width:320px;
+  background:#111;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 0 20px rgba(0,255,100,0.1);
 }
 
 .card img{
@@ -35,14 +45,59 @@ body{
 .actions{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   margin-top:10px;
   font-size:14px;
 }
+
 button{
   background:none;
   border:none;
-  color:white;
+  color:#0f0;
   cursor:pointer;
+  font-size:14px;
+}
+
+button:hover{
+  opacity:0.7;
+}
+
+.comments{
+  margin-top:15px;
+  text-align:left;
+  font-size:13px;
+  max-height:130px;
+  overflow-y:auto;
+  border-top:1px solid #222;
+  padding-top:10px;
+}
+
+.comment{
+  margin-bottom:6px;
+}
+
+.comment strong{
+  color:#0f0;
+}
+
+.comment-input{
+  display:flex;
+  gap:5px;
+  margin-top:10px;
+}
+
+.comment-input input{
+  flex:1;
+  padding:6px;
+  border-radius:6px;
+  border:none;
+}
+
+.comment-input button{
+  color:#fff;
+  background:#0f0;
+  border-radius:6px;
+  padding:6px 10px;
 }
 </style>
 </head>
@@ -54,28 +109,20 @@ button{
 
 <div class="card" data-id="nft1">
   <img src="images/nft1.jpg">
-  <div class="actions">
-    <button class="like">👍 <span>0</span></button>
-    <div>👁️ <span class="views">0</span></div>
-    <button class="download">⬇️ <span>0</span></button>
-  </div>
-</div>
 
-<div class="card" data-id="nft2">
-  <img src="images/nft2.jpg">
   <div class="actions">
     <button class="like">👍 <span>0</span></button>
     <div>👁️ <span class="views">0</span></div>
     <button class="download">⬇️ <span>0</span></button>
+    <button class="share">🔁</button>
   </div>
-</div>
 
-<div class="card" data-id="nft3">
-  <img src="images/nft3.jpg">
-  <div class="actions">
-    <button class="like">👍 <span>0</span></button>
-    <div>👁️ <span class="views">0</span></div>
-    <button class="download">⬇️ <span>0</span></button>
+  <div class="comments"></div>
+
+  <div class="comment-input">
+    <input type="text" placeholder="Tu nombre" class="username">
+    <input type="text" placeholder="Escribe comentario..." class="content">
+    <button class="send">Enviar</button>
   </div>
 </div>
 
@@ -97,6 +144,8 @@ async function loadStats(card){
     .eq('id', id)
     .single();
 
+  if(!data) return;
+
   card.querySelector('.like span').textContent = data.likes;
   card.querySelector('.views').textContent = data.views;
   card.querySelector('.download span').textContent = data.downloads;
@@ -107,14 +156,39 @@ async function loadStats(card){
     .eq('id', id);
 }
 
+async function loadComments(card){
+  const id = card.dataset.id;
+
+  const { data } = await supabase
+    .from('comments')
+    .select('*')
+    .eq('nft_id', id)
+    .order('created_at', { ascending: false });
+
+  const container = card.querySelector('.comments');
+  container.innerHTML = '';
+
+  if(data){
+    data.forEach(c => {
+      container.innerHTML += `
+        <div class="comment">
+          <strong>${c.username}</strong>: ${c.content}
+        </div>`;
+    });
+  }
+}
+
 document.querySelectorAll('.card').forEach(card => {
 
   loadStats(card);
+  loadComments(card);
 
+  // LIKE
   card.querySelector('.like').addEventListener('click', async () => {
     const id = card.dataset.id;
     const span = card.querySelector('.like span');
     let current = parseInt(span.textContent);
+
     span.textContent = current + 1;
 
     await supabase
@@ -123,10 +197,12 @@ document.querySelectorAll('.card').forEach(card => {
       .eq('id', id);
   });
 
+  // DOWNLOAD
   card.querySelector('.download').addEventListener('click', async () => {
     const id = card.dataset.id;
     const span = card.querySelector('.download span');
     let current = parseInt(span.textContent);
+
     span.textContent = current + 1;
 
     await supabase
@@ -135,6 +211,38 @@ document.querySelectorAll('.card').forEach(card => {
       .eq('id', id);
 
     window.open(card.querySelector('img').src);
+  });
+
+  // SHARE
+  card.querySelector('.share').addEventListener('click', async () => {
+    const shareData = {
+      title: "MASIVO NFT",
+      text: "Mira este NFT en MASIVO",
+      url: window.location.href + "#" + card.dataset.id
+    };
+
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(shareData.url);
+      alert("Enlace copiado 🔥");
+    }
+  });
+
+  // COMMENT
+  card.querySelector('.send').addEventListener('click', async () => {
+    const id = card.dataset.id;
+    const username = card.querySelector('.username').value;
+    const content = card.querySelector('.content').value;
+
+    if(!username || !content) return;
+
+    await supabase
+      .from('comments')
+      .insert([{ nft_id: id, username, content }]);
+
+    card.querySelector('.content').value = '';
+    loadComments(card);
   });
 
 });
