@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MASIVO NFT</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+
+.gallery{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin-top:60px;
+}
+
+.card{
+  width:300px;
+}
+
+.card img{
+  width:100%;
+  border-radius:12px;
+}
+
+.actions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+  font-size:14px;
+}
+button{
+  background:none;
+  border:none;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<h1>MASIVO NFT</h1>
+
+<div class="gallery">
+
+<div class="card" data-id="nft1">
+  <img src="images/nft1.jpg">
+  <div class="actions">
+    <button class="like">👍 <span>0</span></button>
+    <div>👁️ <span class="views">0</span></div>
+    <button class="download">⬇️ <span>0</span></button>
+  </div>
+</div>
+
+<div class="card" data-id="nft2">
+  <img src="images/nft2.jpg">
+  <div class="actions">
+    <button class="like">👍 <span>0</span></button>
+    <div>👁️ <span class="views">0</span></div>
+    <button class="download">⬇️ <span>0</span></button>
+  </div>
+</div>
+
+<div class="card" data-id="nft3">
+  <img src="images/nft3.jpg">
+  <div class="actions">
+    <button class="like">👍 <span>0</span></button>
+    <div>👁️ <span class="views">0</span></div>
+    <button class="download">⬇️ <span>0</span></button>
+  </div>
+</div>
+
+</div>
+
+<script>
+
+const supabase = window.supabase.createClient(
+  "https://rnkuxwsuztewgbdmjyxt.supabase.co",
+  "sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
+);
+
+async function loadStats(card){
+  const id = card.dataset.id;
+
+  const { data } = await supabase
+    .from('nft_stats')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  card.querySelector('.like span').textContent = data.likes;
+  card.querySelector('.views').textContent = data.views;
+  card.querySelector('.download span').textContent = data.downloads;
+
+  await supabase
+    .from('nft_stats')
+    .update({ views: data.views + 1 })
+    .eq('id', id);
+}
+
+document.querySelectorAll('.card').forEach(card => {
+
+  loadStats(card);
+
+  card.querySelector('.like').addEventListener('click', async () => {
+    const id = card.dataset.id;
+    const span = card.querySelector('.like span');
+    let current = parseInt(span.textContent);
+    span.textContent = current + 1;
+
+    await supabase
+      .from('nft_stats')
+      .update({ likes: current + 1 })
+      .eq('id', id);
+  });
+
+  card.querySelector('.download').addEventListener('click', async () => {
+    const id = card.dataset.id;
+    const span = card.querySelector('.download span');
+    let current = parseInt(span.textContent);
+    span.textContent = current + 1;
+
+    await supabase
+      .from('nft_stats')
+      .update({ downloads: current + 1 })
+      .eq('id', id);
+
+    window.open(card.querySelector('img').src);
+  });
+
+});
+
+</script>
+
+</body>
+</html>
