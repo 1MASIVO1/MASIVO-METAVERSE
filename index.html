@@ -3,35 +3,254 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MASIVO METAVERSE</title>
+<title>MASIVO NFT</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-body {
-  background: #000;
-  overflow: hidden;
-  color: white;
+body{
+  background:black;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+  overflow-x:hidden;
 }
 
-/* VIDEO FONDO */
-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* SIN ZOOM */
-  z-index: -1;
-  background: #000;
+/* VIDEO FONDO SIN ZOOM */
+video{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:contain; /* 👈 SIN ZOOM */
+  z-index:-1;
+  background:black;
 }
 
-/* CONTENIDO */
-.container {
-  position: relative;
-  height: 
+h1{
+  margin-top:40px;
+  position:relative;
+}
+
+/* GALERÍA */
+.gallery{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin-top:60px;
+  flex-wrap:wrap;
+  position:relative;
+}
+
+/* CARD */
+.card{
+  width:320px;
+  background:rgba(0,0,0,0.8);
+  padding:15px;
+  border-radius:12px;
+  backdrop-filter:blur(6px);
+}
+
+.card img{
+  width:100%;
+  border-radius:12px;
+}
+
+/* ACCIONES */
+.actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+  font-size:14px;
+}
+
+button{
+  background:none;
+  border:none;
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:0.7;
+}
+
+/* COMMENTS */
+.comments{
+  margin-top:15px;
+  text-align:left;
+  font-size:13px;
+  max-height:120px;
+  overflow-y:auto;
+}
+
+.comment-input{
+  display:flex;
+  gap:5px;
+  margin-top:10px;
+}
+
+.comment-input input{
+  flex:1;
+  padding:5px;
+  border-radius:6px;
+  border:none;
+}
+</style>
+</head>
+<body>
+
+<!-- VIDEO -->
+<video autoplay muted loop playsinline>
+  <source src="images/background.mp4" type="video/mp4">
+</video>
+
+<h1>MASIVO NFT</h1>
+
+<div class="gallery">
+
+<div class="card" data-id="nft1">
+  <img src="images/nft1.jpg">
+
+  <div class="actions">
+    <button class="like">👍 <span>0</span></button>
+    <div>👁️ <span class="views">0</span></div>
+    <button class="download">⬇️ <span>0</span></button>
+    <button class="share">🔁</button>
+  </div>
+
+  <div class="comments"></div>
+
+  <div class="comment-input">
+    <input type="text" placeholder="Tu nombre" class="username">
+    <input type="text" placeholder="Escribe comentario..." class="content">
+    <button class="send">Enviar</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+
+const supabase = window.supabase.createClient(
+  "https://rnkuxwsuztewgbdmjyxt.supabase.co",
+  "sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
+);
+
+async function loadStats(card){
+  const id = card.dataset.id;
+
+  const { data } = await supabase
+    .from('nft_stats')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if(!data) return;
+
+  card.querySelector('.like span').textContent = data.likes;
+  card.querySelector('.views').textContent = data.views;
+  card.querySelector('.download span').textContent = data.downloads;
+
+  await supabase
+    .from('nft_stats')
+    .update({ views: data.views + 1 })
+    .eq('id', id);
+}
+
+async function loadComments(card){
+  const id = card.dataset.id;
+
+  const { data } = await supabase
+    .from('comments')
+    .select('*')
+    .eq('nft_id', id)
+    .order('created_at', { ascending: false });
+
+  const container = card.querySelector('.comments');
+  container.innerHTML = '';
+
+  if(!data) return;
+
+  data.forEach(c => {
+    container.innerHTML += `<div><strong>${c.username}</strong>: ${c.content}</div>`;
+  });
+}
+
+document.querySelectorAll('.card').forEach(card => {
+
+  loadStats(card);
+  loadComments(card);
+
+  card.querySelector('.like').addEventListener('click', async () => {
+    const id = card.dataset.id;
+    const span = card.querySelector('.like span');
+    let current = parseInt(span.textContent);
+    span.textContent = current + 1;
+
+    await supabase
+      .from('nft_stats')
+      .update({ likes: current + 1 })
+      .eq('id', id);
+  });
+
+  card.querySelector('.download').addEventListener('click', async () => {
+    const id = card.dataset.id;
+    const span = card.querySelector('.download span');
+    let current = parseInt(span.textContent);
+    span.textContent = current + 1;
+
+    await supabase
+      .from('nft_stats')
+      .update({ downloads: current + 1 })
+      .eq('id', id);
+
+    window.open(card.querySelector('img').src);
+  });
+
+  card.querySelector('.share').addEventListener('click', async () => {
+
+    const shareData = {
+      title: "MASIVO NFT",
+      text: "Mira este NFT en MASIVO",
+      url: window.location.href + "#" + card.dataset.id
+    };
+
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(shareData.url);
+      alert("Enlace copiado 🔥");
+    }
+
+  });
+
+  card.querySelector('.send').addEventListener('click', async () => {
+    const id = card.dataset.id;
+    const username = card.querySelector('.username').value;
+    const content = card.querySelector('.content').value;
+
+    if(!username || !content) return;
+
+    await supabase
+      .from('comments')
+      .insert([{ nft_id: id, username, content }]);
+
+    card.querySelector('.content').value = '';
+    loadComments(card);
+  });
+
+});
+
+</script>
+
+</body>
+</html>
