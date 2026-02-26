@@ -12,12 +12,8 @@ body{
   margin:0;
   background:#000;
   color:#fff;
-  font-family:Arial, sans-serif;
+  font-family:Arial;
   text-align:center;
-}
-
-h1{
-  margin-top:40px;
 }
 
 .gallery{
@@ -26,7 +22,6 @@ h1{
   gap:40px;
   margin:60px auto;
   flex-wrap:wrap;
-  max-width:1200px;
 }
 
 .card{
@@ -34,7 +29,6 @@ h1{
   background:#111;
   padding:15px;
   border-radius:15px;
-  box-shadow:0 0 20px rgba(0,255,100,0.1);
 }
 
 .card img{
@@ -45,9 +39,7 @@ h1{
 .actions{
   display:flex;
   justify-content:space-between;
-  align-items:center;
   margin-top:10px;
-  font-size:14px;
 }
 
 button{
@@ -55,29 +47,13 @@ button{
   border:none;
   color:#0f0;
   cursor:pointer;
-  font-size:14px;
-}
-
-button:hover{
-  opacity:0.7;
 }
 
 .comments{
   margin-top:15px;
   text-align:left;
-  font-size:13px;
-  max-height:130px;
+  max-height:120px;
   overflow-y:auto;
-  border-top:1px solid #222;
-  padding-top:10px;
-}
-
-.comment{
-  margin-bottom:6px;
-}
-
-.comment strong{
-  color:#0f0;
 }
 
 .comment-input{
@@ -91,13 +67,6 @@ button:hover{
   padding:6px;
   border-radius:6px;
   border:none;
-}
-
-.comment-input button{
-  color:#fff;
-  background:#0f0;
-  border-radius:6px;
-  padding:6px 10px;
 }
 </style>
 </head>
@@ -168,14 +137,9 @@ async function loadComments(card){
   const container = card.querySelector('.comments');
   container.innerHTML = '';
 
-  if(data){
-    data.forEach(c => {
-      container.innerHTML += `
-        <div class="comment">
-          <strong>${c.username}</strong>: ${c.content}
-        </div>`;
-    });
-  }
+  data.forEach(c => {
+    container.innerHTML += `<div><strong>${c.username}</strong>: ${c.content}</div>`;
+  });
 }
 
 document.querySelectorAll('.card').forEach(card => {
@@ -183,9 +147,16 @@ document.querySelectorAll('.card').forEach(card => {
   loadStats(card);
   loadComments(card);
 
-  // LIKE
+  const id = card.dataset.id;
+
+  // LIKE SOLO UNA VEZ
   card.querySelector('.like').addEventListener('click', async () => {
-    const id = card.dataset.id;
+
+    if(localStorage.getItem("liked_" + id)){
+      alert("Ya diste like 🔥");
+      return;
+    }
+
     const span = card.querySelector('.like span');
     let current = parseInt(span.textContent);
 
@@ -195,11 +166,13 @@ document.querySelectorAll('.card').forEach(card => {
       .from('nft_stats')
       .update({ likes: current + 1 })
       .eq('id', id);
+
+    localStorage.setItem("liked_" + id, "true");
   });
 
-  // DOWNLOAD
+  // DESCARGA
   card.querySelector('.download').addEventListener('click', async () => {
-    const id = card.dataset.id;
+
     const span = card.querySelector('.download span');
     let current = parseInt(span.textContent);
 
@@ -213,12 +186,13 @@ document.querySelectorAll('.card').forEach(card => {
     window.open(card.querySelector('img').src);
   });
 
-  // SHARE
+  // SHARE INFINITO
   card.querySelector('.share').addEventListener('click', async () => {
+
     const shareData = {
       title: "MASIVO NFT",
       text: "Mira este NFT en MASIVO",
-      url: window.location.href + "#" + card.dataset.id
+      url: window.location.href + "#" + id
     };
 
     if (navigator.share) {
@@ -229,9 +203,9 @@ document.querySelectorAll('.card').forEach(card => {
     }
   });
 
-  // COMMENT
+  // COMENTARIOS INFINITOS
   card.querySelector('.send').addEventListener('click', async () => {
-    const id = card.dataset.id;
+
     const username = card.querySelector('.username').value;
     const content = card.querySelector('.content').value;
 
