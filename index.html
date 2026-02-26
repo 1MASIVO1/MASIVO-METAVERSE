@@ -15,7 +15,6 @@
   </div>
 </header>
 
-<!-- AUTH MODAL -->
 <div id="authModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;">
   <div style="background:#222;padding:20px;border-radius:10px;width:300px;color:white;">
     <h3>Login / Register</h3>
@@ -29,7 +28,7 @@
 
 <main style="padding:20px;">
   <div class="nft-card">
-    <img src="images/masivo1.png" width="300">
+    <img id="nftImage" src="images/masivo1.png" width="300">
 
     <div>
       <button onclick="likeNFT(1)">👍 Like</button>
@@ -38,6 +37,13 @@
 
     <div>
       👁️ <span id="views-1">0</span>
+      ⬇️ <span id="downloads-1">0</span>
+      🔁 <span id="shares-1">0</span>
+    </div>
+
+    <div>
+      <button onclick="downloadNFT(1)">Descargar</button>
+      <button onclick="shareNFT(1)">Compartir</button>
     </div>
 
     <div>
@@ -58,13 +64,12 @@ const supabase = window.supabase.createClient(
 
 let currentUser = null;
 
-// AUTH
 function showAuth(){ document.getElementById("authModal").style.display="flex"; }
 function closeAuth(){ document.getElementById("authModal").style.display="none"; }
 
 async function register(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = email.value;
+  const password = password.value;
   const { error } = await supabase.auth.signUp({ email, password });
   if(error) alert(error.message);
   else alert("Revisa tu email para confirmar");
@@ -75,10 +80,7 @@ async function login(){
   const password = document.getElementById("password").value;
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if(error) alert(error.message);
-  else {
-    closeAuth();
-    loadUser();
-  }
+  else { closeAuth(); loadUser(); }
 }
 
 async function logout(){
@@ -97,48 +99,48 @@ async function loadUser(){
   }
 }
 
-// VIEWS
 async function incrementViews(id){
   await supabase.rpc("increment_views", { nft_id: id });
-  loadStats(id);
 }
 
-// LIKE
 async function likeNFT(id){
-  if(!currentUser){
-    alert("Debes iniciar sesión");
-    return;
-  }
+  if(!currentUser){ alert("Debes iniciar sesión"); return; }
 
-  const { data: existing } = await supabase
+  const { data } = await supabase
     .from("likes")
     .select("*")
     .eq("nft_id", id)
     .eq("user_id", currentUser.id);
 
-  if(existing.length > 0){
-    alert("Ya diste like");
-    return;
-  }
+  if(data.length > 0){ alert("Ya diste like"); return; }
 
-  await supabase.from("likes").insert({
-    nft_id: id,
-    user_id: currentUser.id
-  });
+  await supabase.from("likes").insert({ nft_id: id, user_id: currentUser.id });
+  await supabase.rpc("increment_likes", { nft_id: id });
+  loadStats(id);
+}
 
-  await supabase.from("nfts")
-    .update({ likes: supabase.rpc })
-    .eq("id", id);
+async function downloadNFT(id){
+  await supabase.rpc("increment_downloads", { nft_id: id });
+
+  const link = document.createElement("a");
+  link.href = document.getElementById("nftImage").src;
+  link.download = "MASIVO-NFT.png";
+  link.click();
 
   loadStats(id);
 }
 
-// COMMENTS
+async function shareNFT(id){
+  await supabase.rpc("increment_shares", { nft_id: id });
+
+  navigator.clipboard.writeText(window.location.href);
+  alert("Link copiado al portapapeles");
+
+  loadStats(id);
+}
+
 async function addComment(id){
-  if(!currentUser){
-    alert("Debes iniciar sesión");
-    return;
-  }
+  if(!currentUser){ alert("Debes iniciar sesión"); return; }
 
   const input = document.getElementById("comment-input-"+id);
   const text = input.value;
@@ -171,7 +173,6 @@ async function loadComments(id){
   });
 }
 
-// LOAD STATS
 async function loadStats(id){
   const { data } = await supabase
     .from("nfts")
@@ -181,11 +182,13 @@ async function loadStats(id){
 
   document.getElementById("views-"+id).textContent = data.views;
   document.getElementById("likes-"+id).textContent = data.likes;
+  document.getElementById("downloads-"+id).textContent = data.downloads;
+  document.getElementById("shares-"+id).textContent = data.shares;
 }
 
 window.onload = async () => {
   loadUser();
-  incrementViews(1);
+  await incrementViews(1);
   loadStats(1);
   loadComments(1);
 };
