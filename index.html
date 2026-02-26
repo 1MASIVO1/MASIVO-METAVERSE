@@ -14,9 +14,9 @@ body,html{
   font-family:Arial, sans-serif;
   color:white;
   overflow-x:hidden;
+  background:#2a2a2a; /* FONDO GRIS SI FALLA VIDEO */
 }
 
-/* VIDEO FONDO */
 #bg-video{
   position:fixed;
   top:0;
@@ -27,7 +27,6 @@ body,html{
   z-index:-2;
 }
 
-/* OSCURECER VIDEO */
 .overlay{
   position:fixed;
   top:0;
@@ -38,7 +37,6 @@ body,html{
   z-index:-1;
 }
 
-/* HEADER */
 header{
   display:flex;
   justify-content:center;
@@ -49,7 +47,6 @@ header{
   font-weight:bold;
 }
 
-/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
@@ -57,17 +54,11 @@ header{
   padding:40px;
 }
 
-/* TARJETA */
 .card{
   background:rgba(0,0,0,0.75);
   border-radius:15px;
   padding:20px;
   backdrop-filter:blur(8px);
-  transition:0.3s;
-}
-
-.card:hover{
-  transform:translateY(-8px);
 }
 
 .card img{
@@ -75,7 +66,6 @@ header{
   border-radius:12px;
 }
 
-/* BOTONES */
 .actions{
   display:flex;
   justify-content:space-between;
@@ -91,111 +81,29 @@ button{
   font-weight:bold;
 }
 
-button:hover{
-  opacity:0.8;
-}
-
-/* STATS */
 .stats{
   display:flex;
   justify-content:space-between;
   margin-top:10px;
   font-size:14px;
-  opacity:0.9;
-}
-
-@media(max-width:600px){
-  .grid{padding:20px;}
 }
 </style>
 </head>
 <body>
 
-<!-- VIDEO -->
 <video autoplay muted loop playsinline id="bg-video">
   <source src="images/backgrounds.mp4" type="video/mp4">
 </video>
 
 <div class="overlay"></div>
 
-<header>
-  MASIVO METAVERSE
-</header>
+<header>MASIVO METAVERSE</header>
 
 <main class="grid">
-
   <div class="card">
-    <img id="nftImage" src="images/masivo1.png">
-
-    <div class="actions">
-      <button onclick="likeNFT(1)">👍 Like</button>
-      <button onclick="downloadNFT(1)">⬇️ Descargar</button>
-      <button onclick="shareNFT(1)">🔁 Compartir</button>
-    </div>
-
-    <div class="stats">
-      <span>👁️ <span id="views-1">0</span></span>
-      <span>❤️ <span id="likes-1">0</span></span>
-      <span>⬇️ <span id="downloads-1">0</span></span>
-      <span>🔁 <span id="shares-1">0</span></span>
-    </div>
+    <img src="images/masivo1.png">
   </div>
-
 </main>
-
-<script>
-
-const supabase = window.supabase.createClient(
-  "https://rnkuxwsuztewgbdmjyxt.supabase.co",
-  "sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
-);
-
-async function loadStats(id){
-  const { data } = await supabase
-    .from("nfts")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if(data){
-    document.getElementById("views-"+id).textContent = data.views;
-    document.getElementById("likes-"+id).textContent = data.likes;
-    document.getElementById("downloads-"+id).textContent = data.downloads;
-    document.getElementById("shares-"+id).textContent = data.shares;
-  }
-}
-
-async function likeNFT(id){
-  await supabase.rpc("increment_likes",{ nft_id:id });
-  loadStats(id);
-}
-
-async function downloadNFT(id){
-  await supabase.rpc("increment_downloads",{ nft_id:id });
-
-  const link=document.createElement("a");
-  link.href=document.getElementById("nftImage").src;
-  link.download="MASIVO-NFT.png";
-  link.click();
-
-  loadStats(id);
-}
-
-async function shareNFT(id){
-  await supabase.rpc("increment_shares",{ nft_id:id });
-
-  navigator.clipboard.writeText(window.location.href);
-  alert("Link copiado");
-
-  loadStats(id);
-}
-
-window.onload = async ()=>{
-  await supabase.rpc("increment_views",{ nft_id:1 });
-  loadStats(1);
-};
-
-</script>
 
 </body>
 </html>
