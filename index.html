@@ -1,225 +1,137 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MASIVO NFT</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-body{
-  margin:0;
-  background:#000;
-  color:#fff;
-  font-family:Arial;
-  text-align:center;
-}
-
-.gallery{
-  display:flex;
-  justify-content:center;
-  gap:40px;
-  margin:60px auto;
-  flex-wrap:wrap;
-}
-
-.card{
-  width:320px;
-  background:#111;
-  padding:15px;
-  border-radius:15px;
-}
-
-.card img{
-  width:100%;
-  border-radius:12px;
-}
-
-.actions{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
-}
-
-button{
-  background:none;
-  border:none;
-  color:#0f0;
-  cursor:pointer;
-}
-
-.comments{
-  margin-top:15px;
-  text-align:left;
-  max-height:120px;
-  overflow-y:auto;
-}
-
-.comment-input{
-  display:flex;
-  gap:5px;
-  margin-top:10px;
-}
-
-.comment-input input{
-  flex:1;
-  padding:6px;
-  border-radius:6px;
-  border:none;
-}
-</style>
+  <meta charset="UTF-8" />
+  <title>MASIVO METAVERSE</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>MASIVO NFT</h1>
-
-<div class="gallery">
-
-<div class="card" data-id="nft1">
-  <img src="images/nft1.jpg">
-
-  <div class="actions">
-    <button class="like">👍 <span>0</span></button>
-    <div>👁️ <span class="views">0</span></div>
-    <button class="download">⬇️ <span>0</span></button>
-    <button class="share">🔁</button>
+<header style="display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;color:white;">
+  <h2>MASIVO METAVERSE</h2>
+  <div id="authSection">
+    <button onclick="showAuth()">Login / Register</button>
   </div>
+</header>
 
-  <div class="comments"></div>
-
-  <div class="comment-input">
-    <input type="text" placeholder="Tu nombre" class="username">
-    <input type="text" placeholder="Escribe comentario..." class="content">
-    <button class="send">Enviar</button>
+<!-- AUTH MODAL -->
+<div id="authModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;">
+  <div style="background:#222;padding:20px;border-radius:10px;width:300px;color:white;">
+    <h3>Login / Register</h3>
+    <input id="email" type="email" placeholder="Email" style="width:100%;margin-bottom:10px;">
+    <input id="password" type="password" placeholder="Password" style="width:100%;margin-bottom:10px;">
+    <button onclick="login()">Login</button>
+    <button onclick="register()">Register</button>
+    <button onclick="closeAuth()">Cerrar</button>
   </div>
 </div>
 
-</div>
+<main style="padding:20px;">
+  <div class="nft-card">
+    <img src="images/masivo1.png" width="300">
+    <div>
+      <button onclick="likeNFT(1)">👍 Like</button>
+      <span id="likes-1">0</span>
+    </div>
+    <div>
+      👁️ <span id="views-1">0</span>
+    </div>
+
+    <div>
+      <input id="comment-input-1" placeholder="Escribe comentario">
+      <button onclick="addComment(1)">Comentar</button>
+    </div>
+
+    <div id="comments-1"></div>
+  </div>
+</main>
 
 <script>
 
 const supabase = window.supabase.createClient(
   "https://rnkuxwsuztewgbdmjyxt.supabase.co",
-  "sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
+  "sb_publishable_TU_KEY_AQUI"
 );
 
-async function loadStats(card){
-  const id = card.dataset.id;
+let currentUser = null;
 
-  const { data } = await supabase
-    .from('nft_stats')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if(!data) return;
-
-  card.querySelector('.like span').textContent = data.likes;
-  card.querySelector('.views').textContent = data.views;
-  card.querySelector('.download span').textContent = data.downloads;
-
-  await supabase
-    .from('nft_stats')
-    .update({ views: data.views + 1 })
-    .eq('id', id);
+// AUTH UI
+function showAuth(){
+  document.getElementById("authModal").style.display="flex";
+}
+function closeAuth(){
+  document.getElementById("authModal").style.display="none";
 }
 
-async function loadComments(card){
-  const id = card.dataset.id;
-
-  const { data } = await supabase
-    .from('comments')
-    .select('*')
-    .eq('nft_id', id)
-    .order('created_at', { ascending: false });
-
-  const container = card.querySelector('.comments');
-  container.innerHTML = '';
-
-  data.forEach(c => {
-    container.innerHTML += `<div><strong>${c.username}</strong>: ${c.content}</div>`;
-  });
+async function register(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const { error } = await supabase.auth.signUp({ email, password });
+  if(error) alert(error.message);
+  else alert("Revisa tu email para confirmar");
 }
 
-document.querySelectorAll('.card').forEach(card => {
+async function login(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error) alert(error.message);
+  else {
+    closeAuth();
+    loadUser();
+  }
+}
 
-  loadStats(card);
-  loadComments(card);
+async function logout(){
+  await supabase.auth.signOut();
+  location.reload();
+}
 
-  const id = card.dataset.id;
+async function loadUser(){
+  const { data } = await supabase.auth.getUser();
+  currentUser = data.user;
+  if(currentUser){
+    document.getElementById("authSection").innerHTML = `
+      ${currentUser.email}
+      <button onclick="logout()">Logout</button>
+    `;
+  }
+}
 
-  // LIKE SOLO UNA VEZ
-  card.querySelector('.like').addEventListener('click', async () => {
+// LIKE
+async function likeNFT(id){
+  if(!currentUser){
+    alert("Debes iniciar sesión");
+    return;
+  }
+  let likes = document.getElementById("likes-"+id);
+  likes.textContent = parseInt(likes.textContent)+1;
+}
 
-    if(localStorage.getItem("liked_" + id)){
-      alert("Ya diste like 🔥");
-      return;
-    }
+// COMMENTS
+async function addComment(id){
+  if(!currentUser){
+    alert("Debes iniciar sesión");
+    return;
+  }
+  const input = document.getElementById("comment-input-"+id);
+  const text = input.value;
+  if(!text) return;
 
-    const span = card.querySelector('.like span');
-    let current = parseInt(span.textContent);
+  const container = document.getElementById("comments-"+id);
+  const div = document.createElement("div");
+  div.textContent = currentUser.email + ": " + text;
+  container.appendChild(div);
+  input.value="";
+}
 
-    span.textContent = current + 1;
-
-    await supabase
-      .from('nft_stats')
-      .update({ likes: current + 1 })
-      .eq('id', id);
-
-    localStorage.setItem("liked_" + id, "true");
-  });
-
-  // DESCARGA
-  card.querySelector('.download').addEventListener('click', async () => {
-
-    const span = card.querySelector('.download span');
-    let current = parseInt(span.textContent);
-
-    span.textContent = current + 1;
-
-    await supabase
-      .from('nft_stats')
-      .update({ downloads: current + 1 })
-      .eq('id', id);
-
-    window.open(card.querySelector('img').src);
-  });
-
-  // SHARE INFINITO
-  card.querySelector('.share').addEventListener('click', async () => {
-
-    const shareData = {
-      title: "MASIVO NFT",
-      text: "Mira este NFT en MASIVO",
-      url: window.location.href + "#" + id
-    };
-
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      await navigator.clipboard.writeText(shareData.url);
-      alert("Enlace copiado 🔥");
-    }
-  });
-
-  // COMENTARIOS INFINITOS
-  card.querySelector('.send').addEventListener('click', async () => {
-
-    const username = card.querySelector('.username').value;
-    const content = card.querySelector('.content').value;
-
-    if(!username || !content) return;
-
-    await supabase
-      .from('comments')
-      .insert([{ nft_id: id, username, content }]);
-
-    card.querySelector('.content').value = '';
-    loadComments(card);
-  });
-
-});
+// VIEWS
+window.onload = async () => {
+  loadUser();
+  let views = document.getElementById("views-1");
+  views.textContent = parseInt(views.textContent)+1;
+};
 
 </script>
 
