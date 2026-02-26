@@ -30,7 +30,7 @@
 <main style="padding:20px;">
   <div class="nft-card">
     <img src="images/masivo1.png" width="300">
-    
+
     <div>
       <button onclick="likeNFT(1)">👍 Like</button>
       <span id="likes-1">0</span>
@@ -58,13 +58,9 @@ const supabase = window.supabase.createClient(
 
 let currentUser = null;
 
-// AUTH UI
-function showAuth(){
-  document.getElementById("authModal").style.display="flex";
-}
-function closeAuth(){
-  document.getElementById("authModal").style.display="none";
-}
+// AUTH
+function showAuth(){ document.getElementById("authModal").style.display="flex"; }
+function closeAuth(){ document.getElementById("authModal").style.display="none"; }
 
 async function register(){
   const email = document.getElementById("email").value;
@@ -101,14 +97,40 @@ async function loadUser(){
   }
 }
 
+// VIEWS
+async function incrementViews(id){
+  await supabase.rpc("increment_views", { nft_id: id });
+  loadStats(id);
+}
+
 // LIKE
 async function likeNFT(id){
   if(!currentUser){
     alert("Debes iniciar sesión");
     return;
   }
-  let likes = document.getElementById("likes-"+id);
-  likes.textContent = parseInt(likes.textContent)+1;
+
+  const { data: existing } = await supabase
+    .from("likes")
+    .select("*")
+    .eq("nft_id", id)
+    .eq("user_id", currentUser.id);
+
+  if(existing.length > 0){
+    alert("Ya diste like");
+    return;
+  }
+
+  await supabase.from("likes").insert({
+    nft_id: id,
+    user_id: currentUser.id
+  });
+
+  await supabase.from("nfts")
+    .update({ likes: supabase.rpc })
+    .eq("id", id);
+
+  loadStats(id);
 }
 
 // COMMENTS
@@ -117,22 +139,55 @@ async function addComment(id){
     alert("Debes iniciar sesión");
     return;
   }
+
   const input = document.getElementById("comment-input-"+id);
   const text = input.value;
   if(!text) return;
 
-  const container = document.getElementById("comments-"+id);
-  const div = document.createElement("div");
-  div.textContent = currentUser.email + ": " + text;
-  container.appendChild(div);
+  await supabase.from("comments").insert({
+    nft_id: id,
+    user_email: currentUser.email,
+    content: text
+  });
+
   input.value="";
+  loadComments(id);
 }
 
-// VIEWS
+async function loadComments(id){
+  const { data } = await supabase
+    .from("comments")
+    .select("*")
+    .eq("nft_id", id)
+    .order("created_at", { ascending: false });
+
+  const container = document.getElementById("comments-"+id);
+  container.innerHTML = "";
+
+  data.forEach(c => {
+    const div = document.createElement("div");
+    div.textContent = c.user_email + ": " + c.content;
+    container.appendChild(div);
+  });
+}
+
+// LOAD STATS
+async function loadStats(id){
+  const { data } = await supabase
+    .from("nfts")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  document.getElementById("views-"+id).textContent = data.views;
+  document.getElementById("likes-"+id).textContent = data.likes;
+}
+
 window.onload = async () => {
   loadUser();
-  let views = document.getElementById("views-1");
-  views.textContent = parseInt(views.textContent)+1;
+  incrementViews(1);
+  loadStats(1);
+  loadComments(1);
 };
 
 </script>
