@@ -1,58 +1,145 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>MASIVO METAVERSE</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MASIVO METAVERSE</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body,html{
+  margin:0;
+  padding:0;
+  font-family:Arial, sans-serif;
+  color:white;
+  overflow-x:hidden;
+}
+
+/* VIDEO FONDO */
+#bg-video{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
+}
+
+/* OSCURECER VIDEO */
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  z-index:-1;
+}
+
+/* HEADER */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(8px);
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:30px;
+  padding:40px;
+}
+
+/* TARJETA */
+.card{
+  background:rgba(0,0,0,0.75);
+  border-radius:15px;
+  padding:20px;
+  backdrop-filter:blur(8px);
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+}
+
+.card img{
+  width:100%;
+  border-radius:12px;
+}
+
+/* BOTONES */
+.actions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:15px;
+}
+
+button{
+  background:#00f0ff;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{
+  opacity:0.8;
+}
+
+/* STATS */
+.stats{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+  font-size:14px;
+  opacity:0.9;
+}
+
+@media(max-width:600px){
+  .grid{padding:20px;}
+}
+</style>
 </head>
 <body>
 
-<header style="display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;color:white;">
+<!-- VIDEO -->
+<video autoplay muted loop playsinline id="bg-video">
+  <source src="images/background.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<header>
   <h2>MASIVO METAVERSE</h2>
-  <div id="authSection">
-    <button onclick="showAuth()">Login / Register</button>
-  </div>
 </header>
 
-<div id="authModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;">
-  <div style="background:#222;padding:20px;border-radius:10px;width:300px;color:white;">
-    <h3>Login / Register</h3>
-    <input id="email" type="email" placeholder="Email" style="width:100%;margin-bottom:10px;">
-    <input id="password" type="password" placeholder="Password" style="width:100%;margin-bottom:10px;">
-    <button onclick="login()">Login</button>
-    <button onclick="register()">Register</button>
-    <button onclick="closeAuth()">Cerrar</button>
-  </div>
-</div>
+<main class="grid">
 
-<main style="padding:20px;">
-  <div class="nft-card">
-    <img id="nftImage" src="images/masivo1.png" width="300">
+  <div class="card">
+    <img id="nftImage" src="images/masivo1.png">
 
-    <div>
+    <div class="actions">
       <button onclick="likeNFT(1)">👍 Like</button>
-      <span id="likes-1">0</span>
+      <button onclick="downloadNFT(1)">⬇️ Descargar</button>
+      <button onclick="shareNFT(1)">🔁 Compartir</button>
     </div>
 
-    <div>
-      👁️ <span id="views-1">0</span>
-      ⬇️ <span id="downloads-1">0</span>
-      🔁 <span id="shares-1">0</span>
+    <div class="stats">
+      <span>👁️ <span id="views-1">0</span></span>
+      <span>❤️ <span id="likes-1">0</span></span>
+      <span>⬇️ <span id="downloads-1">0</span></span>
+      <span>🔁 <span id="shares-1">0</span></span>
     </div>
-
-    <div>
-      <button onclick="downloadNFT(1)">Descargar</button>
-      <button onclick="shareNFT(1)">Compartir</button>
-    </div>
-
-    <div>
-      <input id="comment-input-1" placeholder="Escribe comentario">
-      <button onclick="addComment(1)">Comentar</button>
-    </div>
-
-    <div id="comments-1"></div>
   </div>
+
 </main>
 
 <script>
@@ -61,117 +148,6 @@ const supabase = window.supabase.createClient(
   "https://rnkuxwsuztewgbdmjyxt.supabase.co",
   "sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
 );
-
-let currentUser = null;
-
-function showAuth(){ document.getElementById("authModal").style.display="flex"; }
-function closeAuth(){ document.getElementById("authModal").style.display="none"; }
-
-async function register(){
-  const email = email.value;
-  const password = password.value;
-  const { error } = await supabase.auth.signUp({ email, password });
-  if(error) alert(error.message);
-  else alert("Revisa tu email para confirmar");
-}
-
-async function login(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if(error) alert(error.message);
-  else { closeAuth(); loadUser(); }
-}
-
-async function logout(){
-  await supabase.auth.signOut();
-  location.reload();
-}
-
-async function loadUser(){
-  const { data } = await supabase.auth.getUser();
-  currentUser = data.user;
-  if(currentUser){
-    document.getElementById("authSection").innerHTML = `
-      ${currentUser.email}
-      <button onclick="logout()">Logout</button>
-    `;
-  }
-}
-
-async function incrementViews(id){
-  await supabase.rpc("increment_views", { nft_id: id });
-}
-
-async function likeNFT(id){
-  if(!currentUser){ alert("Debes iniciar sesión"); return; }
-
-  const { data } = await supabase
-    .from("likes")
-    .select("*")
-    .eq("nft_id", id)
-    .eq("user_id", currentUser.id);
-
-  if(data.length > 0){ alert("Ya diste like"); return; }
-
-  await supabase.from("likes").insert({ nft_id: id, user_id: currentUser.id });
-  await supabase.rpc("increment_likes", { nft_id: id });
-  loadStats(id);
-}
-
-async function downloadNFT(id){
-  await supabase.rpc("increment_downloads", { nft_id: id });
-
-  const link = document.createElement("a");
-  link.href = document.getElementById("nftImage").src;
-  link.download = "MASIVO-NFT.png";
-  link.click();
-
-  loadStats(id);
-}
-
-async function shareNFT(id){
-  await supabase.rpc("increment_shares", { nft_id: id });
-
-  navigator.clipboard.writeText(window.location.href);
-  alert("Link copiado al portapapeles");
-
-  loadStats(id);
-}
-
-async function addComment(id){
-  if(!currentUser){ alert("Debes iniciar sesión"); return; }
-
-  const input = document.getElementById("comment-input-"+id);
-  const text = input.value;
-  if(!text) return;
-
-  await supabase.from("comments").insert({
-    nft_id: id,
-    user_email: currentUser.email,
-    content: text
-  });
-
-  input.value="";
-  loadComments(id);
-}
-
-async function loadComments(id){
-  const { data } = await supabase
-    .from("comments")
-    .select("*")
-    .eq("nft_id", id)
-    .order("created_at", { ascending: false });
-
-  const container = document.getElementById("comments-"+id);
-  container.innerHTML = "";
-
-  data.forEach(c => {
-    const div = document.createElement("div");
-    div.textContent = c.user_email + ": " + c.content;
-    container.appendChild(div);
-  });
-}
 
 async function loadStats(id){
   const { data } = await supabase
@@ -186,11 +162,34 @@ async function loadStats(id){
   document.getElementById("shares-"+id).textContent = data.shares;
 }
 
-window.onload = async () => {
-  loadUser();
-  await incrementViews(1);
+async function likeNFT(id){
+  await supabase.rpc("increment_likes",{ nft_id:id });
+  loadStats(id);
+}
+
+async function downloadNFT(id){
+  await supabase.rpc("increment_downloads",{ nft_id:id });
+
+  const link=document.createElement("a");
+  link.href=document.getElementById("nftImage").src;
+  link.download="MASIVO-NFT.png";
+  link.click();
+
+  loadStats(id);
+}
+
+async function shareNFT(id){
+  await supabase.rpc("increment_shares",{ nft_id:id });
+
+  navigator.clipboard.writeText(window.location.href);
+  alert("Link copiado");
+
+  loadStats(id);
+}
+
+window.onload = async ()=>{
+  await supabase.rpc("increment_views",{ nft_id:1 });
   loadStats(1);
-  loadComments(1);
 };
 
 </script>
