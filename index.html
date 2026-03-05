@@ -25,22 +25,33 @@ overflow-x:hidden;
 
 /* VIDEO FONDO */
 
-video{
+#bg-video{
+position:fixed;
+top:0;
+left:0;
+width:100vw;
+height:100vh;
+object-fit:cover;
+z-index:-1;
+}
+
+/* CAPA OSCURA */
+
+.overlay{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-object-fit:cover;
+background:rgba(0,0,0,0.55);
 z-index:-1;
-filter:brightness(0.45);
 }
 
 /* TITULO */
 
 h1{
 margin-top:40px;
-font-size:40px;
+font-size:42px;
 letter-spacing:3px;
 }
 
@@ -55,15 +66,15 @@ flex-wrap:wrap;
 padding-bottom:100px;
 }
 
-/* TARJETA NFT */
+/* TARJETAS */
 
 .card{
 width:320px;
-background:rgba(0,0,0,0.75);
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(6px);
 padding:15px;
-border-radius:15px;
-backdrop-filter:blur(10px);
-box-shadow:0 0 30px rgba(0,0,0,0.8);
+border-radius:14px;
+box-shadow:0 0 20px rgba(0,0,0,0.6);
 }
 
 .card img{
@@ -112,13 +123,6 @@ border-radius:6px;
 border:none;
 }
 
-.send{
-background:#00ffaa;
-color:black;
-padding:5px 10px;
-border-radius:6px;
-}
-
 </style>
 
 </head>
@@ -127,15 +131,15 @@ border-radius:6px;
 
 <!-- VIDEO FONDO -->
 
-<video autoplay muted loop playsinline>
+<video id="bg-video" autoplay muted loop playsinline>
 <source src="images/background.mp4" type="video/mp4">
 </video>
+
+<div class="overlay"></div>
 
 <h1>MASIVO NFT</h1>
 
 <div class="gallery">
-
-<!-- NFT 1 -->
 
 <div class="card" data-id="nft1">
 
@@ -143,11 +147,11 @@ border-radius:6px;
 
 <div class="actions">
 
-<button class="like">👍 <span>0</span></button>
+<button class="like">❤️ <span>0</span></button>
 
-<div>👁️ <span class="views">0</span></div>
+<div>👁 <span class="views">0</span></div>
 
-<button class="download">⬇️ <span>0</span></button>
+<button class="download">⬇ <span>0</span></button>
 
 <button class="share">🔁</button>
 
@@ -157,7 +161,7 @@ border-radius:6px;
 
 <div class="comment-input">
 
-<input type="text" placeholder="Tu nombre" class="username">
+<input type="text" placeholder="Nombre" class="username">
 
 <input type="text" placeholder="Comentario..." class="content">
 
@@ -171,14 +175,10 @@ border-radius:6px;
 
 <script>
 
-/* SUPABASE */
-
 const supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
 "sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
 );
-
-/* CARGAR STATS */
 
 async function loadStats(card){
 
@@ -196,16 +196,12 @@ card.querySelector('.like span').textContent = data.likes;
 card.querySelector('.views').textContent = data.views;
 card.querySelector('.download span').textContent = data.downloads;
 
-/* SUMAR VIEW */
-
 await supabase
 .from('nft_stats')
 .update({ views: data.views + 1 })
 .eq('id', id);
 
 }
-
-/* CARGAR COMENTARIOS */
 
 async function loadComments(card){
 
@@ -219,27 +215,20 @@ const { data } = await supabase
 
 const container = card.querySelector('.comments');
 
-container.innerHTML = '';
-
-if(!data) return;
+container.innerHTML='';
 
 data.forEach(c => {
 
-container.innerHTML +=
-`<div><b>${c.username}</b>: ${c.content}</div>`;
+container.innerHTML += `<div><strong>${c.username}</strong>: ${c.content}</div>`;
 
 });
 
 }
 
-/* EVENTOS */
-
 document.querySelectorAll('.card').forEach(card => {
 
 loadStats(card);
 loadComments(card);
-
-/* LIKE */
 
 card.querySelector('.like').addEventListener('click', async ()=>{
 
@@ -257,8 +246,6 @@ await supabase
 .eq('id', id);
 
 });
-
-/* DOWNLOAD */
 
 card.querySelector('.download').addEventListener('click', async ()=>{
 
@@ -279,31 +266,29 @@ window.open(card.querySelector('img').src);
 
 });
 
-/* SHARE */
-
 card.querySelector('.share').addEventListener('click', async ()=>{
 
-const url = window.location.href + "#" + card.dataset.id;
+const shareData = {
+
+title:"MASIVO NFT",
+text:"Mira este NFT en MASIVO",
+url:window.location.href + "#" + card.dataset.id
+
+};
 
 if(navigator.share){
 
-navigator.share({
-title:"MASIVO NFT",
-text:"Mira este NFT",
-url:url
-});
+await navigator.share(shareData);
 
 }else{
 
-navigator.clipboard.writeText(url);
+await navigator.clipboard.writeText(shareData.url);
 
 alert("Link copiado 🔥");
 
 }
 
 });
-
-/* COMENTARIO */
 
 card.querySelector('.send').addEventListener('click', async ()=>{
 
@@ -319,7 +304,7 @@ await supabase
 .from('comments')
 .insert([{ nft_id:id, username, content }]);
 
-card.querySelector('.content').value = '';
+card.querySelector('.content').value='';
 
 loadComments(card);
 
