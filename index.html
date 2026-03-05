@@ -23,71 +23,64 @@ background:black;
 overflow-x:hidden;
 }
 
-/* VIDEO FONDO */
-
-#bg-video{
+video{
 position:fixed;
-top:0;
-left:0;
-width:100vw;
-height:100vh;
+right:0;
+bottom:0;
+min-width:100%;
+min-height:100%;
 object-fit:cover;
 z-index:-1;
 }
 
-/* CAPA OSCURA */
-
-.overlay{
+body::before{
+content:"";
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.55);
-z-index:-1;
+background:linear-gradient(
+90deg,
+rgba(0,0,0,0.9) 0%,
+transparent 20%,
+transparent 80%,
+rgba(0,0,0,0.9) 100%
+);
+pointer-events:none;
 }
-
-/* TITULO */
 
 h1{
 margin-top:40px;
-font-size:42px;
+font-size:40px;
 letter-spacing:3px;
 }
 
-/* GALERIA */
-
 .gallery{
 display:flex;
+flex-wrap:wrap;
 justify-content:center;
 gap:40px;
 margin-top:60px;
-flex-wrap:wrap;
 padding-bottom:100px;
 }
 
-/* TARJETAS */
-
 .card{
-width:320px;
-background:rgba(0,0,0,0.6);
-backdrop-filter:blur(6px);
+width:280px;
+background:rgba(0,0,0,0.7);
 padding:15px;
-border-radius:14px;
-box-shadow:0 0 20px rgba(0,0,0,0.6);
+border-radius:15px;
+backdrop-filter:blur(6px);
 }
 
 .card img{
 width:100%;
-border-radius:12px;
+border-radius:10px;
 }
-
-/* ACCIONES */
 
 .actions{
 display:flex;
 justify-content:space-between;
-align-items:center;
 margin-top:10px;
 font-size:14px;
 }
@@ -97,16 +90,12 @@ background:none;
 border:none;
 color:white;
 cursor:pointer;
-font-size:14px;
 }
 
-/* COMENTARIOS */
-
 .comments{
-margin-top:15px;
-text-align:left;
+margin-top:10px;
 font-size:13px;
-max-height:120px;
+max-height:100px;
 overflow-y:auto;
 }
 
@@ -118,60 +107,23 @@ margin-top:10px;
 
 .comment-input input{
 flex:1;
-padding:6px;
-border-radius:6px;
+padding:5px;
 border:none;
+border-radius:5px;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<!-- VIDEO FONDO -->
-
-<video id="bg-video" autoplay muted loop playsinline>
+<video autoplay muted loop playsinline>
 <source src="images/background.mp4" type="video/mp4">
 </video>
 
-<div class="overlay"></div>
-
 <h1>MASIVO NFT</h1>
 
-<div class="gallery">
-
-<div class="card" data-id="nft1">
-
-<img src="images/nft1.png">
-
-<div class="actions">
-
-<button class="like">❤️ <span>0</span></button>
-
-<div>👁 <span class="views">0</span></div>
-
-<button class="download">⬇ <span>0</span></button>
-
-<button class="share">🔁</button>
-
-</div>
-
-<div class="comments"></div>
-
-<div class="comment-input">
-
-<input type="text" placeholder="Nombre" class="username">
-
-<input type="text" placeholder="Comentario..." class="content">
-
-<button class="send">Enviar</button>
-
-</div>
-
-</div>
-
-</div>
+<div class="gallery" id="gallery"></div>
 
 <script>
 
@@ -180,137 +132,164 @@ const supabase = window.supabase.createClient(
 "sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
 );
 
+const gallery = document.getElementById("gallery");
+
+const TOTAL_NFTS = 20;
+
+for(let i=1;i<=TOTAL_NFTS;i++){
+
+const nftId = "nft"+i;
+
+const card = document.createElement("div");
+card.className="card";
+card.dataset.id=nftId;
+
+card.innerHTML=`
+
+<img src="images/nft${i}.png" onerror="this.parentElement.remove()">
+
+<div class="actions">
+<button class="like">❤️ <span>0</span></button>
+<div>👁️ <span class="views">0</span></div>
+<button class="download">⬇️ <span>0</span></button>
+<button class="share">🔁</button>
+</div>
+
+<div class="comments"></div>
+
+<div class="comment-input">
+<input type="text" placeholder="Comentario..." class="content">
+<button class="send">Enviar</button>
+</div>
+`;
+
+gallery.appendChild(card);
+}
+
+document.querySelectorAll(".card").forEach(card=>{
+
+loadStats(card);
+loadComments(card);
+
+card.querySelector(".like").onclick=()=>likeNFT(card);
+card.querySelector(".download").onclick=()=>downloadNFT(card);
+card.querySelector(".share").onclick=()=>shareNFT(card);
+card.querySelector(".send").onclick=()=>sendComment(card);
+
+});
+
 async function loadStats(card){
 
 const id = card.dataset.id;
 
 const { data } = await supabase
-.from('nft_stats')
-.select('*')
-.eq('id', id)
+.from("nft_stats")
+.select("*")
+.eq("id",id)
 .single();
 
 if(!data) return;
 
-card.querySelector('.like span').textContent = data.likes;
-card.querySelector('.views').textContent = data.views;
-card.querySelector('.download span').textContent = data.downloads;
+card.querySelector(".like span").textContent=data.likes;
+card.querySelector(".views").textContent=data.views;
+card.querySelector(".download span").textContent=data.downloads;
 
 await supabase
-.from('nft_stats')
-.update({ views: data.views + 1 })
-.eq('id', id);
+.from("nft_stats")
+.update({views:data.views+1})
+.eq("id",id);
+
+}
+
+async function likeNFT(card){
+
+const id=card.dataset.id;
+const span=card.querySelector(".like span");
+
+let current=parseInt(span.textContent);
+span.textContent=current+1;
+
+await supabase
+.from("nft_stats")
+.update({likes:current+1})
+.eq("id",id);
+
+}
+
+async function downloadNFT(card){
+
+const id=card.dataset.id;
+const span=card.querySelector(".download span");
+
+let current=parseInt(span.textContent);
+span.textContent=current+1;
+
+await supabase
+.from("nft_stats")
+.update({downloads:current+1})
+.eq("id",id);
+
+window.open(card.querySelector("img").src);
+
+}
+
+async function shareNFT(card){
+
+const url = window.location.href + "#" + card.dataset.id;
+
+if(navigator.share){
+
+navigator.share({
+title:"MASIVO NFT",
+url:url
+});
+
+}else{
+
+navigator.clipboard.writeText(url);
+alert("Link copiado");
+
+}
 
 }
 
 async function loadComments(card){
 
-const id = card.dataset.id;
+const id=card.dataset.id;
 
 const { data } = await supabase
-.from('comments')
-.select('*')
-.eq('nft_id', id)
-.order('created_at', { ascending:false });
+.from("comments")
+.select("*")
+.eq("nft_id",id)
+.order("created_at",{ascending:false});
 
-const container = card.querySelector('.comments');
+const container=card.querySelector(".comments");
+container.innerHTML="";
 
-container.innerHTML='';
+data.forEach(c=>{
 
-data.forEach(c => {
-
-container.innerHTML += `<div><strong>${c.username}</strong>: ${c.content}</div>`;
+container.innerHTML+=`<div>${c.content}</div>`;
 
 });
 
 }
 
-document.querySelectorAll('.card').forEach(card => {
+async function sendComment(card){
 
-loadStats(card);
+const id=card.dataset.id;
+const input=card.querySelector(".content");
+
+if(!input.value) return;
+
+await supabase
+.from("comments")
+.insert([{nft_id:id,content:input.value}]);
+
+input.value="";
+
 loadComments(card);
-
-card.querySelector('.like').addEventListener('click', async ()=>{
-
-const id = card.dataset.id;
-
-const span = card.querySelector('.like span');
-
-let current = parseInt(span.textContent);
-
-span.textContent = current + 1;
-
-await supabase
-.from('nft_stats')
-.update({ likes: current + 1 })
-.eq('id', id);
-
-});
-
-card.querySelector('.download').addEventListener('click', async ()=>{
-
-const id = card.dataset.id;
-
-const span = card.querySelector('.download span');
-
-let current = parseInt(span.textContent);
-
-span.textContent = current + 1;
-
-await supabase
-.from('nft_stats')
-.update({ downloads: current + 1 })
-.eq('id', id);
-
-window.open(card.querySelector('img').src);
-
-});
-
-card.querySelector('.share').addEventListener('click', async ()=>{
-
-const shareData = {
-
-title:"MASIVO NFT",
-text:"Mira este NFT en MASIVO",
-url:window.location.href + "#" + card.dataset.id
-
-};
-
-if(navigator.share){
-
-await navigator.share(shareData);
-
-}else{
-
-await navigator.clipboard.writeText(shareData.url);
-
-alert("Link copiado 🔥");
 
 }
-
-});
-
-card.querySelector('.send').addEventListener('click', async ()=>{
-
-const id = card.dataset.id;
-
-const username = card.querySelector('.username').value;
-
-const content = card.querySelector('.content').value;
-
-if(!username || !content) return;
-
-await supabase
-.from('comments')
-.insert([{ nft_id:id, username, content }]);
-
-card.querySelector('.content').value='';
-
-loadComments(card);
-
-});
-
-});
 
 </script>
 
