@@ -142,17 +142,3 @@ viewer.onclick=()=>viewer.style.display="none"
 for(let i=1;i<=TOTAL_NFT;i++){
 createCard(i)
 }
-
-window.onload=()=>{
-
-if(location.hash.includes("nft")){
-
-let id=location.hash.replace("#nft","")
-
-let img=`images/nft${id}.png`
-
-openViewer(id,img)
-
-}
-
-}
