@@ -1,152 +1,220 @@
-const gallery=document.getElementById("gallery")
+body{
 
-const viewer=document.getElementById("viewer")
-const viewerImg=document.getElementById("viewerImg")
+margin:0;
+font-family:Arial;
+background:black;
+color:white;
+text-align:center;
 
-const likeBtn=document.getElementById("likeBtn")
-const downloadBtn=document.getElementById("downloadBtn")
-const shareBtn=document.getElementById("shareBtn")
+}
 
-const viewsEl=document.getElementById("views")
-const likesEl=document.getElementById("likes")
-const downloadsEl=document.getElementById("downloads")
-const sharesEl=document.getElementById("shares")
+/* VIDEO */
 
-const TOTAL_NFT=9
+#bgVideo{
 
-let currentNFT=0
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-1;
+opacity:0.7;
 
-function createNFT(id){
+}
 
-let div=document.createElement("div")
-div.className="nft"
+/* TITULO */
 
-let img=document.createElement("img")
-img.src="images/nft"+id+".png"
+.title{
 
-img.onclick=()=>openViewer(id)
+font-size:70px;
+margin-top:40px;
+letter-spacing:6px;
+color:#00aaff;
 
-div.appendChild(img)
+text-shadow:
 
-gallery.appendChild(div)
+0 0 10px #00aaff,
+0 0 20px #0088ff,
+0 0 40px #0044ff;
 
-if(!localStorage.getItem("nft"+id)){
+animation:glow 3s infinite alternate;
 
-localStorage.setItem("nft"+id,JSON.stringify({
+position:relative;
 
-views:0,
-likes:0,
-downloads:0,
-shares:0
+}
 
-}))
+@keyframes glow{
+
+from{
+
+text-shadow:
+0 0 10px #00aaff,
+0 0 20px #0088ff;
+
+}
+
+to{
+
+text-shadow:
+0 0 20px #00ccff,
+0 0 40px #0088ff,
+0 0 60px #0044ff;
 
 }
 
 }
 
-for(let i=1;i<=TOTAL_NFT;i++){
+/* PIROTECNIA */
 
-createNFT(i)
+.spark{
 
-}
-
-function openViewer(id){
-
-currentNFT=id
-
-viewer.style.display="flex"
-
-viewerImg.src="images/nft"+id+".png"
-
-let data=JSON.parse(localStorage.getItem("nft"+id))
-
-data.views++
-
-localStorage.setItem("nft"+id,JSON.stringify(data))
-
-updateUI(data)
+position:absolute;
+width:6px;
+height:6px;
+background:#00ccff;
+border-radius:50%;
+animation:firework 1.5s infinite;
 
 }
 
-function updateUI(data){
+.spark:nth-child(1){left:10%;top:10%}
+.spark:nth-child(2){left:25%;top:-10%}
+.spark:nth-child(3){left:40%;top:20%}
+.spark:nth-child(4){left:55%;top:-15%}
+.spark:nth-child(5){left:70%;top:15%}
+.spark:nth-child(6){left:85%;top:-10%}
+.spark:nth-child(7){left:95%;top:20%}
 
-viewsEl.textContent=data.views
-likesEl.textContent=data.likes
-downloadsEl.textContent=data.downloads
-sharesEl.textContent=data.shares
+@keyframes firework{
 
+0%{
+opacity:0;
+transform:scale(0);
 }
 
-viewer.onclick=(e)=>{
+50%{
+opacity:1;
+transform:scale(1.5);
+}
 
-if(e.target===viewer){
-
-viewer.style.display="none"
-
+100%{
+opacity:0;
+transform:translateY(-30px);
 }
 
 }
 
-likeBtn.onclick=()=>{
+/* GALERIA */
 
-let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
+.gallery{
 
-data.likes++
-
-localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
-
-updateUI(data)
-
-}
-
-downloadBtn.onclick=()=>{
-
-let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
-
-data.downloads++
-
-localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
-
-updateUI(data)
-
-let link=document.createElement("a")
-
-link.href=viewerImg.src
-link.download="nft"+currentNFT+".png"
-
-link.click()
+display:grid;
+grid-template-columns:repeat(4,300px);
+gap:40px;
+justify-content:center;
+margin-top:80px;
 
 }
 
-shareBtn.onclick=()=>{
+/* NFT */
 
-let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
+.nft{
 
-data.shares++
-
-localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
-
-updateUI(data)
-
-const url=window.location.origin+window.location.pathname+"?nft="+currentNFT
-
-navigator.clipboard.writeText(url)
-
-alert("Link copiado para compartir")
+background:rgba(0,0,0,0.6);
+padding:15px;
+border-radius:10px;
+transition:0.3s;
 
 }
 
-const params=new URLSearchParams(window.location.search)
+.nft:hover{
 
-const nftID=params.get("nft")
+transform:scale(1.05);
 
-if(nftID){
+}
 
-setTimeout(()=>{
+.nft img{
 
-openViewer(nftID)
+width:300px;
+border-radius:10px;
+cursor:pointer;
 
-},500)
+}
+
+/* VISOR */
+
+#viewer{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+
+display:none;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+}
+
+#viewer img{
+
+width:420px;
+border-radius:10px;
+
+}
+
+/* BOTONES */
+
+.viewerButtons{
+
+margin-top:20px;
+
+}
+
+.viewerButtons button{
+
+margin:10px;
+padding:12px 24px;
+
+border:none;
+background:#ff004c;
+color:white;
+
+border-radius:8px;
+cursor:pointer;
+
+font-weight:bold;
+
+box-shadow:0 0 10px #ff004c;
+transition:0.3s;
+
+}
+
+.viewerButtons button:hover{
+
+box-shadow:
+0 0 20px #ff004c,
+0 0 40px #ff004c;
+
+transform:scale(1.1);
+
+}
+
+/* CONTADORES */
+
+.stats{
+
+margin-top:-10px;
+font-size:20px;
+
+}
+
+.stats span{
+
+margin:15px;
 
 }
