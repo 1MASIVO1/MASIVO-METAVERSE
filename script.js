@@ -1,115 +1,124 @@
-const SUPABASE_URL = "https://rnkuxwsuztewgbdmjyxt.supabase.co"
-const SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```javascript
+const supabase = window.supabase.createClient(
+"https://rnkuxwsuztewgbdmjyxt.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
+);
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+const grid = document.getElementById("nft-grid");
 
-const gallery = document.getElementById("gallery")
+const MAX_NFTS = 1000;
 
-let currentNFT = null
-
-/* CARGAR NFTS */
-
-async function loadNFTs(){
+async function loadNFTs() {
 
 const { data } = await supabase
 .from("nfts")
-.select("*")
-.order("id")
+.select("*");
 
-gallery.innerHTML=""
+let db = {};
 
 data.forEach(nft=>{
+db[nft.name] = nft;
+});
 
-const card=document.createElement("div")
-card.className="nft"
+for(let i=1;i<=MAX_NFTS;i++){
 
-card.innerHTML=`
-<img src="images/${nft.image_name}">
-`
+const name = "nft"+i+".png";
 
-card.onclick=()=>openViewer(nft)
+if(!db[name]){
 
-gallery.appendChild(card)
+await supabase.from("nfts").insert({
+name:name,
+likes:0,
+views:0
+});
 
-})
+db[name] = {name,likes:0,views:0};
 
 }
 
-loadNFTs()
+createNFT(name,db[name]);
 
-/* ABRIR NFT */
+}
 
-async function openViewer(nft){
+}
 
-currentNFT=nft
+function createNFT(name,data){
 
-document.getElementById("viewer").style.display="flex"
+const card = document.createElement("div");
+card.className="nft-card";
 
-document.getElementById("viewerImg").src=`images/${nft.image_name}`
+card.innerHTML = `
+<img src="nfts/${name}" class="nft-img">
 
-await supabase
+<div class="nft-info">
+
+<div>❤️ <span id="like-${name}">${data.likes}</span></div>
+
+<div>👁 <span id="view-${name}">${data.views}</span></div>
+
+<button onclick="likeNFT('${name}')">Like</button>
+
+<button onclick="downloadNFT('${name}')">Download</button>
+
+</div>
+`;
+
+card.querySelector(".nft-img").onclick=()=>openNFT(name);
+
+grid.appendChild(card);
+
+}
+
+async function likeNFT(name){
+
+let { data } = await supabase
 .from("nfts")
-.update({views:nft.views+1})
-.eq("id",nft.id)
+.select("*")
+.eq("name",name)
+.single();
 
-updateStats(nft)
-
-}
-
-/* CERRAR */
-
-function closeViewer(){
-
-document.getElementById("viewer").style.display="none"
-
-}
-
-/* LIKE */
-
-document.getElementById("likeBtn").onclick=async()=>{
-
-const newLikes=currentNFT.likes+1
+let newLikes = data.likes + 1;
 
 await supabase
 .from("nfts")
 .update({likes:newLikes})
-.eq("id",currentNFT.id)
+.eq("name",name);
 
-currentNFT.likes=newLikes
-
-updateStats(currentNFT)
+document.getElementById("like-"+name).innerText=newLikes;
 
 }
 
-/* DOWNLOAD */
+async function openNFT(name){
 
-document.getElementById("downloadBtn").onclick=()=>{
+let { data } = await supabase
+.from("nfts")
+.select("*")
+.eq("name",name)
+.single();
 
-const link=document.createElement("a")
+let newViews = data.views + 1;
 
-link.href=`images/${currentNFT.image_name}`
+await supabase
+.from("nfts")
+.update({views:newViews})
+.eq("name",name);
 
-link.download=currentNFT.image_name
+document.getElementById("view-"+name).innerText=newViews;
 
-link.click()
-
-}
-
-/* SHARE */
-
-document.getElementById("shareBtn").onclick=()=>{
-
-navigator.clipboard.writeText(window.location.href)
-
-alert("Link copiado")
+window.open("nfts/"+name,"_blank");
 
 }
 
-/* STATS */
+function downloadNFT(name){
 
-function updateStats(nft){
+const link = document.createElement("a");
 
-document.getElementById("stats").innerText=
-`👁 ${nft.views}   ❤️ ${nft.likes}`
+link.href="nfts/"+name;
+link.download=name;
+
+link.click();
 
 }
+
+loadNFTs();
+```
