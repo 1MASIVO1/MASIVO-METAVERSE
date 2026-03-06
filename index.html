@@ -10,52 +10,53 @@
 
 <link rel="stylesheet" href="style.css">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 </head>
 
 <body>
 
-<video autoplay muted loop playsinline id="bgVideo">
-<source src="images/background.mp4" type="video/mp4">
+<video autoplay muted loop id="bg-video">
+<source src="video.mp4" type="video/mp4">
 </video>
 
 <h1 class="title">
 
-MASIVO METAVERSE
+<span class="title-text">MASIVO METAVERSE</span>
 
-<span class="spark"></span>
-<span class="spark"></span>
-<span class="spark"></span>
-<span class="spark"></span>
-<span class="spark"></span>
-<span class="spark"></span>
-<span class="spark"></span>
+<div class="fireworks">
+
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+
+</div>
 
 </h1>
 
-<div id="gallery" class="gallery"></div>
+<div class="nft-container" id="nft-container"></div>
 
-<div id="viewer">
+<div id="nftModal" class="modal">
 
-<img id="viewerImg">
+<span class="close">&times;</span>
 
-<div class="viewerButtons">
+<img class="modal-content" id="modalImg">
 
-<button id="likeBtn">❤️ LIKE</button>
+<div class="buttons">
 
-<button id="downloadBtn">⬇ DOWNLOAD</button>
-
-<button id="shareBtn">🔗 SHARE</button>
+<button id="likeBtn">LIKE ❤️</button>
+<button id="downloadBtn">DOWNLOAD ⬇</button>
+<button id="shareBtn">SHARE 🔗</button>
 
 </div>
 
 <div class="stats">
 
-<span>👁 <span id="views">0</span></span>
-<span>❤️ <span id="likes">0</span></span>
-<span>⬇ <span id="downloads">0</span></span>
-<span>🔗 <span id="shares">0</span></span>
+<span id="views">👁 0</span>
+<span id="likes">❤️ 0</span>
+<span id="downloads">⬇ 0</span>
+<span id="shares">🔗 0</span>
 
 </div>
 
