@@ -1,220 +1,141 @@
-body{
+const supabase = window.supabase.createClient(
+"https://rnkuxwsuztewgbdmjyxt.supabase.co",
+"TU_ANON_KEY"
+)
 
-margin:0;
-font-family:Arial;
-background:black;
-color:white;
-text-align:center;
+const gallery = document.getElementById("gallery")
 
-}
+const viewer = document.getElementById("viewer")
+const viewerImg = document.getElementById("viewerImg")
 
-/* VIDEO */
+const likeBtn = document.getElementById("likeBtn")
+const downloadBtn = document.getElementById("downloadBtn")
+const shareBtn = document.getElementById("shareBtn")
 
-#bgVideo{
+const viewsSpan = document.getElementById("views")
+const likesSpan = document.getElementById("likes")
+const downloadsSpan = document.getElementById("downloads")
+const sharesSpan = document.getElementById("shares")
 
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:-1;
-opacity:0.7;
+let currentId = 0
+let currentImg = ""
 
-}
+const TOTAL_NFT = 9
 
-/* TITULO */
+function createNFT(id){
 
-.title{
+const img = `images/nft${id}.png`
 
-font-size:70px;
-margin-top:40px;
-letter-spacing:6px;
-color:#00aaff;
+const card = document.createElement("div")
+card.className = "nft"
 
-text-shadow:
+card.innerHTML = `<img src="${img}">`
 
-0 0 10px #00aaff,
-0 0 20px #0088ff,
-0 0 40px #0044ff;
+card.onclick = () => openViewer(id,img)
 
-animation:glow 3s infinite alternate;
-
-position:relative;
+gallery.appendChild(card)
 
 }
 
-@keyframes glow{
+async function openViewer(id,img){
 
-from{
+currentId = id
+currentImg = img
 
-text-shadow:
-0 0 10px #00aaff,
-0 0 20px #0088ff;
+viewer.style.display = "flex"
+viewerImg.src = img
 
-}
+let {data} = await supabase
+.from("nfts")
+.select("*")
+.eq("id",id)
+.single()
 
-to{
+if(!data) return
 
-text-shadow:
-0 0 20px #00ccff,
-0 0 40px #0088ff,
-0 0 60px #0044ff;
+let views = data.views + 1
 
-}
+await supabase
+.from("nfts")
+.update({views:views})
+.eq("id",id)
 
-}
+viewsSpan.textContent = views
+likesSpan.textContent = data.likes
+downloadsSpan.textContent = data.downloads
+sharesSpan.textContent = data.shares
 
-/* PIROTECNIA */
-
-.spark{
-
-position:absolute;
-width:6px;
-height:6px;
-background:#00ccff;
-border-radius:50%;
-animation:firework 1.5s infinite;
+location.hash = "nft"+id
 
 }
 
-.spark:nth-child(1){left:10%;top:10%}
-.spark:nth-child(2){left:25%;top:-10%}
-.spark:nth-child(3){left:40%;top:20%}
-.spark:nth-child(4){left:55%;top:-15%}
-.spark:nth-child(5){left:70%;top:15%}
-.spark:nth-child(6){left:85%;top:-10%}
-.spark:nth-child(7){left:95%;top:20%}
+viewer.onclick = e=>{
 
-@keyframes firework{
+if(e.target===viewer){
 
-0%{
-opacity:0;
-transform:scale(0);
-}
+viewer.style.display="none"
 
-50%{
-opacity:1;
-transform:scale(1.5);
-}
-
-100%{
-opacity:0;
-transform:translateY(-30px);
 }
 
 }
 
-/* GALERIA */
+/* LIKE */
 
-.gallery{
+likeBtn.onclick = async ()=>{
 
-display:grid;
-grid-template-columns:repeat(4,300px);
-gap:40px;
-justify-content:center;
-margin-top:80px;
+let count = parseInt(likesSpan.textContent)+1
 
-}
+likesSpan.textContent = count
 
-/* NFT */
-
-.nft{
-
-background:rgba(0,0,0,0.6);
-padding:15px;
-border-radius:10px;
-transition:0.3s;
+await supabase
+.from("nfts")
+.update({likes:count})
+.eq("id",currentId)
 
 }
 
-.nft:hover{
+/* DOWNLOAD */
 
-transform:scale(1.05);
+downloadBtn.onclick = async ()=>{
 
-}
+let count = parseInt(downloadsSpan.textContent)+1
 
-.nft img{
+downloadsSpan.textContent = count
 
-width:300px;
-border-radius:10px;
-cursor:pointer;
+await supabase
+.from("nfts")
+.update({downloads:count})
+.eq("id",currentId)
 
-}
-
-/* VISOR */
-
-#viewer{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.9);
-
-display:none;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+window.open(currentImg)
 
 }
 
-#viewer img{
+/* SHARE */
 
-width:420px;
-border-radius:10px;
+shareBtn.onclick = async ()=>{
 
-}
+let count = parseInt(sharesSpan.textContent)+1
 
-/* BOTONES */
+sharesSpan.textContent = count
 
-.viewerButtons{
+await supabase
+.from("nfts")
+.update({shares:count})
+.eq("id",currentId)
 
-margin-top:20px;
+const link = window.location.origin + window.location.pathname + "#nft"+currentId
 
-}
+navigator.clipboard.writeText(link)
 
-.viewerButtons button{
-
-margin:10px;
-padding:12px 24px;
-
-border:none;
-background:#ff004c;
-color:white;
-
-border-radius:8px;
-cursor:pointer;
-
-font-weight:bold;
-
-box-shadow:0 0 10px #ff004c;
-transition:0.3s;
+alert("Link del NFT copiado")
 
 }
 
-.viewerButtons button:hover{
+/* CREAR NFTS */
 
-box-shadow:
-0 0 20px #ff004c,
-0 0 40px #ff004c;
+for(let i=1;i<=TOTAL_NFT;i++){
 
-transform:scale(1.1);
-
-}
-
-/* CONTADORES */
-
-.stats{
-
-margin-top:-10px;
-font-size:20px;
-
-}
-
-.stats span{
-
-margin:15px;
+createNFT(i)
 
 }
