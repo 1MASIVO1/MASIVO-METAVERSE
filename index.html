@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
 <meta charset="UTF-8">
-<title>MASIVO METAVERSE</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MASIVO NFT</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -11,33 +13,46 @@
 
 <body>
 
+<!-- VIDEO DE FONDO -->
+
 <video autoplay muted loop playsinline id="bg-video">
 <source src="images/background.mp4" type="video/mp4">
 </video>
 
 <div class="overlay"></div>
 
-<header>
+<h1 class="title">MASIVO NFT METAVERSE</h1>
 
-<h1>MASIVO METAVERSE</h1>
+<!-- GALERIA NFT -->
 
-</header>
+<div id="nft-grid" class="nft-grid"></div>
 
-<div id="nft-grid"></div>
+<!-- VISOR NFT -->
 
 <div id="viewer" class="viewer">
+
+<div class="viewer-content">
+
 <img id="viewer-img">
 
 <div class="viewer-actions">
 
-<button id="likeBtn">❤️</button>
+<button id="likeBtn">
+❤️ <span id="likeCount">0</span>
+</button>
 
-<button id="downloadBtn">⬇ Download</button>
+<button id="downloadBtn">
+⬇️ <span id="downloadCount">0</span>
+</button>
 
-<button id="shareBtn">🔗 Share</button>
+<button id="shareBtn">
+🔗 Compartir
+</button>
 
 <div class="views">
 👁 <span id="viewCount">0</span>
+</div>
+
 </div>
 
 </div>
