@@ -9,6 +9,7 @@ const nfts = [
 "nft6.png",
 "nft7.png",
 "nft8.png"
+"nft9.png"  
 ]
 
 nfts.forEach(nft => {
