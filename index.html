@@ -1,34 +1,35 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>MASIVO NFT</title>
 
 <link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
 
 <body>
 
-<video id="bgvideo" autoplay muted loop playsinline>
+<video autoplay muted loop id="bgVideo">
 <source src="images/background.mp4" type="video/mp4">
 </video>
 
+<div class="overlay"></div>
+
+<header>
+
 <h1>MASIVO NFT COLLECTION</h1>
 
-<div id="gallery" class="gallery"></div>
+</header>
 
-<div id="viewer">
-<img id="viewer-img">
-</div>
+<section class="nft-container" id="nftContainer">
+
+</section>
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
