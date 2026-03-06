@@ -1,27 +1,50 @@
-const container = document.getElementById("nft-container")
+const nfts = document.querySelectorAll(".nft");
 
-function loadNFTs(){
+nfts.forEach((nft,index)=>{
 
-for(let i=1;i<=9;i++){
+const img = nft.querySelector("img");
+const likeBtn = nft.querySelector(".like");
+const likeCount = likeBtn.querySelector("span");
+const views = nft.querySelector(".views");
 
-const card=document.createElement("div")
-card.className="nft-card"
+let likes = 0;
+let viewCount = 0;
 
-card.innerHTML=`
+img.onclick = ()=>{
 
-<img src="images/nft${i}.png">
+nft.classList.toggle("pop");
 
-<h3>MASIVO NFT #${i}</h3>
+viewCount++;
+views.innerHTML="👁 "+viewCount;
 
-<button class="btn">LIKE</button>
-<button class="btn">DOWNLOAD</button>
+}
 
-`
+likeBtn.onclick = ()=>{
 
-container.appendChild(card)
+likes++;
 
+likeCount.innerText = likes;
+
+if(likes >= 5){
+nft.classList.add("legendary");
 }
 
 }
 
-loadNFTs()
+nft.querySelector(".download").onclick = ()=>{
+
+const a=document.createElement("a");
+a.href=img.src;
+a.download="masivo-nft.png";
+a.click();
+
+}
+
+nft.querySelector(".share").onclick = ()=>{
+
+navigator.clipboard.writeText(img.src);
+alert("Link copied");
+
+}
+
+});
