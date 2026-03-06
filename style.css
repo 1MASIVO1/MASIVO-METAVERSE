@@ -1,13 +1,14 @@
 body{
+
 margin:0;
-padding:0;
-font-family:Arial, Helvetica, sans-serif;
 background:black;
+font-family:Arial;
 color:white;
-overflow:hidden;
+
 }
 
 #bgVideo{
+
 position:fixed;
 top:0;
 left:0;
@@ -15,53 +16,54 @@ width:100%;
 height:100%;
 object-fit:cover;
 z-index:-1;
+
 }
 
-.overlay{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+.title{
+
 text-align:center;
-}
-
-.logo{
 font-size:70px;
-letter-spacing:10px;
-margin-bottom:40px;
+margin-top:40px;
+color:#00eaff;
+
 }
 
-.nft-container{
-display:flex;
-gap:20px;
-margin-bottom:40px;
+.gallery{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:40px;
+padding:50px;
+
 }
 
-.nft{
-width:200px;
+.card{
+
+text-align:center;
+
+}
+
+.card img{
+
+width:220px;
 border-radius:10px;
-transition:transform 0.3s;
+
 }
 
-.nft:hover{
-transform:scale(1.1);
-}
+.like{
 
-button{
-padding:15px 40px;
-font-size:18px;
+margin-top:10px;
+padding:10px 20px;
+background:#ff0055;
 border:none;
-background:#ff0000;
 color:white;
 cursor:pointer;
-border-radius:8px;
+
 }
 
-button:hover{
-background:#ff3333;
+.count{
+
+display:block;
+margin-top:5px;
+
 }
