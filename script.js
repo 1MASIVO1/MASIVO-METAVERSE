@@ -1,59 +1,90 @@
-const gallery = document.getElementById("gallery")
+const gallery=document.getElementById("gallery")
 
-const viewer = document.getElementById("viewer")
-const viewerImg = document.getElementById("viewerImg")
+const viewer=document.getElementById("viewer")
+const viewerImg=document.getElementById("viewerImg")
 
-const likeBtn = document.getElementById("likeBtn")
-const shareBtn = document.getElementById("shareBtn")
-const downloadBtn = document.getElementById("downloadBtn")
+const likeBtn=document.getElementById("likeBtn")
+const downloadBtn=document.getElementById("downloadBtn")
+const shareBtn=document.getElementById("shareBtn")
 
-const likeCount = document.getElementById("likeCount")
-const shareCount = document.getElementById("shareCount")
-const downloadCount = document.getElementById("downloadCount")
-const viewCount = document.getElementById("viewCount")
+const viewsEl=document.getElementById("views")
+const likesEl=document.getElementById("likes")
+const downloadsEl=document.getElementById("downloads")
+const sharesEl=document.getElementById("shares")
 
-const closeViewer = document.getElementById("closeViewer")
+const TOTAL_NFT=9
 
-let currentNFT = 0
+let currentNFT=0
 
-for(let i=1;i<=9;i++){
+function createNFT(id){
 
 let div=document.createElement("div")
 div.className="nft"
 
 let img=document.createElement("img")
-img.src=`images/nft${i}.png`
+img.src="images/nft"+id+".png"
+
+img.onclick=()=>openViewer(id)
 
 div.appendChild(img)
 
 gallery.appendChild(div)
 
-img.onclick=()=>{
+if(!localStorage.getItem("nft"+id)){
 
-currentNFT=i
+localStorage.setItem("nft"+id,JSON.stringify({
 
-viewer.classList.remove("hidden")
+views:0,
+likes:0,
+downloads:0,
+shares:0
 
-viewerImg.src=img.src
+}))
 
-let data=JSON.parse(localStorage.getItem("nft"+i)) || {likes:0,views:0,shares:0,downloads:0}
+}
+
+}
+
+for(let i=1;i<=TOTAL_NFT;i++){
+
+createNFT(i)
+
+}
+
+function openViewer(id){
+
+currentNFT=id
+
+viewer.style.display="flex"
+
+viewerImg.src="images/nft"+id+".png"
+
+let data=JSON.parse(localStorage.getItem("nft"+id))
 
 data.views++
 
-localStorage.setItem("nft"+i,JSON.stringify(data))
+localStorage.setItem("nft"+id,JSON.stringify(data))
 
 updateUI(data)
 
 }
 
-}
-
 function updateUI(data){
 
-likeCount.innerText=data.likes
-viewCount.innerText=data.views
-shareCount.innerText=data.shares
-downloadCount.innerText=data.downloads
+viewsEl.textContent=data.views
+likesEl.textContent=data.likes
+downloadsEl.textContent=data.downloads
+sharesEl.textContent=data.shares
+
+}
+
+viewer.onclick=(e)=>{
+
+if(e.target===viewer){
+
+viewer.style.display="none"
+
+}
 
 }
 
@@ -62,20 +93,6 @@ likeBtn.onclick=()=>{
 let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
 
 data.likes++
-
-localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
-
-updateUI(data)
-
-}
-
-shareBtn.onclick=()=>{
-
-let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
-
-data.shares++
-
-navigator.clipboard.writeText(viewerImg.src)
 
 localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
 
@@ -93,17 +110,43 @@ localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
 
 updateUI(data)
 
-const a=document.createElement("a")
+let link=document.createElement("a")
 
-a.href=viewerImg.src
-a.download="masivo-nft.png"
+link.href=viewerImg.src
+link.download="nft"+currentNFT+".png"
 
-a.click()
+link.click()
 
 }
 
-closeViewer.onclick=()=>{
+shareBtn.onclick=()=>{
 
-viewer.classList.add("hidden")
+let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
+
+data.shares++
+
+localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
+
+updateUI(data)
+
+const url=window.location.origin+window.location.pathname+"?nft="+currentNFT
+
+navigator.clipboard.writeText(url)
+
+alert("Link copiado para compartir")
+
+}
+
+const params=new URLSearchParams(window.location.search)
+
+const nftID=params.get("nft")
+
+if(nftID){
+
+setTimeout(()=>{
+
+openViewer(nftID)
+
+},500)
 
 }
