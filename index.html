@@ -1,17 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MASIVO NFT</title>
+
 <style>
 
 *{
-box-sizing:border-box;
 margin:0;
 padding:0;
+box-sizing:border-box;
+font-family:Arial;
 }
 
-html,body{
-width:100%;
-height:100%;
-font-family:Arial;
-color:white;
+body{
 background:black;
+color:white;
 overflow-x:hidden;
 }
 
@@ -27,6 +34,25 @@ object-fit:cover;
 z-index:-1;
 }
 
+/* EFECTO LADOS */
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(
+90deg,
+rgba(0,0,0,0.8) 0%,
+transparent 20%,
+transparent 80%,
+rgba(0,0,0,0.8) 100%
+);
+pointer-events:none;
+}
+
 /* TITULO */
 
 h1{
@@ -39,22 +65,23 @@ letter-spacing:3px;
 
 /* GALERIA */
 
-.gallery{
-position:relative;
+#gallery{
 display:flex;
+flex-wrap:wrap;
 justify-content:center;
-align-items:center;
-min-height:100vh;
+gap:30px;
+padding-top:140px;
+padding-bottom:100px;
 }
 
 /* CARD NFT */
 
 .card{
-width:280px;
-background:rgba(0,0,0,0.6);
-padding:15px;
+width:260px;
+background:rgba(0,0,0,0.65);
 border-radius:15px;
-backdrop-filter:blur(6px);
+padding:15px;
+backdrop-filter:blur(8px);
 }
 
 .card img{
@@ -62,7 +89,7 @@ width:100%;
 border-radius:10px;
 }
 
-/* BOTONES */
+/* ACCIONES */
 
 .actions{
 display:flex;
@@ -76,26 +103,147 @@ background:none;
 border:none;
 color:white;
 cursor:pointer;
+font-size:14px;
 }
+
+/* COMENTARIOS */
 
 .comments{
 margin-top:10px;
 font-size:13px;
-max-height:120px;
+max-height:100px;
 overflow-y:auto;
 }
 
-.comment-input{
+.comment-box{
 display:flex;
+margin-top:8px;
 gap:5px;
-margin-top:10px;
 }
 
-.comment-input input{
+.comment-box input{
 flex:1;
+border:none;
 padding:6px;
 border-radius:6px;
-border:none;
+}
+
+.comment-box button{
+background:#1e90ff;
+border-radius:6px;
+padding:5px 8px;
 }
 
 </style>
+
+</head>
+
+<body>
+
+<!-- VIDEO FONDO -->
+
+<video autoplay muted loop playsinline>
+<source src="images/background.mp4" type="video/mp4">
+</video>
+
+<h1>MASIVO NFT</h1>
+
+<div id="gallery"></div>
+
+<script>
+
+/* CUANTOS NFT BUSCAR */
+
+const MAX_NFT = 50
+
+const gallery = document.getElementById("gallery")
+
+for(let i=1;i<=MAX_NFT;i++){
+
+let img = new Image()
+
+img.src = "images/nft"+i+".png"
+
+img.onload = () => {
+
+let card = document.createElement("div")
+card.className="card"
+
+let likes = 0
+let views = Math.floor(Math.random()*200)
+
+card.innerHTML = `
+
+<img src="images/nft${i}.png">
+
+<div class="actions">
+
+<button onclick="like(this)">❤️ <span>0</span></button>
+
+<span>👁 ${views}</span>
+
+<button onclick="share()">🔗</button>
+
+</div>
+
+<div class="comments"></div>
+
+<div class="comment-box">
+<input placeholder="comentario">
+<button onclick="comment(this)">Enviar</button>
+</div>
+
+`
+
+gallery.appendChild(card)
+
+}
+
+}
+
+/* LIKE */
+
+function like(btn){
+
+let span = btn.querySelector("span")
+
+span.innerText = parseInt(span.innerText)+1
+
+}
+
+/* SHARE */
+
+function share(){
+
+navigator.clipboard.writeText(window.location.href)
+
+alert("Link copiado")
+
+}
+
+/* COMMENT */
+
+function comment(btn){
+
+let box = btn.parentElement
+
+let input = box.querySelector("input")
+
+let comments = box.parentElement.querySelector(".comments")
+
+if(input.value.trim()=="") return
+
+let p=document.createElement("p")
+
+p.textContent=input.value
+
+comments.appendChild(p)
+
+input.value=""
+
+}
+
+</script>
+
+</body>
+</html>
