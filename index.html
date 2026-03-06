@@ -6,7 +6,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MASIVO NFT</title>
+<title>MASIVO METAVERSE</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
@@ -46,10 +48,10 @@ width:100%;
 height:100%;
 background:linear-gradient(
 90deg,
-rgba(0,0,0,0.85) 0%,
-transparent 25%,
-transparent 75%,
-rgba(0,0,0,0.85) 100%
+rgba(0,0,0,0.9),
+transparent 20%,
+transparent 80%,
+rgba(0,0,0,0.9)
 );
 pointer-events:none;
 }
@@ -60,8 +62,7 @@ h1{
 position:absolute;
 top:40px;
 left:40px;
-font-size:42px;
-letter-spacing:3px;
+font-size:40px;
 }
 
 /* GALERIA */
@@ -75,7 +76,7 @@ padding-top:140px;
 padding-bottom:120px;
 }
 
-/* TARJETA NFT */
+/* CARD NFT */
 
 .card{
 width:260px;
@@ -84,10 +85,12 @@ border-radius:16px;
 padding:12px;
 backdrop-filter:blur(8px);
 transition:0.3s;
+cursor:pointer;
 }
 
 .card:hover{
-transform:scale(1.05);
+transform:scale(1.07);
+box-shadow:0 0 20px #00eaff;
 }
 
 .card img{
@@ -104,16 +107,25 @@ margin-top:10px;
 font-size:14px;
 }
 
-button{
-background:none;
-border:none;
-color:white;
-cursor:pointer;
-font-size:15px;
+/* MODAL NFT GRANDE */
+
+#modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
 }
 
-button:hover{
-transform:scale(1.1);
+#modal img{
+max-width:90%;
+max-height:90%;
+border-radius:15px;
 }
 
 </style>
@@ -121,8 +133,6 @@ transform:scale(1.1);
 </head>
 
 <body>
-
-<!-- VIDEO FONDO -->
 
 <video autoplay muted loop playsinline>
 <source src="images/background.mp4" type="video/mp4">
@@ -132,46 +142,51 @@ transform:scale(1.1);
 
 <div id="gallery"></div>
 
+<div id="modal" onclick="closeModal()">
+<img id="modalImg">
+</div>
+
 <script>
 
-/* CUANTOS NFT BUSCAR */
+const supabase = window.supabase.createClient(
+"https://rnkuxwsuztewgbdmjyxt.supabase.co",
+"sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
+)
 
-const MAX_NFT = 100
+const gallery=document.getElementById("gallery")
 
-const gallery = document.getElementById("gallery")
+const MAX_NFT=100
 
 for(let i=1;i<=MAX_NFT;i++){
 
-let img = new Image()
+let img=new Image()
 
-img.src = "images/nft"+i+".png"
+img.src="images/nft"+i+".png"
 
-img.onload = () => {
+img.onload=()=>{
 
-let views = Math.floor(Math.random()*300)
+let id="nft"+i
 
-let card = document.createElement("div")
+let card=document.createElement("div")
 
 card.className="card"
 
-card.innerHTML = `
+card.innerHTML=`
 
-<img src="images/nft${i}.png">
+<img src="images/nft${i}.png" onclick="openNFT('${id}',${i})">
 
 <div class="actions">
 
-<button onclick="like(this)">
-❤️ <span>0</span>
+<button onclick="likeNFT(event,'${id}')">
+❤️ <span id="like-${id}">0</span>
 </button>
 
-<span>👁 ${views}</span>
+<span>
+👁 <span id="view-${id}">0</span>
+</span>
 
 <button onclick="downloadNFT(${i})">
 ⬇️
-</button>
-
-<button onclick="share()">
-🔗
 </button>
 
 </div>
@@ -180,39 +195,92 @@ card.innerHTML = `
 
 gallery.appendChild(card)
 
+loadStats(id)
+
 }
+
+}
+
+/* CARGAR STATS */
+
+async function loadStats(id){
+
+let {data}=await supabase
+.from("nft_stats")
+.select("*")
+.eq("id",id)
+.single()
+
+if(!data)return
+
+document.getElementById("like-"+id).innerText=data.likes
+document.getElementById("view-"+id).innerText=data.views
 
 }
 
 /* LIKE */
 
-function like(btn){
+async function likeNFT(e,id){
 
-let span = btn.querySelector("span")
+e.stopPropagation()
 
-span.innerText = parseInt(span.innerText)+1
+let span=document.getElementById("like-"+id)
+
+let newLikes=parseInt(span.innerText)+1
+
+span.innerText=newLikes
+
+await supabase
+.from("nft_stats")
+.update({likes:newLikes})
+.eq("id",id)
 
 }
 
-/* SHARE */
+/* ABRIR NFT */
 
-function share(){
+async function openNFT(id,num){
 
-navigator.clipboard.writeText(window.location.href)
+let modal=document.getElementById("modal")
 
-alert("Link copiado")
+let img=document.getElementById("modalImg")
+
+img.src="images/nft"+num+".png"
+
+modal.style.display="flex"
+
+/* sumar vista */
+
+let view=document.getElementById("view-"+id)
+
+let newViews=parseInt(view.innerText)+1
+
+view.innerText=newViews
+
+await supabase
+.from("nft_stats")
+.update({views:newViews})
+.eq("id",id)
 
 }
 
-/* DESCARGAR NFT */
+/* CERRAR MODAL */
 
-function downloadNFT(id){
+function closeModal(){
 
-const link = document.createElement("a")
+document.getElementById("modal").style.display="none"
 
-link.href = "images/nft"+id+".png"
+}
 
-link.download = "MASIVO-NFT-"+id+".png"
+/* DESCARGAR */
+
+function downloadNFT(i){
+
+let link=document.createElement("a")
+
+link.href="images/nft"+i+".png"
+
+link.download="MASIVO-NFT-"+i+".png"
 
 link.click()
 
