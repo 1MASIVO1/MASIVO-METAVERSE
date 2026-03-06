@@ -1,141 +1,117 @@
-const supabase = window.supabase.createClient(
-"https://rnkuxwsuztewgbdmjyxt.supabase.co",
-"TU_ANON_KEY"
-)
+const nftImages=[
 
-const gallery = document.getElementById("gallery")
+"images/1.png",
+"images/2.png",
+"images/3.png",
+"images/4.png",
+"images/5.png",
+"images/6.png",
+"images/7.png",
+"images/8.png",
+"images/9.png"
 
-const viewer = document.getElementById("viewer")
-const viewerImg = document.getElementById("viewerImg")
+]
 
-const likeBtn = document.getElementById("likeBtn")
-const downloadBtn = document.getElementById("downloadBtn")
-const shareBtn = document.getElementById("shareBtn")
+const container=document.getElementById("nft-container")
 
-const viewsSpan = document.getElementById("views")
-const likesSpan = document.getElementById("likes")
-const downloadsSpan = document.getElementById("downloads")
-const sharesSpan = document.getElementById("shares")
+const modal=document.getElementById("nftModal")
 
-let currentId = 0
-let currentImg = ""
+const modalImg=document.getElementById("modalImg")
 
-const TOTAL_NFT = 9
+const likeBtn=document.getElementById("likeBtn")
+const downloadBtn=document.getElementById("downloadBtn")
+const shareBtn=document.getElementById("shareBtn")
 
-function createNFT(id){
+const views=document.getElementById("views")
+const likes=document.getElementById("likes")
+const downloads=document.getElementById("downloads")
+const shares=document.getElementById("shares")
 
-const img = `images/nft${id}.png`
+let currentNFT=0
 
-const card = document.createElement("div")
-card.className = "nft"
+nftImages.forEach((src,index)=>{
 
-card.innerHTML = `<img src="${img}">`
+let div=document.createElement("div")
+div.className="nft"
 
-card.onclick = () => openViewer(id,img)
+let img=document.createElement("img")
+img.src=src
 
-gallery.appendChild(card)
+div.appendChild(img)
 
-}
+div.onclick=()=>openNFT(index)
 
-async function openViewer(id,img){
+container.appendChild(div)
 
-currentId = id
-currentImg = img
+})
 
-viewer.style.display = "flex"
-viewerImg.src = img
+function openNFT(id){
 
-let {data} = await supabase
-.from("nfts")
-.select("*")
-.eq("id",id)
-.single()
+currentNFT=id
 
-if(!data) return
+modal.style.display="block"
+modalImg.src=nftImages[id]
 
-let views = data.views + 1
+let v=localStorage.getItem("views"+id)||0
+v++
+localStorage.setItem("views"+id,v)
 
-await supabase
-.from("nfts")
-.update({views:views})
-.eq("id",id)
-
-viewsSpan.textContent = views
-likesSpan.textContent = data.likes
-downloadsSpan.textContent = data.downloads
-sharesSpan.textContent = data.shares
-
-location.hash = "nft"+id
+updateStats()
 
 }
 
-viewer.onclick = e=>{
+function updateStats(){
 
-if(e.target===viewer){
-
-viewer.style.display="none"
-
-}
-
-}
-
-/* LIKE */
-
-likeBtn.onclick = async ()=>{
-
-let count = parseInt(likesSpan.textContent)+1
-
-likesSpan.textContent = count
-
-await supabase
-.from("nfts")
-.update({likes:count})
-.eq("id",currentId)
+views.innerText="👁 "+(localStorage.getItem("views"+currentNFT)||0)
+likes.innerText="❤️ "+(localStorage.getItem("likes"+currentNFT)||0)
+downloads.innerText="⬇ "+(localStorage.getItem("downloads"+currentNFT)||0)
+shares.innerText="🔗 "+(localStorage.getItem("shares"+currentNFT)||0)
 
 }
 
-/* DOWNLOAD */
+likeBtn.onclick=()=>{
 
-downloadBtn.onclick = async ()=>{
+let l=localStorage.getItem("likes"+currentNFT)||0
+l++
+localStorage.setItem("likes"+currentNFT,l)
 
-let count = parseInt(downloadsSpan.textContent)+1
-
-downloadsSpan.textContent = count
-
-await supabase
-.from("nfts")
-.update({downloads:count})
-.eq("id",currentId)
-
-window.open(currentImg)
+updateStats()
 
 }
 
-/* SHARE */
+downloadBtn.onclick=()=>{
 
-shareBtn.onclick = async ()=>{
+let d=localStorage.getItem("downloads"+currentNFT)||0
+d++
+localStorage.setItem("downloads"+currentNFT,d)
 
-let count = parseInt(sharesSpan.textContent)+1
+updateStats()
 
-sharesSpan.textContent = count
+let a=document.createElement("a")
+a.href=nftImages[currentNFT]
+a.download="MASIVO_NFT.png"
+a.click()
 
-await supabase
-.from("nfts")
-.update({shares:count})
-.eq("id",currentId)
+}
 
-const link = window.location.origin + window.location.pathname + "#nft"+currentId
+shareBtn.onclick=()=>{
+
+let s=localStorage.getItem("shares"+currentNFT)||0
+s++
+localStorage.setItem("shares"+currentNFT,s)
+
+updateStats()
+
+let link=window.location.href+"#nft"+currentNFT
 
 navigator.clipboard.writeText(link)
 
-alert("Link del NFT copiado")
+alert("Link copiado para compartir")
 
 }
 
-/* CREAR NFTS */
+document.querySelector(".close").onclick=()=>{
 
-for(let i=1;i<=TOTAL_NFT;i++){
-
-createNFT(i)
+modal.style.display="none"
 
 }
