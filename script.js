@@ -7,7 +7,7 @@ const gallery = document.getElementById("gallery")
 const viewer = document.getElementById("viewer")
 const viewerImg = document.getElementById("viewer-img")
 
-const TOTAL_NFT = 10
+const NFT_TOTAL = 50
 
 function createCard(id){
 
@@ -18,7 +18,7 @@ card.className="card"
 
 card.innerHTML = `
 
-<img src="${img}" onerror="this.parentElement.remove()">
+<img src="${img}">
 
 <div class="actions">
 
@@ -36,15 +36,19 @@ card.innerHTML = `
 
 gallery.appendChild(card)
 
-loadStats(id,card)
+const image = card.querySelector("img")
 
-card.querySelector("img").onclick = ()=>openViewer(id,img)
+image.onerror = () => card.remove()
+
+image.onclick = ()=>openViewer(id,img)
 
 card.querySelector(".like").onclick = ()=>likeNFT(id,card)
 
 card.querySelector(".download").onclick = ()=>downloadNFT(id,img,card)
 
 card.querySelector(".share").onclick = ()=>shareNFT(id,card)
+
+loadStats(id,card)
 
 }
 
@@ -139,6 +143,6 @@ location.hash="nft"+id
 
 viewer.onclick=()=>viewer.style.display="none"
 
-for(let i=1;i<=TOTAL_NFT;i++){
+for(let i=1;i<=NFT_TOTAL;i++){
 createCard(i)
 }
