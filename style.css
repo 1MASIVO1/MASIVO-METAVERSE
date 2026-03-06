@@ -1,69 +1,86 @@
 body{
 margin:0;
-font-family:Arial, Helvetica, sans-serif;
+font-family:Arial;
 background:black;
 color:white;
-overflow-x:hidden;
-}
-
-/* VIDEO */
-
-#bg-video{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:-1;
-}
-
-/* OVERLAY */
-
-.overlay{
 text-align:center;
-padding-top:50px;
 }
 
-/* GRID NFT */
+#bgVideo{
+position:fixed;
+right:0;
+bottom:0;
+min-width:100%;
+min-height:100%;
+z-index:-1;
+object-fit:cover;
+}
 
-#nft-container{
+.title{
+font-size:50px;
+margin-top:40px;
+animation:glow 3s infinite alternate;
+}
+
+@keyframes glow{
+from{color:white;text-shadow:0 0 10px red;}
+to{color:red;text-shadow:0 0 30px red;}
+}
+
+.nft-container{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:30px;
-max-width:900px;
-margin:auto;
-padding:40px;
+gap:40px;
+padding:60px;
 }
 
-/* NFT CARD */
-
-.nft-card{
-background:rgba(0,0,0,0.7);
+.nft{
+background:#111;
 padding:15px;
-border-radius:10px;
+border-radius:20px;
 transition:0.3s;
 }
 
-.nft-card:hover{
+.nft:hover{
 transform:scale(1.05);
 }
 
-/* NFT IMAGE */
-
-.nft-card img{
+.nft img{
 width:100%;
-border-radius:10px;
+border-radius:15px;
+cursor:pointer;
 }
 
-/* BUTTONS */
-
-.btn{
+.buttons{
 margin-top:10px;
-padding:8px 14px;
+}
+
+button{
+background:#ff0040;
 border:none;
-border-radius:6px;
-cursor:pointer;
-background:#ff004c;
 color:white;
+padding:8px 12px;
+margin:4px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.views{
+margin-top:5px;
+font-size:14px;
+opacity:0.8;
+}
+
+.pop{
+transform:scale(1.4);
+z-index:10;
+}
+
+.legendary{
+animation:legend 1s infinite alternate;
+}
+
+@keyframes legend{
+from{box-shadow:0 0 10px gold;}
+to{box-shadow:0 0 40px gold;}
 }
