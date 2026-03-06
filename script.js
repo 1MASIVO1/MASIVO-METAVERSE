@@ -1,13 +1,13 @@
 const supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
+"TU_ANON_KEY"
 )
 
 const gallery = document.getElementById("gallery")
 const viewer = document.getElementById("viewer")
 const viewerImg = document.getElementById("viewer-img")
 
-const NFT_TOTAL = 50
+const TOTAL_NFT = 8
 
 function createCard(id){
 
@@ -18,7 +18,7 @@ card.className="card"
 
 card.innerHTML = `
 
-<img src="${img}">
+<img src="${img}" onerror="this.parentElement.remove()">
 
 <div class="actions">
 
@@ -36,19 +36,15 @@ card.innerHTML = `
 
 gallery.appendChild(card)
 
-const image = card.querySelector("img")
+loadStats(id,card)
 
-image.onerror = () => card.remove()
-
-image.onclick = ()=>openViewer(id,img)
+card.querySelector("img").onclick = ()=>openViewer(id,img)
 
 card.querySelector(".like").onclick = ()=>likeNFT(id,card)
 
 card.querySelector(".download").onclick = ()=>downloadNFT(id,img,card)
 
 card.querySelector(".share").onclick = ()=>shareNFT(id,card)
-
-loadStats(id,card)
 
 }
 
@@ -111,7 +107,7 @@ await supabase
 .update({shares:count})
 .eq("id",id)
 
-const url = window.location.origin + window.location.pathname + "#nft"+id
+const url=window.location.origin+window.location.pathname+"#nft"+id
 
 navigator.clipboard.writeText(url)
 
@@ -130,7 +126,7 @@ let {data}=await supabase
 .eq("id",id)
 .single()
 
-let views = data ? data.views + 1 : 1
+let views=data.views+1
 
 await supabase
 .from("nfts")
@@ -143,6 +139,6 @@ location.hash="nft"+id
 
 viewer.onclick=()=>viewer.style.display="none"
 
-for(let i=1;i<=NFT_TOTAL;i++){
+for(let i=1;i<=TOTAL_NFT;i++){
 createCard(i)
 }
