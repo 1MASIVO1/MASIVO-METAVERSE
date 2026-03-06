@@ -1,22 +1,22 @@
 const supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
+"TU_ANON_KEY"
 )
 
-const gallery=document.getElementById("gallery")
-const viewer=document.getElementById("viewer")
-const viewerImg=document.getElementById("viewer-img")
+const gallery = document.getElementById("gallery")
+const viewer = document.getElementById("viewer")
+const viewerImg = document.getElementById("viewer-img")
 
-const TOTAL_NFT=20
+const TOTAL_NFT = 20
 
 function createCard(id){
 
-const img=`images/nft${id}.png`
+const img = `images/nft${id}.png`
 
-const card=document.createElement("div")
+const card = document.createElement("div")
 card.className="card"
 
-card.innerHTML=`
+card.innerHTML = `
 
 <img src="${img}" onerror="this.parentElement.remove()">
 
@@ -38,13 +38,13 @@ gallery.appendChild(card)
 
 loadStats(id,card)
 
-card.querySelector("img").onclick=()=>openViewer(id,img)
+card.querySelector("img").onclick = ()=>openViewer(id,img)
 
-card.querySelector(".like").onclick=()=>likeNFT(id,card)
+card.querySelector(".like").onclick = ()=>likeNFT(id,card)
 
-card.querySelector(".download").onclick=()=>downloadNFT(id,img,card)
+card.querySelector(".download").onclick = ()=>downloadNFT(id,img,card)
 
-card.querySelector(".share").onclick=()=>shareNFT(id,card)
+card.querySelector(".share").onclick = ()=>shareNFT(id,card)
 
 }
 
@@ -111,7 +111,7 @@ const url=window.location.origin+window.location.pathname+"#nft"+id
 
 navigator.clipboard.writeText(url)
 
-alert("Link copiado 🔥")
+alert("Link copiado")
 
 }
 
@@ -137,32 +137,8 @@ location.hash="nft"+id
 
 }
 
-viewer.onclick=()=>{
-
-viewer.style.display="none"
-
-}
+viewer.onclick=()=>viewer.style.display="none"
 
 for(let i=1;i<=TOTAL_NFT;i++){
-
 createCard(i)
-
-}
-
-window.onload=()=>{
-
-if(location.hash){
-
-let id=location.hash.replace("#nft","")
-
-setTimeout(()=>{
-
-const img=`images/nft${id}.png`
-
-openViewer(id,img)
-
-},500)
-
-}
-
 }
