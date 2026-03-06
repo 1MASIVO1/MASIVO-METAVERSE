@@ -1,48 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MASIVO METAVERSE</title>
 
 <link rel="stylesheet" href="style.css">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<video autoplay muted loop id="bgvideo">
-<source src="images/background.mp4" type="video/mp4">
+<!-- VIDEO BACKGROUND (NO SE TOCA) -->
+<video autoplay muted loop id="bg-video">
+<source src="video.mp4" type="video/mp4">
 </video>
 
-<h1 class="title">MASIVO METAVERSE</h1>
+<div class="overlay">
 
-<div id="gallery"></div>
+<h1>MASIVO METAVERSE</h1>
 
-<div id="nftModal" class="modal">
-<div class="modal-content">
+<div id="nft-container"></div>
 
-<span id="closeModal">&times;</span>
-
-<img id="modalImg">
-
-<div class="actions">
-
-<div class="stats">
-👁 <span id="views">0</span>
-❤️ <span id="likes">0</span>
-⬇️ <span id="downloads">0</span>
-🔗 <span id="shares">0</span>
-</div>
-
-<button id="likeBtn">LIKE</button>
-<button id="downloadBtn">DOWNLOAD</button>
-<button id="shareBtn">SHARE</button>
-
-</div>
-
-</div>
 </div>
 
 <script src="script.js"></script>
