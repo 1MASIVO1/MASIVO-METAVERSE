@@ -8,6 +8,8 @@ text-align:center;
 
 }
 
+/* VIDEO PERFECTAMENTE AJUSTADO */
+
 #bgVideo{
 
 position:fixed;
@@ -16,11 +18,12 @@ left:0;
 width:100%;
 height:100%;
 object-fit:cover;
-transform:scale(0.5);
 z-index:-1;
-opacity:0.6;
+opacity:0.7;
 
 }
+
+/* TITULO MASIVO */
 
 .title{
 
@@ -40,6 +43,8 @@ animation:
 shine 6s linear infinite,
 glow 2s ease-in-out infinite alternate;
 
+position:relative;
+
 }
 
 @keyframes shine{
@@ -52,21 +57,52 @@ glow 2s ease-in-out infinite alternate;
 @keyframes glow{
 
 from{
-text-shadow:0 0 10px #ff0000;
+text-shadow:
+0 0 10px #ff0000,
+0 0 20px #ff0000;
 }
 
 to{
 text-shadow:
-0 0 20px #ff0000,
-0 0 30px #ff7700;
+0 0 25px #ff2200,
+0 0 40px #ff8800,
+0 0 60px #ff0000;
 }
 
 }
+
+/* PIROTECNIA */
+
+.spark{
+
+position:absolute;
+width:6px;
+height:6px;
+background:#ffcc00;
+border-radius:50%;
+animation:sparkMove 2s infinite;
+
+}
+
+.spark:nth-child(1){left:10%;top:20%}
+.spark:nth-child(2){left:80%;top:30%}
+.spark:nth-child(3){left:50%;top:-10%}
+.spark:nth-child(4){left:30%;top:40%}
+
+@keyframes sparkMove{
+
+0%{opacity:0;transform:scale(0)}
+50%{opacity:1;transform:scale(1)}
+100%{opacity:0;transform:translateY(-30px)}
+
+}
+
+/* GALERIA */
 
 .gallery{
 
 display:grid;
-grid-template-columns:repeat(3,280px);
+grid-template-columns:repeat(3,320px);
 gap:40px;
 justify-content:center;
 margin-top:80px;
@@ -90,23 +126,13 @@ transform:scale(1.05);
 
 .nft img{
 
-width:260px;
+width:300px;
 border-radius:10px;
 cursor:pointer;
 
 }
 
-.nft button{
-
-margin-top:10px;
-padding:8px 14px;
-border:none;
-background:#ff004c;
-color:white;
-border-radius:6px;
-cursor:pointer;
-
-}
+/* VISOR */
 
 #viewer{
 
@@ -130,6 +156,8 @@ border-radius:10px;
 
 }
 
+/* BOTONES */
+
 .viewerButtons{
 
 margin-top:20px;
@@ -139,24 +167,42 @@ margin-top:20px;
 .viewerButtons button{
 
 margin:10px;
-padding:10px 20px;
+padding:12px 24px;
 border:none;
 background:#ff004c;
 color:white;
 border-radius:8px;
 cursor:pointer;
 
+font-weight:bold;
+
+box-shadow:0 0 10px #ff004c;
+
+transition:0.3s;
+
 }
+
+.viewerButtons button:hover{
+
+box-shadow:
+0 0 20px #ff004c,
+0 0 40px #ff004c;
+
+transform:scale(1.1);
+
+}
+
+/* CONTADORES SUBIDOS */
 
 .stats{
 
-margin-top:20px;
+margin-top:-40px;
 font-size:20px;
 
 }
 
 .stats span{
 
-margin:10px;
+margin:15px;
 
 }
