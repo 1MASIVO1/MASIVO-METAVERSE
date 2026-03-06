@@ -8,12 +8,15 @@ const downloadBtn = document.getElementById("downloadBtn")
 const shareBtn = document.getElementById("shareBtn")
 
 const viewCount = document.getElementById("viewCount")
+const likeCount = document.getElementById("likeCount")
+const downloadCount = document.getElementById("downloadCount")
 
 let currentNFT = ""
 let currentID = ""
 
 let views = {}
 let likes = {}
+let downloads = {}
 
 const MAX_NFTS = 200
 
@@ -57,6 +60,12 @@ views[id]++
 
 viewCount.innerText = views[id]
 
+if(!likes[id]) likes[id]=0
+if(!downloads[id]) downloads[id]=0
+
+likeCount.innerText = likes[id]
+downloadCount.innerText = downloads[id]
+
 }
 
 viewer.onclick=(e)=>{
@@ -80,6 +89,12 @@ a.download="MASIVO-NFT"
 
 a.click()
 
+if(!downloads[currentID]) downloads[currentID]=0
+
+downloads[currentID]++
+
+downloadCount.innerText = downloads[currentID]
+
 }
 
 shareBtn.onclick = () => {
@@ -98,7 +113,7 @@ if(!likes[currentID]) likes[currentID]=0
 
 likes[currentID]++
 
-likeBtn.innerText="❤️ "+likes[currentID]
+likeCount.innerText = likes[currentID]
 
 }
 
