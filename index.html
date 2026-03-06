@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -9,51 +9,35 @@
 
 <link rel="stylesheet" href="style.css">
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
 <body>
 
-<!-- VIDEO DE FONDO -->
-
-<video autoplay muted loop playsinline id="bg-video">
+<video autoplay muted loop playsinline id="bgVideo">
 <source src="images/background.mp4" type="video/mp4">
 </video>
 
-<div class="overlay"></div>
+<h1 class="title">MASIVO NFT</h1>
 
-<h1 class="title">MASIVO NFT METAVERSE</h1>
+<div id="gallery"></div>
 
-<!-- GALERIA NFT -->
+<div id="viewer">
 
-<div id="nft-grid" class="nft-grid"></div>
+<span id="closeViewer">✖</span>
 
-<!-- VISOR NFT -->
+<img id="viewerImg">
 
-<div id="viewer" class="viewer">
+<div class="actions">
 
-<div class="viewer-content">
+<button id="likeBtn">❤️ <span id="likeCount">0</span></button>
 
-<img id="viewer-img">
+<button id="downloadBtn">⬇ <span id="downloadCount">0</span></button>
 
-<div class="viewer-actions">
+<button id="shareBtn">🔗 <span id="shareCount">0</span></button>
 
-<button id="likeBtn">
-❤️ <span id="likeCount">0</span>
-</button>
-
-<button id="downloadBtn">
-⬇️ <span id="downloadCount">0</span>
-</button>
-
-<button id="shareBtn">
-🔗 Compartir
-</button>
-
-<div class="views">
-👁 <span id="viewCount">0</span>
-</div>
-
-</div>
+<span>👁 <span id="viewCount">0</span></span>
 
 </div>
 
