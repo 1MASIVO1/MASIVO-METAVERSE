@@ -7,25 +7,24 @@ const gallery = document.getElementById("gallery")
 const viewer = document.getElementById("viewer")
 const viewerImg = document.getElementById("viewer-img")
 
-const TOTAL_NFT = 50
+const TOTAL_NFT = 10
 
 function createCard(id){
 
-// intenta png primero
-let img = `images/nft${id}.png`
+const img = `images/nft${id}.png`
 
 const card = document.createElement("div")
 card.className="card"
 
 card.innerHTML = `
 
-<img src="${img}">
+<img src="${img}" onerror="this.parentElement.remove()">
 
 <div class="actions">
 
 <button class="like">👍 <span>0</span></button>
 
-<div class="views">👁 <span>0</span></div>
+<div>👁 <span class="views">0</span></div>
 
 <button class="download">⬇ <span>0</span></button>
 
@@ -37,20 +36,13 @@ card.innerHTML = `
 
 gallery.appendChild(card)
 
-const image = card.querySelector("img")
-
-// si png no existe prueba jpg
-image.onerror = ()=>{
-image.src = `images/nft${id}.jpg`
-}
-
 loadStats(id,card)
 
-image.onclick = ()=>openViewer(id,image.src)
+card.querySelector("img").onclick = ()=>openViewer(id,img)
 
 card.querySelector(".like").onclick = ()=>likeNFT(id,card)
 
-card.querySelector(".download").onclick = ()=>downloadNFT(id,image.src,card)
+card.querySelector(".download").onclick = ()=>downloadNFT(id,img,card)
 
 card.querySelector(".share").onclick = ()=>shareNFT(id,card)
 
@@ -67,7 +59,7 @@ let {data}=await supabase
 if(!data) return
 
 card.querySelector(".like span").textContent=data.likes
-card.querySelector(".views span").textContent=data.views
+card.querySelector(".views").textContent=data.views
 card.querySelector(".download span").textContent=data.downloads
 card.querySelector(".share span").textContent=data.shares
 
