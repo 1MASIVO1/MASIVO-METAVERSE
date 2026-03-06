@@ -15,7 +15,6 @@ const nftImages=[
 const container=document.getElementById("nft-container")
 
 const modal=document.getElementById("nftModal")
-
 const modalImg=document.getElementById("modalImg")
 
 const likeBtn=document.getElementById("likeBtn")
@@ -106,7 +105,7 @@ let link=window.location.href+"#nft"+currentNFT
 
 navigator.clipboard.writeText(link)
 
-alert("Link copiado para compartir")
+alert("Link copiado")
 
 }
 
@@ -115,3 +114,59 @@ document.querySelector(".close").onclick=()=>{
 modal.style.display="none"
 
 }
+
+/* FIREWORKS */
+
+const canvas=document.getElementById("fireworks")
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=200
+
+let particles=[]
+
+function createFirework(){
+
+let x=Math.random()*canvas.width
+let y=100
+
+for(let i=0;i<40;i++){
+
+particles.push({
+
+x:x,
+y:y,
+vx:(Math.random()-0.5)*4,
+vy:(Math.random()-0.5)*4,
+life:100
+
+})
+
+}
+
+}
+
+setInterval(createFirework,1500)
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+particles.forEach(p=>{
+
+p.x+=p.vx
+p.y+=p.vy
+p.life--
+
+ctx.fillStyle="#00eaff"
+ctx.fillRect(p.x,p.y,2,2)
+
+})
+
+particles=particles.filter(p=>p.life>0)
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
