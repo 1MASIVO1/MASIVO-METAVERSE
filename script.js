@@ -10,8 +10,10 @@ const shareBtn = document.getElementById("shareBtn")
 const viewCount = document.getElementById("viewCount")
 
 let currentNFT = ""
+let currentID = ""
 
 let views = {}
+let likes = {}
 
 const MAX_NFTS = 50
 
@@ -30,7 +32,7 @@ card.innerHTML = `
 <img src="images/nft${i}.png" class="nft-img">
 `
 
-card.onclick = ()=>openViewer("images/nft"+i+".png")
+card.onclick = ()=>openViewer("images/nft"+i+".png","nft"+i)
 
 grid.appendChild(card)
 
@@ -38,19 +40,22 @@ grid.appendChild(card)
 
 }
 
-function openViewer(src){
+function openViewer(src,id){
 
 viewer.style.display="flex"
 
 viewerImg.src=src
 
 currentNFT = src
+currentID = id
 
-if(!views[src]) views[src]=0
+window.location.hash = id
 
-views[src]++
+if(!views[id]) views[id]=0
 
-viewCount.innerText = views[src]
+views[id]++
+
+viewCount.innerText = views[id]
 
 }
 
@@ -59,6 +64,7 @@ viewer.onclick=(e)=>{
 if(e.target===viewer){
 
 viewer.style.display="none"
+history.pushState("", document.title, window.location.pathname)
 
 }
 
@@ -77,20 +83,38 @@ a.click()
 
 shareBtn.onclick=()=>{
 
-navigator.clipboard.writeText(currentNFT)
+const link = window.location.origin + window.location.pathname + "#" + currentID
 
-alert("Link copied")
+navigator.clipboard.writeText(link)
+
+alert("Link del NFT copiado 🔥")
 
 }
 
-let likes = {}
-
 likeBtn.onclick=()=>{
 
-if(!likes[currentNFT]) likes[currentNFT]=0
+if(!likes[currentID]) likes[currentID]=0
 
-likes[currentNFT]++
+likes[currentID]++
 
-likeBtn.innerText="❤️ "+likes[currentNFT]
+likeBtn.innerText="❤️ "+likes[currentID]
+
+}
+
+window.onload = () => {
+
+const hash = window.location.hash
+
+if(hash){
+
+const id = hash.replace("#","")
+
+const num = id.replace("nft","")
+
+const src = "images/nft"+num+".png"
+
+openViewer(src,id)
+
+}
 
 }
