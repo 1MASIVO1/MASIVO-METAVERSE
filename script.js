@@ -1,142 +1,67 @@
-const supabase = window.supabase.createClient(
-"https://rnkuxwsuztewgbdmjyxt.supabase.co",
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
-)
+const container = document.getElementById("nftContainer")
 
-const gallery = document.getElementById("gallery")
-const viewer = document.getElementById("viewer")
-const viewerImg = document.getElementById("viewer-img")
+const nfts = [
+"nft1.png",
+"nft2.png",
+"nft3.png",
+"nft4.png",
+"nft5.png",
+"nft6.png",
+"nft7.png",
+"nft8.png"
+]
 
-const TOTAL_NFT = 9
-
-function createCard(id){
-
-const imgName = `nft${id}.png`
-const img = `images/${imgName}`
+nfts.forEach(nft => {
 
 const card = document.createElement("div")
-card.className="card"
+card.className = "nft-card"
 
-card.innerHTML=`
+const img = document.createElement("img")
+img.src = "./images/" + nft
 
-<img src="${img}" onerror="this.parentElement.remove()">
+const info = document.createElement("div")
+info.className = "nft-info"
 
-<div class="actions">
+const title = document.createElement("h3")
+title.innerText = nft.replace(".png","")
 
-<button class="like">👍 <span>0</span></button>
+const buttons = document.createElement("div")
+buttons.className = "buttons"
 
-<div>👁 <span class="views">0</span></div>
+const likeBtn = document.createElement("button")
+likeBtn.innerText = "❤️ Like"
 
-<button class="download">⬇ <span>0</span></button>
+const viewBtn = document.createElement("button")
+viewBtn.innerText = "👁 View"
 
-<button class="share">🔗 <span>0</span></button>
+const downloadBtn = document.createElement("button")
+downloadBtn.innerText = "⬇ Download"
 
-</div>
+buttons.appendChild(likeBtn)
+buttons.appendChild(viewBtn)
+buttons.appendChild(downloadBtn)
 
-`
+info.appendChild(title)
+info.appendChild(buttons)
 
-gallery.appendChild(card)
+card.appendChild(img)
+card.appendChild(info)
 
-loadStats(imgName,card)
+container.appendChild(card)
 
-card.querySelector("img").onclick=()=>openViewer(imgName,img)
-
-card.querySelector(".like").onclick=()=>likeNFT(imgName,card)
-
-card.querySelector(".download").onclick=()=>downloadNFT(imgName,img,card)
-
-card.querySelector(".share").onclick=()=>shareNFT(imgName,card)
-
+viewBtn.onclick = () => {
+window.open("./images/" + nft)
 }
 
-async function loadStats(name,card){
-
-let {data}=await supabase
-.from("nfts")
-.select("*")
-.eq("image_name",name)
-.single()
-
-if(!data)return
-
-card.querySelector(".like span").textContent=data.likes
-card.querySelector(".views").textContent=data.views
-card.querySelector(".download span").textContent=data.downloads
-card.querySelector(".share span").textContent=data.shares
-
+downloadBtn.onclick = () => {
+const link = document.createElement("a")
+link.href = "./images/" + nft
+link.download = nft
+link.click()
 }
 
-async function likeNFT(name,card){
-
-let span=card.querySelector(".like span")
-let count=parseInt(span.textContent)+1
-span.textContent=count
-
-await supabase
-.from("nfts")
-.update({likes:count})
-.eq("image_name",name)
-
+likeBtn.onclick = () => {
+likeBtn.innerText = "❤️ Liked"
 }
 
-async function downloadNFT(name,img,card){
-
-let span=card.querySelector(".download span")
-let count=parseInt(span.textContent)+1
-span.textContent=count
-
-await supabase
-.from("nfts")
-.update({downloads:count})
-.eq("image_name",name)
-
-window.open(img)
-
-}
-
-async function shareNFT(name,card){
-
-let span=card.querySelector(".share span")
-let count=parseInt(span.textContent)+1
-span.textContent=count
-
-await supabase
-.from("nfts")
-.update({shares:count})
-.eq("image_name",name)
-
-const url=window.location.origin+window.location.pathname+"#"+name
-
-navigator.clipboard.writeText(url)
-
-alert("Link copiado")
-
-}
-
-async function openViewer(name,img){
-
-viewer.style.display="flex"
-viewerImg.src=img
-
-let {data}=await supabase
-.from("nfts")
-.select("views")
-.eq("image_name",name)
-.single()
-
-let views=data.views+1
-
-await supabase
-.from("nfts")
-.update({views:views})
-.eq("image_name",name)
-
-location.hash=name
-
-}
-
-viewer.onclick=()=>viewer.style.display="none"
-
-for(let i=1;i<=TOTAL_NFT;i++){
-createCard(i)
-}
+})
