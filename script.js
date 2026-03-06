@@ -7,7 +7,7 @@ const gallery = document.getElementById("gallery")
 const viewer = document.getElementById("viewer")
 const viewerImg = document.getElementById("viewer-img")
 
-const TOTAL_NFT = 8
+const TOTAL_NFT = 9
 
 function createCard(id){
 
