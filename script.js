@@ -1,6 +1,6 @@
 const supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
-"TU_ANON_KEY"
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 )
 
 const gallery=document.getElementById("gallery")
@@ -56,15 +56,7 @@ let {data}=await supabase
 .eq("id",id)
 .single()
 
-if(!data){
-
-await supabase
-.from("nfts")
-.insert([{id:id,likes:0,views:0,downloads:0,shares:0}])
-
-data={likes:0,views:0,downloads:0,shares:0}
-
-}
+if(!data) return
 
 card.querySelector(".like span").textContent=data.likes
 card.querySelector(".views").textContent=data.views
