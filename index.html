@@ -1,292 +1,42 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>MASIVO METAVERSE</title>
 
+<link rel="stylesheet" href="style.css">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
-}
-
-body{
-background:black;
-color:white;
-overflow-x:hidden;
-}
-
-/* VIDEO FONDO */
-
-video{
-position:fixed;
-top:0;
-left:0;
-width:100vw;
-height:100vh;
-object-fit:cover;
-z-index:-1;
-}
-
-/* EFECTO LADOS */
-
-body::before{
-content:"";
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:linear-gradient(
-90deg,
-rgba(0,0,0,0.9),
-transparent 20%,
-transparent 80%,
-rgba(0,0,0,0.9)
-);
-pointer-events:none;
-}
-
-/* TITULO */
-
-h1{
-position:absolute;
-top:40px;
-left:40px;
-font-size:40px;
-}
-
-/* GALERIA */
-
-#gallery{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:40px;
-padding-top:140px;
-padding-bottom:120px;
-}
-
-/* CARD NFT */
-
-.card{
-width:260px;
-background:rgba(0,0,0,0.65);
-border-radius:16px;
-padding:12px;
-backdrop-filter:blur(8px);
-transition:0.3s;
-cursor:pointer;
-}
-
-.card:hover{
-transform:scale(1.07);
-box-shadow:0 0 20px #00eaff;
-}
-
-.card img{
-width:100%;
-border-radius:10px;
-}
-
-/* ACCIONES */
-
-.actions{
-display:flex;
-justify-content:space-between;
-margin-top:10px;
-font-size:14px;
-}
-
-/* MODAL NFT GRANDE */
-
-#modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.9);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:999;
-}
-
-#modal img{
-max-width:90%;
-max-height:90%;
-border-radius:15px;
-}
-
-</style>
 
 </head>
 
 <body>
 
-<video autoplay muted loop playsinline>
-<source src="images/background.mp4" type="video/mp4">
-</video>
+<header>
 
-<h1>MASIVO NFT</h1>
+<h1>MASIVO METAVERSE</h1>
+<p>Collection NFT MASIVO</p>
 
-<div id="gallery"></div>
+</header>
 
-<div id="modal" onclick="closeModal()">
-<img id="modalImg">
-</div>
 
-<script>
+<section id="nft-grid"></section>
 
-const supabase = window.supabase.createClient(
-"https://rnkuxwsuztewgbdmjyxt.supabase.co",
-"sb_publishable_TV8SzvPyTPZauyBNkg_RxA_oW5N56NT"
-)
 
-const gallery=document.getElementById("gallery")
+<footer>
 
-const MAX_NFT=100
+<p>© 2026 MASIVO METAVERSE</p>
 
-for(let i=1;i<=MAX_NFT;i++){
+</footer>
 
-let img=new Image()
 
-img.src="images/nft"+i+".png"
-
-img.onload=()=>{
-
-let id="nft"+i
-
-let card=document.createElement("div")
-
-card.className="card"
-
-card.innerHTML=`
-
-<img src="images/nft${i}.png" onclick="openNFT('${id}',${i})">
-
-<div class="actions">
-
-<button onclick="likeNFT(event,'${id}')">
-❤️ <span id="like-${id}">0</span>
-</button>
-
-<span>
-👁 <span id="view-${id}">0</span>
-</span>
-
-<button onclick="downloadNFT(${i})">
-⬇️
-</button>
-
-</div>
-
-`
-
-gallery.appendChild(card)
-
-loadStats(id)
-
-}
-
-}
-
-/* CARGAR STATS */
-
-async function loadStats(id){
-
-let {data}=await supabase
-.from("nft_stats")
-.select("*")
-.eq("id",id)
-.single()
-
-if(!data)return
-
-document.getElementById("like-"+id).innerText=data.likes
-document.getElementById("view-"+id).innerText=data.views
-
-}
-
-/* LIKE */
-
-async function likeNFT(e,id){
-
-e.stopPropagation()
-
-let span=document.getElementById("like-"+id)
-
-let newLikes=parseInt(span.innerText)+1
-
-span.innerText=newLikes
-
-await supabase
-.from("nft_stats")
-.update({likes:newLikes})
-.eq("id",id)
-
-}
-
-/* ABRIR NFT */
-
-async function openNFT(id,num){
-
-let modal=document.getElementById("modal")
-
-let img=document.getElementById("modalImg")
-
-img.src="images/nft"+num+".png"
-
-modal.style.display="flex"
-
-/* sumar vista */
-
-let view=document.getElementById("view-"+id)
-
-let newViews=parseInt(view.innerText)+1
-
-view.innerText=newViews
-
-await supabase
-.from("nft_stats")
-.update({views:newViews})
-.eq("id",id)
-
-}
-
-/* CERRAR MODAL */
-
-function closeModal(){
-
-document.getElementById("modal").style.display="none"
-
-}
-
-/* DESCARGAR */
-
-function downloadNFT(i){
-
-let link=document.createElement("a")
-
-link.href="images/nft"+i+".png"
-
-link.download="MASIVO-NFT-"+i+".png"
-
-link.click()
-
-}
-
-</script>
+<script src="script.js"></script>
 
 </body>
+
 </html>
+```
