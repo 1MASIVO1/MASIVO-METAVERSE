@@ -1,72 +1,101 @@
 body{
 margin:0;
 background:black;
-font-family:Arial;
 color:white;
+font-family:Arial;
 overflow-x:hidden;
 }
 
 #bgVideo{
 position:fixed;
-right:0;
-bottom:0;
+top:0;
+left:0;
 min-width:100%;
 min-height:100%;
-z-index:-1;
 object-fit:cover;
+z-index:-1;
 }
 
 .title{
 text-align:center;
 font-size:70px;
 margin-top:60px;
-color:#00d9ff;
+color:#00cfff;
+
 text-shadow:
-0 0 10px #00d9ff,
-0 0 20px #00d9ff,
-0 0 40px #00d9ff,
-0 0 80px #00d9ff;
+0 0 10px #00cfff,
+0 0 20px #00cfff,
+0 0 40px #00cfff;
 }
 
 #nft-grid{
+
 display:grid;
+
 grid-template-columns:repeat(4,1fr);
+
 gap:40px;
-padding:60px;
+
+padding:80px;
+
 max-width:1600px;
+
 margin:auto;
+
 }
 
 .nft{
-background:rgba(0,0,0,0.7);
+
+background:rgba(0,0,0,0.6);
+
 border-radius:20px;
+
 padding:15px;
+
 text-align:center;
+
 }
 
 .nft img{
+
 width:100%;
+
 border-radius:15px;
+
 cursor:pointer;
+
 }
 
 .buttons{
+
 margin-top:10px;
+
 }
 
 button{
+
 background:#ff004c;
+
 border:none;
+
 padding:10px 18px;
+
 border-radius:10px;
+
 color:white;
+
 margin:5px;
+
 cursor:pointer;
+
 font-weight:bold;
+
 }
 
 .counter{
-margin-top:5px;
+
+margin-top:6px;
+
 font-size:14px;
-opacity:0.8;
+
 }
