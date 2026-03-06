@@ -1,172 +1,114 @@
-const nftImages=[
+const SUPABASE_URL="https://rnkuxwsuztewgbdmjyxt.supabase.co"
 
-"images/1.png",
-"images/2.png",
-"images/3.png",
-"images/4.png",
-"images/5.png",
-"images/6.png",
-"images/7.png",
-"images/8.png",
-"images/9.png"
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
+
+const nftNames=[
+"void-assassin",
+"dragon-armor",
+"storm-warden",
+"shadow-ronin",
+"iron-titan",
+"cyber-samurai",
+"phoenix-guardian",
+"dark-knight",
+"neon-hunter"
 ]
 
-const container=document.getElementById("nft-container")
+const grid=document.getElementById("nft-grid")
 
-const modal=document.getElementById("nftModal")
-const modalImg=document.getElementById("modalImg")
-
-const likeBtn=document.getElementById("likeBtn")
-const downloadBtn=document.getElementById("downloadBtn")
-const shareBtn=document.getElementById("shareBtn")
-
-const views=document.getElementById("views")
-const likes=document.getElementById("likes")
-const downloads=document.getElementById("downloads")
-const shares=document.getElementById("shares")
-
-let currentNFT=0
-
-nftImages.forEach((src,index)=>{
+nftNames.forEach((name,i)=>{
 
 let div=document.createElement("div")
 div.className="nft"
 
-let img=document.createElement("img")
-img.src=src
+div.innerHTML=`
 
-div.appendChild(img)
+<img src="images/${i+1}.png" onclick="viewNFT(${i})">
 
-div.onclick=()=>openNFT(index)
+<div class="buttons">
 
-container.appendChild(div)
+<button onclick="likeNFT(${i})">LIKE</button>
+<button onclick="downloadNFT(${i})">DOWNLOAD</button>
+<button onclick="shareNFT(${i})">SHARE</button>
 
-})
+</div>
 
-function openNFT(id){
+<div class="counter">
 
-currentNFT=id
+👁 <span id="views${i}">0</span>
+❤️ <span id="likes${i}">0</span>
+⬇ <span id="downloads${i}">0</span>
+🔗 <span id="shares${i}">0</span>
 
-modal.style.display="block"
-modalImg.src=nftImages[id]
+</div>
 
-let v=localStorage.getItem("views"+id)||0
-v++
-localStorage.setItem("views"+id,v)
+`
 
-updateStats()
+grid.appendChild(div)
 
-}
-
-function updateStats(){
-
-views.innerText="👁 "+(localStorage.getItem("views"+currentNFT)||0)
-likes.innerText="❤️ "+(localStorage.getItem("likes"+currentNFT)||0)
-downloads.innerText="⬇ "+(localStorage.getItem("downloads"+currentNFT)||0)
-shares.innerText="🔗 "+(localStorage.getItem("shares"+currentNFT)||0)
-
-}
-
-likeBtn.onclick=()=>{
-
-let l=localStorage.getItem("likes"+currentNFT)||0
-l++
-localStorage.setItem("likes"+currentNFT,l)
-
-updateStats()
-
-}
-
-downloadBtn.onclick=()=>{
-
-let d=localStorage.getItem("downloads"+currentNFT)||0
-d++
-localStorage.setItem("downloads"+currentNFT,d)
-
-updateStats()
-
-let a=document.createElement("a")
-a.href=nftImages[currentNFT]
-a.download="MASIVO_NFT.png"
-a.click()
-
-}
-
-shareBtn.onclick=()=>{
-
-let s=localStorage.getItem("shares"+currentNFT)||0
-s++
-localStorage.setItem("shares"+currentNFT,s)
-
-updateStats()
-
-let link=window.location.href+"#nft"+currentNFT
-
-navigator.clipboard.writeText(link)
-
-alert("Link copiado")
-
-}
-
-document.querySelector(".close").onclick=()=>{
-
-modal.style.display="none"
-
-}
-
-/* FIREWORKS */
-
-const canvas=document.getElementById("fireworks")
-const ctx=canvas.getContext("2d")
-
-canvas.width=window.innerWidth
-canvas.height=200
-
-let particles=[]
-
-function createFirework(){
-
-let x=Math.random()*canvas.width
-let y=100
-
-for(let i=0;i<40;i++){
-
-particles.push({
-
-x:x,
-y:y,
-vx:(Math.random()-0.5)*4,
-vy:(Math.random()-0.5)*4,
-life:100
+loadStats(i)
 
 })
 
-}
+async function loadStats(id){
+
+let {data}=await supabaseClient
+.from("nft_stats")
+.select("*")
+.eq("id",id)
+.single()
+
+if(!data)return
+
+document.getElementById("views"+id).innerText=data.views
+document.getElementById("likes"+id).innerText=data.likes
+document.getElementById("downloads"+id).innerText=data.downloads
+document.getElementById("shares"+id).innerText=data.shares
 
 }
 
-setInterval(createFirework,1500)
+async function updateStat(id,field){
 
-function animate(){
+let {data}=await supabaseClient
+.from("nft_stats")
+select("*")
+.eq("id",id)
+.single()
 
-ctx.clearRect(0,0,canvas.width,canvas.height)
+let value=data[field]+1
 
-particles.forEach(p=>{
+await supabaseClient
+.from("nft_stats")
+.update({[field]:value})
+.eq("id",id)
 
-p.x+=p.vx
-p.y+=p.vy
-p.life--
-
-ctx.fillStyle="#00eaff"
-ctx.fillRect(p.x,p.y,2,2)
-
-})
-
-particles=particles.filter(p=>p.life>0)
-
-requestAnimationFrame(animate)
+document.getElementById(field+id).innerText=value
 
 }
 
-animate()
+function viewNFT(id){
+updateStat(id,"views")
+}
+
+function likeNFT(id){
+updateStat(id,"likes")
+}
+
+function downloadNFT(id){
+updateStat(id,"downloads")
+window.open(`images/${id+1}.png`)
+}
+
+function shareNFT(id){
+
+updateStat(id,"shares")
+
+let url=window.location.href+"?nft="+id
+
+navigator.clipboard.writeText(url)
+
+alert("NFT link copied!")
+
+}
