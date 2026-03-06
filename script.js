@@ -1,6 +1,6 @@
 const supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
-"TU_ANON_KEY"
+"TU_ANON_KEY_AQUI"
 )
 
 const gallery = document.getElementById("gallery")
@@ -38,7 +38,7 @@ gallery.appendChild(card)
 
 loadStats(id,card)
 
-card.querySelector("img").onclick = ()=>openViewer(id,img)
+card.querySelector("img").onclick = ()=>openViewer(id,img,card)
 
 card.querySelector(".like").onclick = ()=>likeNFT(id,card)
 
@@ -50,13 +50,13 @@ card.querySelector(".share").onclick = ()=>shareNFT(id,card)
 
 async function loadStats(id,card){
 
-let {data}=await supabase
+let {data,error} = await supabase
 .from("nfts")
 .select("*")
 .eq("id",id)
 .single()
 
-if(!data) return
+if(error || !data) return
 
 card.querySelector(".like span").textContent=data.likes
 card.querySelector(".views").textContent=data.views
@@ -91,7 +91,10 @@ await supabase
 .update({downloads:count})
 .eq("id",id)
 
-window.open(img)
+const a=document.createElement("a")
+a.href=img
+a.download="nft"+id+".png"
+a.click()
 
 }
 
@@ -115,22 +118,19 @@ alert("Link copiado")
 
 }
 
-async function openViewer(id,img){
+async function openViewer(id,img,card){
 
 viewer.style.display="flex"
 viewerImg.src=img
 
-let {data}=await supabase
-.from("nfts")
-.select("views")
-.eq("id",id)
-.single()
+let viewsSpan = card.querySelector(".views")
 
-let views=data.views+1
+let count=parseInt(viewsSpan.textContent)+1
+viewsSpan.textContent=count
 
 await supabase
 .from("nfts")
-.update({views:views})
+.update({views:count})
 .eq("id",id)
 
 location.hash="nft"+id
