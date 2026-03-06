@@ -15,7 +15,7 @@ let currentID = ""
 let views = {}
 let likes = {}
 
-const MAX_NFTS = 50
+const MAX_NFTS = 200
 
 for(let i=1;i<=MAX_NFTS;i++){
 
@@ -64,6 +64,7 @@ viewer.onclick=(e)=>{
 if(e.target===viewer){
 
 viewer.style.display="none"
+
 history.pushState("", document.title, window.location.pathname)
 
 }
@@ -81,9 +82,9 @@ a.click()
 
 }
 
-shareBtn.onclick=()=>{
+shareBtn.onclick = () => {
 
-const link = window.location.origin + window.location.pathname + "#" + currentID
+const link = "https://1masivo1.github.io/MASIVO-METAVERSE/#" + currentID
 
 navigator.clipboard.writeText(link)
 
