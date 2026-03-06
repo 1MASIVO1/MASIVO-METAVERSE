@@ -1,7 +1,13 @@
-const supabase = window.supabase.createClient(
+let supabase = null
+
+try{
+supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
 )
+}catch(e){
+console.log("Supabase no conectado")
+}
 
 const gallery = document.getElementById("gallery")
 const viewer = document.getElementById("viewer")
@@ -36,8 +42,6 @@ card.innerHTML = `
 
 gallery.appendChild(card)
 
-loadStats(id,card)
-
 card.querySelector("img").onclick = ()=>openViewer(id,img)
 
 card.querySelector(".like").onclick = ()=>likeNFT(id,card)
@@ -45,6 +49,8 @@ card.querySelector(".like").onclick = ()=>likeNFT(id,card)
 card.querySelector(".download").onclick = ()=>downloadNFT(id,img,card)
 
 card.querySelector(".share").onclick = ()=>shareNFT(id,card)
+
+if(supabase) loadStats(id,card)
 
 }
 
@@ -72,6 +78,8 @@ let count=parseInt(span.textContent)+1
 
 span.textContent=count
 
+if(!supabase) return
+
 await supabase
 .from("nfts")
 .update({likes:count})
@@ -86,10 +94,14 @@ let count=parseInt(span.textContent)+1
 
 span.textContent=count
 
+if(supabase){
+
 await supabase
 .from("nfts")
 .update({downloads:count})
 .eq("id",id)
+
+}
 
 window.open(img)
 
@@ -102,10 +114,14 @@ let count=parseInt(span.textContent)+1
 
 span.textContent=count
 
+if(supabase){
+
 await supabase
 .from("nfts")
 .update({shares:count})
 .eq("id",id)
+
+}
 
 const url=window.location.origin+window.location.pathname+"#nft"+id
 
@@ -120,6 +136,10 @@ async function openViewer(id,img){
 viewer.style.display="flex"
 viewerImg.src=img
 
+location.hash="nft"+id
+
+if(!supabase) return
+
 let {data}=await supabase
 .from("nfts")
 .select("views")
@@ -132,8 +152,6 @@ await supabase
 .from("nfts")
 .update({views:views})
 .eq("id",id)
-
-location.hash="nft"+id
 
 }
 
