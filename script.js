@@ -1,50 +1,109 @@
-const nfts = document.querySelectorAll(".nft");
+const gallery = document.getElementById("gallery")
 
-nfts.forEach((nft,index)=>{
+const viewer = document.getElementById("viewer")
+const viewerImg = document.getElementById("viewerImg")
 
-const img = nft.querySelector("img");
-const likeBtn = nft.querySelector(".like");
-const likeCount = likeBtn.querySelector("span");
-const views = nft.querySelector(".views");
+const likeBtn = document.getElementById("likeBtn")
+const shareBtn = document.getElementById("shareBtn")
+const downloadBtn = document.getElementById("downloadBtn")
 
-let likes = 0;
-let viewCount = 0;
+const likeCount = document.getElementById("likeCount")
+const shareCount = document.getElementById("shareCount")
+const downloadCount = document.getElementById("downloadCount")
+const viewCount = document.getElementById("viewCount")
 
-img.onclick = ()=>{
+const closeViewer = document.getElementById("closeViewer")
 
-nft.classList.toggle("pop");
+let currentNFT = 0
 
-viewCount++;
-views.innerHTML="👁 "+viewCount;
+for(let i=1;i<=9;i++){
+
+let div=document.createElement("div")
+div.className="nft"
+
+let img=document.createElement("img")
+img.src=`images/nft${i}.png`
+
+div.appendChild(img)
+
+gallery.appendChild(div)
+
+img.onclick=()=>{
+
+currentNFT=i
+
+viewer.classList.remove("hidden")
+
+viewerImg.src=img.src
+
+let data=JSON.parse(localStorage.getItem("nft"+i)) || {likes:0,views:0,shares:0,downloads:0}
+
+data.views++
+
+localStorage.setItem("nft"+i,JSON.stringify(data))
+
+updateUI(data)
 
 }
 
-likeBtn.onclick = ()=>{
-
-likes++;
-
-likeCount.innerText = likes;
-
-if(likes >= 5){
-nft.classList.add("legendary");
 }
 
-}
+function updateUI(data){
 
-nft.querySelector(".download").onclick = ()=>{
-
-const a=document.createElement("a");
-a.href=img.src;
-a.download="masivo-nft.png";
-a.click();
+likeCount.innerText=data.likes
+viewCount.innerText=data.views
+shareCount.innerText=data.shares
+downloadCount.innerText=data.downloads
 
 }
 
-nft.querySelector(".share").onclick = ()=>{
+likeBtn.onclick=()=>{
 
-navigator.clipboard.writeText(img.src);
-alert("Link copied");
+let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
+
+data.likes++
+
+localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
+
+updateUI(data)
 
 }
 
-});
+shareBtn.onclick=()=>{
+
+let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
+
+data.shares++
+
+navigator.clipboard.writeText(viewerImg.src)
+
+localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
+
+updateUI(data)
+
+}
+
+downloadBtn.onclick=()=>{
+
+let data=JSON.parse(localStorage.getItem("nft"+currentNFT))
+
+data.downloads++
+
+localStorage.setItem("nft"+currentNFT,JSON.stringify(data))
+
+updateUI(data)
+
+const a=document.createElement("a")
+
+a.href=viewerImg.src
+a.download="masivo-nft.png"
+
+a.click()
+
+}
+
+closeViewer.onclick=()=>{
+
+viewer.classList.add("hidden")
+
+}
