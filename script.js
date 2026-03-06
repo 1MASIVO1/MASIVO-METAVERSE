@@ -1,127 +1,166 @@
 const supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
-);
+)
 
-const gallery = document.getElementById("gallery");
-const viewer = document.getElementById("viewer");
-const viewerImg = document.getElementById("viewerImg");
+const gallery = document.getElementById("gallery")
 
-const likeBtn = document.getElementById("likeBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-const shareBtn = document.getElementById("shareBtn");
+const viewer = document.getElementById("viewer")
+const viewerImg = document.getElementById("viewer-img")
 
-const likeCount = document.getElementById("likeCount");
-const downloadCount = document.getElementById("downloadCount");
-const shareCount = document.getElementById("shareCount");
-const viewCount = document.getElementById("viewCount");
+const TOTAL_NFT = 50
 
-const closeViewer = document.getElementById("closeViewer");
+function createCard(id){
 
-let currentId = null;
-let currentImage = null;
+const img = `images/nft${id}.png`
 
-const MAX_NFT = 200;
+const card = document.createElement("div")
+card.className = "card"
 
-function createNFTCard(id){
+card.innerHTML = `
 
-const img = document.createElement("img");
+<img src="${img}" onerror="this.parentElement.remove()">
 
-img.src = "images/nft"+id+".png";
+<div class="actions">
 
-img.className = "nft";
+<button class="like">👍 <span>0</span></button>
 
-img.onclick = () => openNFT(id);
+<div>👁 <span class="views">0</span></div>
 
-img.onerror = () => img.remove();
+<button class="download">⬇ <span>0</span></button>
 
-gallery.appendChild(img);
+<button class="share">🔗</button>
 
-}
+</div>
 
-for(let i=1;i<=MAX_NFT;i++){
-createNFTCard(i);
-}
+`
 
-async function openNFT(id){
+gallery.appendChild(card)
 
-currentId = id;
-currentImage = "images/nft"+id+".png";
+loadStats(id, card)
 
-viewer.style.display = "flex";
-viewerImg.src = currentImage;
+card.querySelector("img").onclick = () => openViewer(id, img)
 
-await loadStats();
-await addView();
+card.querySelector(".like").onclick = () => likeNFT(id, card)
+
+card.querySelector(".download").onclick = () => downloadNFT(id, img, card)
+
+card.querySelector(".share").onclick = () => shareNFT(id)
 
 }
 
-closeViewer.onclick = ()=>{
-viewer.style.display="none";
-}
+async function loadStats(id, card){
 
-async function loadStats(){
-
-const { data } = await supabase
+let { data } = await supabase
 .from("nfts")
 .select("*")
-.eq("id",currentId)
-.single();
+.eq("id", id)
+.single()
 
-likeCount.innerText = data.likes;
-downloadCount.innerText = data.downloads;
-shareCount.innerText = data.shares;
-viewCount.innerText = data.views;
+if(!data){
 
-}
+await supabase
+.from("nfts")
+.insert([{ id:id, likes:0, views:0, downloads:0 }])
 
-async function addView(){
-
-const key="viewed_"+currentId;
-
-if(localStorage.getItem(key)) return;
-
-localStorage.setItem(key,true);
-
-await supabase.rpc("increment_views",{row_id:currentId});
-
-viewCount.innerText = parseInt(viewCount.innerText)+1;
+data = {likes:0,views:0,downloads:0}
 
 }
 
-likeBtn.onclick = async ()=>{
-
-await supabase.rpc("increment_likes",{row_id:currentId});
-
-likeCount.innerText = parseInt(likeCount.innerText)+1;
+card.querySelector(".like span").textContent = data.likes
+card.querySelector(".views").textContent = data.views
+card.querySelector(".download span").textContent = data.downloads
 
 }
 
-downloadBtn.onclick = async ()=>{
+async function likeNFT(id, card){
 
-await supabase.rpc("increment_downloads",{row_id:currentId});
+let span = card.querySelector(".like span")
+let count = parseInt(span.textContent)+1
 
-downloadCount.innerText = parseInt(downloadCount.innerText)+1;
+span.textContent = count
 
-const a = document.createElement("a");
-
-a.href=currentImage;
-a.download="MASIVO_NFT_"+currentId+".png";
-
-a.click();
+await supabase
+.from("nfts")
+.update({likes:count})
+.eq("id",id)
 
 }
 
-shareBtn.onclick = async ()=>{
+async function downloadNFT(id, img, card){
 
-const url = window.location.origin + window.location.pathname + "#nft"+currentId;
+let span = card.querySelector(".download span")
+let count = parseInt(span.textContent)+1
 
-navigator.clipboard.writeText(url);
+span.textContent = count
 
-alert("Link copiado 🔗");
+await supabase
+.from("nfts")
+.update({downloads:count})
+.eq("id",id)
 
-await supabase.rpc("increment_shares",{row_id:currentId});
+window.open(img)
 
-shareCount.innerText = parseInt(shareCount.innerText)+1;
+}
+
+async function openViewer(id, img){
+
+viewer.style.display = "flex"
+viewerImg.src = img
+
+let { data } = await supabase
+.from("nfts")
+.select("views")
+.eq("id", id)
+.single()
+
+let views = data.views + 1
+
+await supabase
+.from("nfts")
+.update({views:views})
+.eq("id",id)
+
+location.hash = "nft"+id
+
+}
+
+viewer.onclick = () => {
+
+viewer.style.display="none"
+
+}
+
+function shareNFT(id){
+
+const url = window.location.origin + window.location.pathname + "#nft"+id
+
+navigator.clipboard.writeText(url)
+
+alert("Link copiado 🔥")
+
+}
+
+for(let i=1;i<=TOTAL_NFT;i++){
+
+createCard(i)
+
+}
+
+window.onload = () => {
+
+if(location.hash){
+
+let id = location.hash.replace("#nft","")
+
+setTimeout(()=>{
+
+const img = `images/nft${id}.png`
+
+openViewer(id,img)
+
+},500)
+
+}
 
 }
