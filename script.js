@@ -7,7 +7,7 @@ const gallery = document.getElementById("gallery")
 const viewer = document.getElementById("viewer")
 const viewerImg = document.getElementById("viewer-img")
 
-const TOTAL_NFT = 20
+const TOTAL_NFT = 50
 
 function createCard(id){
 
@@ -56,7 +56,9 @@ let {data,error}=await supabase
 .eq("id",id)
 .single()
 
-if(!data) return
+if(error || !data){
+return
+}
 
 card.querySelector(".like span").textContent=data.likes
 card.querySelector(".views").textContent=data.views
@@ -74,7 +76,7 @@ span.textContent=count
 
 await supabase
 .from("nfts")
-.update({likes:count})
+update({likes:count})
 .eq("id",id)
 
 }
@@ -126,7 +128,7 @@ let {data}=await supabase
 .eq("id",id)
 .single()
 
-let views=data.views+1
+let views = data ? data.views + 1 : 1
 
 await supabase
 .from("nfts")
