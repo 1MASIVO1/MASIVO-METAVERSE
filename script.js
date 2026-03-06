@@ -11,14 +11,15 @@ const TOTAL_NFT = 50
 
 function createCard(id){
 
-const img = `images/nft${id}.png`
+// intenta png primero
+let img = `images/nft${id}.png`
 
 const card = document.createElement("div")
 card.className="card"
 
 card.innerHTML = `
 
-<img src="${img}" onerror="this.parentElement.remove()">
+<img src="${img}">
 
 <div class="actions">
 
@@ -36,13 +37,20 @@ card.innerHTML = `
 
 gallery.appendChild(card)
 
+const image = card.querySelector("img")
+
+// si png no existe prueba jpg
+image.onerror = ()=>{
+image.src = `images/nft${id}.jpg`
+}
+
 loadStats(id,card)
 
-card.querySelector("img").onclick = ()=>openViewer(id,img)
+image.onclick = ()=>openViewer(id,image.src)
 
 card.querySelector(".like").onclick = ()=>likeNFT(id,card)
 
-card.querySelector(".download").onclick = ()=>downloadNFT(id,img,card)
+card.querySelector(".download").onclick = ()=>downloadNFT(id,image.src,card)
 
 card.querySelector(".share").onclick = ()=>shareNFT(id,card)
 
@@ -50,7 +58,7 @@ card.querySelector(".share").onclick = ()=>shareNFT(id,card)
 
 async function loadStats(id,card){
 
-let {data,error}=await supabase
+let {data}=await supabase
 .from("nfts")
 .select("*")
 .eq("id",id)
