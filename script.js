@@ -4,7 +4,7 @@ const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 
 const supabaseClient = supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
 
-const nftNames=[1,2,3,4,5,6,7,8,9]
+const nftNames=[1,2,3,4,5,6,7,8]
 
 const grid=document.getElementById("nft-grid")
 
@@ -16,7 +16,7 @@ card.className="nft"
 
 card.innerHTML=`
 
-<img src="images/${n}.png" onclick="viewNFT(${i})">
+<img src="images/${n}.png">
 
 <div class="buttons">
 
@@ -87,17 +87,18 @@ document.getElementById(field+id).innerText=value
 
 }
 
-function viewNFT(id){
-updateStat(id,"views")
-}
-
 function likeNFT(id){
+
 updateStat(id,"likes")
+
 }
 
 function downloadNFT(id){
+
 updateStat(id,"downloads")
+
 window.open(`images/${id+1}.png`)
+
 }
 
 function shareNFT(id){
