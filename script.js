@@ -24,7 +24,7 @@ card.innerHTML = `
 
 <button class="like">👍 <span>0</span></button>
 
-<div>👁 <span class="views">0</span></div>
+<div class="views">👁 <span>0</span></div>
 
 <button class="download">⬇ <span>0</span></button>
 
@@ -56,12 +56,10 @@ let {data,error}=await supabase
 .eq("id",id)
 .single()
 
-if(error || !data){
-return
-}
+if(!data) return
 
 card.querySelector(".like span").textContent=data.likes
-card.querySelector(".views").textContent=data.views
+card.querySelector(".views span").textContent=data.views
 card.querySelector(".download span").textContent=data.downloads
 card.querySelector(".share span").textContent=data.shares
 
@@ -76,7 +74,7 @@ span.textContent=count
 
 await supabase
 .from("nfts")
-update({likes:count})
+.update({likes:count})
 .eq("id",id)
 
 }
@@ -109,7 +107,7 @@ await supabase
 .update({shares:count})
 .eq("id",id)
 
-const url=window.location.origin+window.location.pathname+"#nft"+id
+const url = window.location.origin + window.location.pathname + "#nft"+id
 
 navigator.clipboard.writeText(url)
 
