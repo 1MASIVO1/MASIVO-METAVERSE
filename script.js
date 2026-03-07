@@ -10,6 +10,23 @@ const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
 
 
 /* ===================== */
+/* CREAR FINGERPRINT */
+/* ===================== */
+
+function obtenerUsuario(){
+
+let fp=navigator.userAgent+
+screen.width+
+screen.height+
+navigator.language
+
+return btoa(fp)
+
+}
+
+
+
+/* ===================== */
 /* LIKE GLOBAL + ANTISPAM */
 /* ===================== */
 
@@ -18,24 +35,28 @@ async function like(btn){
 let nft=btn.closest(".nft")
 let id=nft.getAttribute("data-id")
 
-/* VERIFICAR SI YA DIO LIKE */
+let usuario=obtenerUsuario()
 
-if(localStorage.getItem("like_"+id)){
+/* VERIFICAR EN INTERNET */
+
+let {data}=await supabaseClient
+.from("likes")
+.select("*")
+.eq("nft",id)
+.eq("usuario",usuario)
+
+if(data.length>0){
 
 alert("Ya diste like a este NFT")
 return
 
 }
 
-/* GUARDAR LIKE LOCAL */
-
-localStorage.setItem("like_"+id,"true")
-
-/* GUARDAR LIKE GLOBAL */
+/* GUARDAR LIKE */
 
 await supabaseClient
 .from("likes")
-.insert([{nft:id}])
+.insert([{nft:id,usuario:usuario}])
 
 cargarLikes()
 
