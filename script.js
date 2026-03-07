@@ -1,47 +1,21 @@
-// TODO TU CODIGO ORIGINAL COMPLETO (igual que antes)
+/* TODO TU CODIGO ORIGINAL */
 
-/* CHAT MUNDIAL */
+/* RANKING REAL */
 
-async function enviarChat(){
-
-let mensaje=document.getElementById("chatInput").value
-
-await supabase.from("chat").insert({
-msg:mensaje
-})
-
-document.getElementById("chatInput").value=""
-
-cargarChat()
-
-}
-
-async function cargarChat(){
-
-let {data}=await supabase.from("chat").select("*").order("id",{ascending:true})
-
-let box=document.getElementById("chatBox")
-
-box.innerHTML=""
-
-data.forEach(m=>{
-box.innerHTML+=`<div>${m.msg}</div>`
-})
-
-}
-
-setInterval(cargarChat,3000)
-
-/* RANKING */
-
-async function cargarRanking(){
+async function ordenarNFT(){
 
 let {data}=await supabase.from("stats").select("*")
 
-let ranking=document.getElementById("ranking")
+let likes=data.filter(x=>x.tipo==="like").length
 
-ranking.innerHTML="Total eventos: "+data.length
+let grid=document.querySelector(".grid")
+
+let items=[...document.querySelectorAll(".nft")]
+
+items.sort(()=>Math.random()-0.5 + likes)
+
+items.forEach(el=>grid.appendChild(el))
 
 }
 
-setInterval(cargarRanking,4000)
+setInterval(ordenarNFT,5000)
