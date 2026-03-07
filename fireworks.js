@@ -6,12 +6,12 @@ canvas.height=200
 
 let particles=[]
 
-function createFirework(){
+function crear(){
 
 let x=Math.random()*canvas.width
 let y=Math.random()*200
 
-for(let i=0;i<30;i++){
+for(let i=0;i<25;i++){
 
 particles.push({
 x:x,
@@ -25,7 +25,7 @@ life:60
 
 }
 
-function update(){
+function animar(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
@@ -42,10 +42,10 @@ ctx.fillRect(p.x,p.y,2,2)
 
 particles=particles.filter(p=>p.life>0)
 
-requestAnimationFrame(update)
+requestAnimationFrame(animar)
 
 }
 
-setInterval(createFirework,2000)
+setInterval(crear,2000)
 
-update()
+animar()
