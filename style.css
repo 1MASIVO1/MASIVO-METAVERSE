@@ -1,25 +1,8 @@
 body{
 margin:0;
-font-family:Arial;
 background:black;
+font-family:Arial;
 color:white;
-overflow-x:hidden;
-}
-
-/* fondo */
-
-.background{
-position:fixed;
-width:100%;
-height:100%;
-background:radial-gradient(circle at center,#020024,#000000);
-z-index:-1;
-animation:bgmove 10s infinite alternate;
-}
-
-@keyframes bgmove{
-0%{filter:hue-rotate(0deg)}
-100%{filter:hue-rotate(40deg)}
 }
 
 /* LOGO */
@@ -28,29 +11,26 @@ animation:bgmove 10s infinite alternate;
 text-align:center;
 font-size:60px;
 color:#00aaff;
-text-shadow:
-0 0 10px #00aaff,
-0 0 20px #00aaff,
-0 0 40px #00aaff,
-0 0 80px #00aaff;
 margin-top:40px;
-animation:logoGlow 4s infinite alternate;
-}
-
-@keyframes logoGlow{
-
-0%{
 text-shadow:
 0 0 10px #00aaff,
 0 0 20px #00aaff,
 0 0 40px #00aaff;
+animation:glow 4s infinite alternate;
+}
+
+@keyframes glow{
+
+0%{
+text-shadow:
+0 0 10px #00aaff,
+0 0 20px #00aaff;
 }
 
 100%{
 text-shadow:
 0 0 20px #00ffff,
-0 0 40px #00ffff,
-0 0 80px #00ffff;
+0 0 60px #00ffff;
 }
 
 }
@@ -58,36 +38,48 @@ text-shadow:
 /* GALERIA */
 
 .gallery{
+
 display:grid;
 grid-template-columns:repeat(4,1fr);
+
 gap:30px;
+
 padding:60px;
+
 }
 
 /* NFT */
 
 .card{
-position:relative;
-animation:float 6s ease-in-out infinite;
+
+animation:float 6s infinite ease-in-out;
+
 }
 
 .card img{
+
 width:100%;
-border-radius:10px;
+
+border-radius:12px;
+
 cursor:pointer;
-transition:transform .4s;
+
+transition:transform .3s;
+
 }
 
 .card img:hover{
-transform:scale(1.1);
-}
 
-/* flotacion */
+transform:scale(1.1);
+
+}
 
 @keyframes float{
 
 0%{transform:translateY(0px)}
-50%{transform:translateY(-15px)}
+
+50%{transform:translateY(-10px)}
+
 100%{transform:translateY(0px)}
 
 }
@@ -95,71 +87,61 @@ transform:scale(1.1);
 /* VISOR */
 
 #viewer{
+
 position:fixed;
+
 top:0;
+
 left:0;
+
 width:100%;
+
 height:100%;
+
 background:rgba(0,0,0,.9);
+
 display:none;
-align-items:center;
-justify-content:center;
+
 flex-direction:column;
+
+align-items:center;
+
+justify-content:center;
+
 }
 
 #viewer img{
+
 max-width:500px;
+
 border-radius:10px;
-animation:zoom .4s;
-}
-
-@keyframes zoom{
-
-from{transform:scale(.6)}
-to{transform:scale(1)}
 
 }
-
-/* botones */
 
 #viewer-actions{
+
 margin-top:20px;
+
 display:flex;
+
 gap:20px;
+
 font-size:20px;
+
 }
 
 button{
+
 background:#111;
-border:none;
+
 color:white;
+
+border:none;
+
 padding:10px 20px;
+
 cursor:pointer;
-border-radius:6px;
-}
 
-/* ranking */
+border-radius:8px;
 
-#ranking{
-text-align:center;
-margin-top:40px;
-}
-
-/* menu compartir */
-
-#shareMenu{
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-background:#111;
-padding:20px;
-border-radius:10px;
-display:none;
-gap:10px;
-flex-wrap:wrap;
-}
-
-#shareMenu button{
-margin:5px;
 }
