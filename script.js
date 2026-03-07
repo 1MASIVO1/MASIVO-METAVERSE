@@ -3,37 +3,37 @@ const supabase = window.supabase.createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 )
 
-const gallery = document.getElementById("gallery")
+const gallery=document.getElementById("gallery")
 
-const viewer = document.getElementById("viewer")
-const viewerImg = document.getElementById("viewer-img")
+const viewer=document.getElementById("viewer")
+const viewerImg=document.getElementById("viewer-img")
 
-const likeBtn = document.getElementById("likeBtn")
-const downloadBtn = document.getElementById("downloadBtn")
-const shareBtn = document.getElementById("shareBtn")
+const likeBtn=document.getElementById("likeBtn")
+const downloadBtn=document.getElementById("downloadBtn")
+const shareBtn=document.getElementById("shareBtn")
 
-const likeCount = document.getElementById("likeCount")
-const downloadCount = document.getElementById("downloadCount")
-const shareCount = document.getElementById("shareCount")
-const viewCount = document.getElementById("viewCount")
+const likeCount=document.getElementById("likeCount")
+const downloadCount=document.getElementById("downloadCount")
+const shareCount=document.getElementById("shareCount")
+const viewCount=document.getElementById("viewCount")
 
-let currentId = null
+let currentId=0
 
-const TOTAL_NFT = 9
+const TOTAL_NFT=9
 
-function createNFT(id){
+function createCard(id){
 
-const img = `images/nft${id}.png`
+const img=`images/nft${id}.png`
 
-const card = document.createElement("div")
+const card=document.createElement("div")
 
-card.className = "card"
+card.className="card"
 
-card.innerHTML = `<img src="${img}">`
+card.innerHTML=`<img src="${img}">`
 
 gallery.appendChild(card)
 
-card.onclick = () => openViewer(id,img)
+card.onclick=()=>openViewer(id,img)
 
 }
 
@@ -51,7 +51,7 @@ let {data}=await supabase
 .eq("id",id)
 .single()
 
-if(!data) return
+if(!data)return
 
 let views=data.views+1
 
@@ -106,7 +106,7 @@ await supabase
 .update({shares:count})
 .eq("id",currentId)
 
-const url = window.location.origin + window.location.pathname + "#nft"+currentId
+const url=window.location.origin+window.location.pathname+"#nft"+currentId
 
 navigator.clipboard.writeText(url)
 
@@ -118,6 +118,6 @@ viewer.onclick=()=>viewer.style.display="none"
 
 for(let i=1;i<=TOTAL_NFT;i++){
 
-createNFT(i)
+createCard(i)
 
 }
