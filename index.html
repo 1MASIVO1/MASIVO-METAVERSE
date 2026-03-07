@@ -1,53 +1,192 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html> 
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>MASIVO NFT</title>
+<title>MASIVO METAVERSE</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
 <body>
 
-<video id="videoFondo" autoplay muted loop>
-<source src="fondo.mp4" type="video/mp4">
+<canvas id="fireworks"></canvas>
+
+<video autoplay muted loop id="videoFondo">
+<source src="video.mp4" type="video/mp4">
 </video>
 
 <div class="overlay"></div>
 
-<canvas id="fireworks"></canvas>
-
-<h1 class="titulo">MASIVO NFT METAVERSE</h1>
+<h1 id="tituloLogo" class="titulo">MASIVO METAVERSE</h1>
 
 <div class="grid">
 
-<div class="nft">
-<img src="nft1.png" onclick="verNFT(this)">
-
+<!-- NFT 1 -->
+<div class="nft" data-id="1">
+<img src="images/nft1.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
 <div class="stats">
 <span class="likes">❤️ 0</span>
 <span class="views">👁 0</span>
 <span class="downloads">⬇ 0</span>
 <span class="shares">🔗 0</span>
 </div>
-
-<div class="logros">🏆 <span class="logroNum">0</span></div>
-
 <div class="botones">
-<button onclick="like(this)">Like</button>
-<button onclick="share(this)">Compartir</button>
-<button onclick="download(this)">Descargar</button>
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
+</div>
+
+<!-- NFT 2 -->
+<div class="nft" data-id="2">
+<img src="images/nft2.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+<div class="botones">
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
+</div>
+
+<!-- NFT 3 -->
+<div class="nft" data-id="3">
+<img src="images/nft3.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+<div class="botones">
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
+</div>
+
+<!-- NFT 4 -->
+<div class="nft" data-id="4">
+<img src="images/nft4.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+<div class="botones">
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
+</div>
+
+<!-- NFT 5 -->
+<div class="nft" data-id="5">
+<img src="images/nft5.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+<div class="botones">
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
+</div>
+
+<!-- NFT 6 -->
+<div class="nft" data-id="6">
+<img src="images/nft6.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+<div class="botones">
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
+</div>
+
+<!-- NFT 7 -->
+<div class="nft" data-id="7">
+<img src="images/nft7.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+<div class="botones">
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
+</div>
+
+<!-- NFT 8 -->
+<div class="nft" data-id="8">
+<img src="images/nft8.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+<div class="botones">
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
+</div>
+
+<!-- NFT 9 -->
+<div class="nft" data-id="9">
+<img src="images/nft9.png" onclick="abrirNFT(this)">
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+<div class="botones">
+<button onclick="like(this)">❤️</button>
+<button onclick="vista()">👁</button>
+<button onclick="descargar()">⬇</button>
+<button onclick="share()">🔗</button>
+</div>
 </div>
 
 </div>
 
-</div>
-
-<div class="modal" id="modal">
-<img id="imgModal">
-</div>
-
-<script src="script.js"></script>
 <script src="fireworks.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
