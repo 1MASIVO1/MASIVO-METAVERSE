@@ -1,83 +1,85 @@
 body{
-margin:0;
+
+background:black;
+color:white;
 font-family:Arial;
-background:black;
-color:white;
-overflow-x:hidden;
+text-align:center;
+
 }
 
-#videoFondo{
+/* FONDO ANIMADO */
+
+body::before{
+
+content:"";
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-object-fit:cover;
-z-index:-2;
-}
-
-.overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.6);
+background:radial-gradient(circle,#001a33,#000);
+animation:space 8s infinite alternate;
 z-index:-1;
+
 }
 
-.titulo{
-text-align:center;
-font-size:60px;
-margin-top:40px;
-color:#00ffff;
+@keyframes space{
+
+0%{filter:brightness(1)}
+100%{filter:brightness(1.3)}
+
 }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:30px;
-padding:40px;
-max-width:1200px;
-margin:auto;
-}
+.gallery{
 
-.nft{
-background:#111;
-padding:10px;
-border-radius:12px;
-text-align:center;
-animation:flotar 6s infinite ease-in-out;
-}
-
-.nft img{
-width:100%;
-border-radius:10px;
-cursor:pointer;
-}
-
-.botones{
 display:flex;
-justify-content:space-around;
-margin-top:10px;
+justify-content:center;
+gap:40px;
+margin-top:40px;
+
 }
 
-button{
-background:black;
-border:1px solid white;
-color:white;
-padding:6px 10px;
-cursor:pointer;
-border-radius:6px;
+.nft-card{
+
+background:#111;
+padding:15px;
+border-radius:15px;
+width:240px;
+animation:float 6s infinite ease-in-out;
+
 }
 
-@keyframes flotar{
+@keyframes float{
+
 0%{transform:translateY(0)}
 50%{transform:translateY(-10px)}
 100%{transform:translateY(0)}
+
 }
 
-.modal{
+.nft{
+
+width:200px;
+cursor:pointer;
+border-radius:10px;
+
+}
+
+.stats{
+
+margin-top:10px;
+
+}
+
+.buttons button{
+
+margin:5px;
+cursor:pointer;
+
+}
+
+#zoomViewer{
+
 position:fixed;
 top:0;
 left:0;
@@ -87,15 +89,22 @@ background:rgba(0,0,0,0.9);
 display:none;
 justify-content:center;
 align-items:center;
+
 }
 
-.modal img{
-max-width:80%;
-border-radius:20px;
-animation:zoom 0.5s;
+#zoomViewer img{
+
+width:500px;
+
 }
 
-@keyframes zoom{
-from{transform:scale(0.5)}
-to{transform:scale(1)}
+#chatBox{
+
+width:400px;
+height:200px;
+overflow:auto;
+border:1px solid white;
+margin:20px auto;
+padding:10px;
+
 }
