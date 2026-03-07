@@ -25,6 +25,7 @@ const id = obtenerIdDesdeImagen(img);
 nftActual = id;
 
 sumarVista(id);
+actualizarStats(id);
 ```
 
 }
@@ -72,6 +73,8 @@ await supabase
     .from("nfts")
     .update({likes:data.likes + 1})
     .eq("id",id);
+
+actualizarStats(id);
 ```
 
 }
@@ -93,6 +96,8 @@ await supabase
     .from("nfts")
     .update({descargas:data.descargas + 1})
     .eq("id",nftActual);
+
+actualizarStats(nftActual);
 ```
 
 }
@@ -114,6 +119,8 @@ await supabase
     .from("nfts")
     .update({shares:data.shares + 1})
     .eq("id",nftActual);
+
+actualizarStats(nftActual);
 ```
 
 }
@@ -147,13 +154,52 @@ if(red==="whatsapp")
 
 }
 
+async function actualizarStats(id){
+
+```
+const { data } = await supabase
+    .from("nfts")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+if(!data) return;
+
+const stats = document.getElementById("stats");
+
+if(stats){
+    stats.innerHTML =
+    "❤️ Likes: "+data.likes+
+    " | 👁 Views: "+data.vistas+
+    " | ⬇ Downloads: "+data.descargas+
+    " | 🔗 Shares: "+data.shares;
+}
+```
+
+}
+
+function convertirEmojis(texto){
+
+```
+return texto
+.replace(":)", "😊")
+.replace(":D", "😄")
+.replace("<3", "❤️")
+.replace(":fire:", "🔥")
+.replace(":rocket:", "🚀");
+```
+
+}
+
 async function enviarMensaje(){
 
 ```
 const input = document.getElementById("mensajeInput");
-const texto = input.value.trim();
+let texto = input.value.trim();
 
 if(texto === "") return;
+
+texto = convertirEmojis(texto);
 
 await supabase
     .from("chat")
@@ -184,7 +230,7 @@ if(!data) return;
 data.forEach(m => {
 
     const div = document.createElement("div");
-    div.textContent = m.mensaje;
+    div.innerHTML = m.mensaje;
 
     contenedor.appendChild(div);
 });
