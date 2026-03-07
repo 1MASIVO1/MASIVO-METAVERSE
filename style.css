@@ -6,7 +6,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* VIDEO FONDO */
+/* VIDEO FONDO (NO TOCAR) */
 
 #videoFondo{
 position:fixed;
@@ -18,7 +18,7 @@ object-fit:cover;
 z-index:-2;
 }
 
-/* CAPA OSCURA SOBRE VIDEO */
+/* CAPA OSCURA */
 
 .overlay{
 position:fixed;
@@ -36,76 +36,91 @@ z-index:-1;
 text-align:center;
 font-size:60px;
 margin-top:40px;
-animation: brillo 4s infinite alternate;
+color:#00ffff;
 }
 
-@keyframes brillo{
-0%{text-shadow:0 0 10px #00ffff}
-100%{text-shadow:0 0 40px #00ffff}
-}
-
-/* GRID NFT */
+/* CONTENEDOR NFT */
 
 .grid{
 
 display:grid;
 
-/* 4 NFTs POR FILA */
+/* 4 NFT POR FILA */
 
-grid-template-columns:repeat(4,1fr);
+grid-template-columns:repeat(4, 250px);
 
-gap:30px;
+justify-content:center;
+
+gap:40px;
 
 padding:40px;
-
-max-width:1400px;
-
-margin:auto;
 
 }
 
 /* TARJETA NFT */
 
 .nft{
+
 background:#111;
-border-radius:12px;
-padding:12px;
+
+padding:10px;
+
+border-radius:10px;
+
 text-align:center;
+
 transition:0.3s;
+
 }
 
 .nft:hover{
+
 transform:scale(1.05);
+
 }
 
-/* IMAGEN NFT */
+/* IMAGEN */
 
 .nft img{
-width:100%;
-border-radius:10px;
+
+width:250px;
+
+border-radius:8px;
+
 }
 
 /* BOTONES */
 
 .botones{
+
 display:flex;
-justify-content:space-between;
+
+justify-content:space-around;
+
 margin-top:10px;
+
 }
 
-/* BOTONES INDIVIDUALES */
-
 button{
+
 background:black;
+
 border:1px solid white;
+
 color:white;
+
 padding:6px 10px;
+
 cursor:pointer;
+
 border-radius:5px;
-transition:0.2s;
+
 }
 
 button:hover{
+
 background:white;
+
 color:black;
+
 }
