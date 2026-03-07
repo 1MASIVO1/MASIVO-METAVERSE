@@ -88,6 +88,21 @@ cursor:pointer;
 border-radius:6px;
 }
 
+#ranking{
+max-width:400px;
+margin:auto;
+padding:20px;
+}
+
+#chatBox{
+max-width:400px;
+height:200px;
+overflow:auto;
+border:1px solid white;
+margin:auto;
+padding:10px;
+}
+
 @keyframes flotar{
 0%{transform:translateY(0)}
 50%{transform:translateY(-10px)}
