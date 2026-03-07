@@ -1,31 +1,58 @@
-console.log("MASIVO METAVERSE loaded");
+function abrirNFT(img){
 
-const nfts = document.querySelectorAll(".nft");
-const zoomViewer = document.getElementById("zoomViewer");
-const zoomImg = document.getElementById("zoomImg");
-const nftCount = document.getElementById("nftCount");
+document.getElementById("modal").style.display="flex"
+document.getElementById("nftGrande").src=img.src
 
-/* CONTADOR */
+}
 
-nftCount.textContent = nfts.length;
+function cerrarNFT(){
 
-/* ZOOM NFT */
+document.getElementById("modal").style.display="none"
 
-nfts.forEach(nft =>{
+}
 
-nft.addEventListener("click",()=>{
+function like(btn){
 
-zoomViewer.style.display="flex";
-zoomImg.src=nft.src;
+let count=localStorage.getItem("likes") || 0
+count++
+localStorage.setItem("likes",count)
 
-});
+}
 
-});
+function vista(){
 
-/* CERRAR ZOOM */
+let count=localStorage.getItem("vistas") || 0
+count++
+localStorage.setItem("vistas",count)
 
-zoomViewer.addEventListener("click",()=>{
+}
 
-zoomViewer.style.display="none";
+function descargar(){
 
-});
+let count=localStorage.getItem("descargas") || 0
+count++
+localStorage.setItem("descargas",count)
+
+}
+
+function share(){
+
+let count=localStorage.getItem("shares") || 0
+count++
+localStorage.setItem("shares",count)
+
+}
+
+function ranking(){
+
+let grid=document.querySelector(".grid")
+
+let items=[...document.querySelectorAll(".nft")]
+
+items.sort(()=>Math.random()-0.5)
+
+items.forEach(el=>grid.appendChild(el))
+
+}
+
+setInterval(ranking,5000)
