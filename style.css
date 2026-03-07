@@ -131,3 +131,16 @@ animation:zoom 0.5s;
 from{transform:scale(0.5)}
 to{transform:scale(1)}
 }
+
+/* NUEVO: SISTEMA DE LOGROS */
+
+.logros{
+margin-top:6px;
+font-size:14px;
+color:#ffd700;
+}
+
+.aura{
+box-shadow:0 0 20px #00ffff,0 0 40px #00ffff,0 0 60px #00ffff;
+transition:0.4s;
+}
