@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -9,56 +8,29 @@
 
 <link rel="stylesheet" href="style.css">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 </head>
 
 <body>
 
-<h1 class="titulo">MASIVO METAVERSE</h1>
+<h1 class="title">MASIVO METAVERSE</h1>
 
-<div class="galeria">
-
-<div class="nft">
-<img src="nft1.png">
-<div class="botones">
-<button>❤️</button>
-<button>👁</button>
-<button>⬇</button>
-<button>🔗</button>
-</div>
+<div class="nft-counter">
+NFT Collection: <span id="nftCount">0</span>
 </div>
 
-<div class="nft">
-<img src="nft2.png">
-<div class="botones">
-<button>❤️</button>
-<button>👁</button>
-<button>⬇</button>
-<button>🔗</button>
-</div>
+<div class="gallery">
+
+<img src="nft1.png" class="nft">
+<img src="nft2.png" class="nft">
+<img src="nft3.png" class="nft">
+<img src="nft4.png" class="nft">
+<img src="nft5.png" class="nft">
+<img src="nft6.png" class="nft">
+
 </div>
 
-<div class="nft">
-<img src="nft3.png">
-<div class="botones">
-<button>❤️</button>
-<button>👁</button>
-<button>⬇</button>
-<button>🔗</button>
-</div>
-</div>
-
-<div class="nft">
-<img src="nft4.png">
-<div class="botones">
-<button>❤️</button>
-<button>👁</button>
-<button>⬇</button>
-<button>🔗</button>
-</div>
-</div>
-
+<div id="zoomViewer">
+<img id="zoomImg">
 </div>
 
 <script src="script.js"></script>
