@@ -1,35 +1,28 @@
-const canvas = document.createElement("canvas")
-document.body.appendChild(canvas)
+const canvas = document.getElementById("logoFireworks")
+const ctx = canvas.getContext("2d")
 
-canvas.style.position="fixed"
-canvas.style.top="0"
-canvas.style.left="0"
-canvas.style.width="100%"
-canvas.style.height="100%"
-canvas.style.pointerEvents="none"
-canvas.style.zIndex="0"
+canvas.width = window.innerWidth
+canvas.height = 150
 
-const ctx=canvas.getContext("2d")
+let particles=[]
 
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
-
-let fireworks=[]
-
-function crearFuego(){
+function firework(){
 
 let x=Math.random()*canvas.width
-let y=Math.random()*canvas.height/2
+let y=Math.random()*120
 
-for(let i=0;i<40;i++){
+let colors=["#ff0040","#00ffff","#ffcc00","#00ff6a","#ff00ff"]
 
-fireworks.push({
+for(let i=0;i<30;i++){
+
+particles.push({
 
 x:x,
 y:y,
 dx:(Math.random()-0.5)*6,
 dy:(Math.random()-0.5)*6,
-life:100
+life:80,
+color:colors[Math.floor(Math.random()*colors.length)]
 
 })
 
@@ -37,11 +30,11 @@ life:100
 
 }
 
-function animar(){
+function animate(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-fireworks.forEach((p,i)=>{
+particles.forEach((p,i)=>{
 
 p.x+=p.dx
 p.y+=p.dy
@@ -49,17 +42,19 @@ p.life--
 
 ctx.beginPath()
 ctx.arc(p.x,p.y,2,0,Math.PI*2)
-ctx.fillStyle="cyan"
+ctx.fillStyle=p.color
 ctx.fill()
 
-if(p.life<=0)fireworks.splice(i,1)
+if(p.life<=0){
+particles.splice(i,1)
+}
 
 })
 
-requestAnimationFrame(animar)
+requestAnimationFrame(animate)
 
 }
 
-setInterval(crearFuego,1200)
+setInterval(firework,1500)
 
-animar()
+animate()
