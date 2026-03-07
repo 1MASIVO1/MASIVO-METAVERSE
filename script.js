@@ -1,7 +1,17 @@
-const supabase = window.supabase.createClient(
+let supabase=null
+
+try{
+
+supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 )
+
+}catch(e){
+
+console.log("Supabase no conectado")
+
+}
 
 const gallery=document.getElementById("gallery")
 
@@ -45,6 +55,8 @@ viewer.style.display="flex"
 
 viewerImg.src=img
 
+if(!supabase) return
+
 let {data}=await supabase
 .from("nfts")
 .select("*")
@@ -69,6 +81,8 @@ viewCount.textContent=views
 
 likeBtn.onclick=async()=>{
 
+if(!supabase)return
+
 let count=parseInt(likeCount.textContent)+1
 
 likeCount.textContent=count
@@ -81,6 +95,8 @@ await supabase
 }
 
 downloadBtn.onclick=async()=>{
+
+if(!supabase)return
 
 let count=parseInt(downloadCount.textContent)+1
 
@@ -96,6 +112,8 @@ window.open(viewerImg.src)
 }
 
 shareBtn.onclick=async()=>{
+
+if(!supabase)return
 
 let count=parseInt(shareCount.textContent)+1
 
