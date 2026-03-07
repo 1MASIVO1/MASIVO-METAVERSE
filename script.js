@@ -1,10 +1,85 @@
-/* TODO TU CODIGO ORIGINAL */
+const supabaseClient = supabase.createClient(
+"https://rnkuxwsuztewgbdmjyxt.supabase.co",
+"public-anon-key"
+)
 
-/* RANKING REAL */
+/* LIKE */
+
+async function like(btn){
+
+let nft=btn.closest(".nft")
+let span=nft.querySelector(".likes")
+
+let valor=parseInt(span.innerText.replace(/\D/g,''))+1
+
+span.innerText="❤️ "+valor
+
+await supabaseClient.from("stats").insert({
+nft_id:nft.dataset.id,
+tipo:"like"
+})
+
+}
+
+/* VISTA */
+
+async function vista(btn){
+
+let nft=btn.closest(".nft")
+let span=nft.querySelector(".views")
+
+let valor=parseInt(span.innerText.replace(/\D/g,''))+1
+
+span.innerText="👁 "+valor
+
+await supabaseClient.from("stats").insert({
+nft_id:nft.dataset.id,
+tipo:"view"
+})
+
+}
+
+/* DESCARGAR */
+
+async function descargar(btn){
+
+let nft=btn.closest(".nft")
+let span=nft.querySelector(".downloads")
+
+let valor=parseInt(span.innerText.replace(/\D/g,''))+1
+
+span.innerText="⬇ "+valor
+
+await supabaseClient.from("stats").insert({
+nft_id:nft.dataset.id,
+tipo:"download"
+})
+
+}
+
+/* SHARE */
+
+async function share(btn){
+
+let nft=btn.closest(".nft")
+let span=nft.querySelector(".shares")
+
+let valor=parseInt(span.innerText.replace(/\D/g,''))+1
+
+span.innerText="🔗 "+valor
+
+await supabaseClient.from("stats").insert({
+nft_id:nft.dataset.id,
+tipo:"share"
+})
+
+}
+
+/* RANKING */
 
 async function ordenarNFT(){
 
-let {data}=await supabase.from("stats").select("*")
+let {data}=await supabaseClient.from("stats").select("*")
 
 let likes=data.filter(x=>x.tipo==="like").length
 
@@ -19,31 +94,3 @@ items.forEach(el=>grid.appendChild(el))
 }
 
 setInterval(ordenarNFT,5000)
-
-
-/* SISTEMA DE LOGROS */
-
-function actualizarLogros(){
-
-document.querySelectorAll(".nft").forEach(nft=>{
-
-let likes=parseInt(nft.querySelector(".likes").innerText.replace(/\D/g,""))
-let views=parseInt(nft.querySelector(".views").innerText.replace(/\D/g,""))
-let downloads=parseInt(nft.querySelector(".downloads").innerText.replace(/\D/g,""))
-let shares=parseInt(nft.querySelector(".shares").innerText.replace(/\D/g,""))
-
-let logros=Math.floor(likes/100)+Math.floor(views/100)+Math.floor(downloads/100)+Math.floor(shares/100)
-
-nft.querySelector(".estrella").innerText="⭐ "+logros
-
-if(logros>0){
-
-nft.classList.add("aura")
-
-}
-
-})
-
-}
-
-setInterval(actualizarLogros,2000)
