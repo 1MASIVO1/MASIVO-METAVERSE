@@ -55,3 +55,91 @@ nft.classList.add("aura")
 }
 
 setInterval(actualizarLogros,2000)
+
+
+
+/* ======================= */
+/* BOTONES FUNCIONALES */
+/* ======================= */
+
+function like(btn){
+
+let nft=btn.closest(".nft")
+
+let el=nft.querySelector(".likes")
+
+let num=parseInt(el.innerText.replace(/\D/g,''))
+
+num++
+
+el.innerText="❤️ "+num
+
+}
+
+function share(btn){
+
+let nft=btn.closest(".nft")
+
+let el=nft.querySelector(".shares")
+
+let num=parseInt(el.innerText.replace(/\D/g,''))
+
+num++
+
+el.innerText="🔗 "+num
+
+alert("NFT compartido")
+
+}
+
+function download(btn){
+
+let nft=btn.closest(".nft")
+
+let el=nft.querySelector(".downloads")
+
+let num=parseInt(el.innerText.replace(/\D/g,''))
+
+num++
+
+el.innerText="⬇ "+num
+
+let img=nft.querySelector("img").src
+
+let a=document.createElement("a")
+
+a.href=img
+
+a.download="masivo-nft.png"
+
+a.click()
+
+}
+
+function verNFT(img){
+
+let modal=document.getElementById("modal")
+
+let modalImg=document.getElementById("imgModal")
+
+modal.style.display="flex"
+
+modalImg.src=img.src
+
+let nft=img.closest(".nft")
+
+let el=nft.querySelector(".views")
+
+let num=parseInt(el.innerText.replace(/\D/g,''))
+
+num++
+
+el.innerText="👁 "+num
+
+}
+
+document.getElementById("modal").onclick=function(){
+
+this.style.display="none"
+
+}
