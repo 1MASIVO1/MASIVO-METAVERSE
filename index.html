@@ -1,26 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MASIVO METAVERSE</title>
 
 <link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
 
 <body>
 
 <!-- VIDEO FONDO -->
+
 <video autoplay muted loop playsinline id="videoFondo">
-<source src="imagenes/video.mp4" type="video/mp4">
+<source src="images/background.mp4" type="video/mp4">
 </video>
 
 <div class="overlay"></div>
 
 <h1 class="titulo">MASIVO METAVERSE</h1>
 
-<div id="nftContainer" class="grid"></div>
+<div id="ranking"></div>
+
+<div id="gallery" class="gallery"></div>
+
+<!-- VISOR NFT -->
+
+<div id="viewer">
+
+<img id="viewer-img">
+
+</div>
 
 <script src="script.js"></script>
 
