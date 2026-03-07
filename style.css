@@ -8,60 +8,27 @@ font-family:Arial;
 .logo{
 text-align:center;
 font-size:60px;
-margin-top:40px;
+margin:40px;
 color:#00aaff;
-
-text-shadow:
-0 0 10px #00aaff,
-0 0 20px #00aaff,
-0 0 40px #00aaff;
-
-animation:glow 3s infinite alternate;
 }
 
-@keyframes glow{
+#gallery{
 
-0%{
-text-shadow:
-0 0 10px #00aaff,
-0 0 20px #00aaff;
-}
-
-100%{
-text-shadow:
-0 0 20px #00ffff,
-0 0 60px #00ffff;
-}
-
-}
-
-.gallery{
 display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:25px;
-padding:50px;
-}
 
-.card{
-animation:float 6s infinite ease-in-out;
+grid-template-columns:repeat(4,1fr);
+
+gap:20px;
+
+padding:40px;
+
 }
 
 .card img{
+
 width:100%;
 border-radius:10px;
 cursor:pointer;
-transition:transform .3s;
-}
-
-.card img:hover{
-transform:scale(1.08);
-}
-
-@keyframes float{
-
-0%{transform:translateY(0px)}
-50%{transform:translateY(-10px)}
-100%{transform:translateY(0px)}
 
 }
 
@@ -75,40 +42,17 @@ left:0;
 width:100%;
 height:100%;
 
-background:rgba(0,0,0,.9);
+background:black;
 
 display:none;
 
 align-items:center;
 justify-content:center;
 
-flex-direction:column;
-
 }
 
 #viewer img{
 
-max-width:500px;
-border-radius:10px;
-
-}
-
-.actions{
-
-margin-top:20px;
-display:flex;
-gap:20px;
-font-size:20px;
-
-}
-
-button{
-
-background:#111;
-color:white;
-border:none;
-padding:10px 20px;
-border-radius:8px;
-cursor:pointer;
+max-width:700px;
 
 }
