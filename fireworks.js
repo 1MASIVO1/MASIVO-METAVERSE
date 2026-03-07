@@ -1,7 +1,7 @@
 const canvas = document.getElementById("fireworks")
 const ctx = canvas.getContext("2d")
 
-const titulo = document.querySelector(".titulo")
+const titulo = document.getElementById("tituloLogo")
 
 const rect = titulo.getBoundingClientRect()
 
