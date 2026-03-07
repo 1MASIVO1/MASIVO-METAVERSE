@@ -1,61 +1,43 @@
-let supabase=null
-
-try{
-
-supabase = window.supabase.createClient(
+const supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 )
 
-}catch(e){
+const gallery = document.getElementById("gallery")
 
-console.log("Supabase no conectado")
-
-}
-
-const gallery=document.getElementById("gallery")
-
-const viewer=document.getElementById("viewer")
-const viewerImg=document.getElementById("viewer-img")
-
-const likeBtn=document.getElementById("likeBtn")
-const downloadBtn=document.getElementById("downloadBtn")
-const shareBtn=document.getElementById("shareBtn")
-
-const likeCount=document.getElementById("likeCount")
-const downloadCount=document.getElementById("downloadCount")
-const shareCount=document.getElementById("shareCount")
-const viewCount=document.getElementById("viewCount")
-
-let currentId=0
-
-const TOTAL_NFT=9
+const TOTAL_NFT = 9
 
 function createCard(id){
 
-const img=`images/nft${id}.png`
+const imgPath = `images/nft${id}.png`
 
-const card=document.createElement("div")
-
+const card = document.createElement("div")
 card.className="card"
 
-card.innerHTML=`<img src="${img}">`
+const img = document.createElement("img")
+
+img.src = imgPath
+
+img.onerror = function(){
+console.log("imagen no encontrada:", imgPath)
+}
+
+img.onclick = ()=>openViewer(id,imgPath)
+
+card.appendChild(img)
 
 gallery.appendChild(card)
-
-card.onclick=()=>openViewer(id,img)
 
 }
 
 async function openViewer(id,img){
 
-currentId=id
+const viewer=document.getElementById("viewer")
+const viewerImg=document.getElementById("viewer-img")
 
 viewer.style.display="flex"
 
 viewerImg.src=img
-
-if(!supabase) return
 
 let {data}=await supabase
 .from("nfts")
@@ -63,7 +45,7 @@ let {data}=await supabase
 .eq("id",id)
 .single()
 
-if(!data)return
+if(!data) return
 
 let views=data.views+1
 
@@ -72,70 +54,8 @@ await supabase
 .update({views:views})
 .eq("id",id)
 
-likeCount.textContent=data.likes
-downloadCount.textContent=data.downloads
-shareCount.textContent=data.shares
-viewCount.textContent=views
-
 }
-
-likeBtn.onclick=async()=>{
-
-if(!supabase)return
-
-let count=parseInt(likeCount.textContent)+1
-
-likeCount.textContent=count
-
-await supabase
-.from("nfts")
-.update({likes:count})
-.eq("id",currentId)
-
-}
-
-downloadBtn.onclick=async()=>{
-
-if(!supabase)return
-
-let count=parseInt(downloadCount.textContent)+1
-
-downloadCount.textContent=count
-
-await supabase
-.from("nfts")
-.update({downloads:count})
-.eq("id",currentId)
-
-window.open(viewerImg.src)
-
-}
-
-shareBtn.onclick=async()=>{
-
-if(!supabase)return
-
-let count=parseInt(shareCount.textContent)+1
-
-shareCount.textContent=count
-
-await supabase
-.from("nfts")
-.update({shares:count})
-.eq("id",currentId)
-
-const url=window.location.origin+window.location.pathname+"#nft"+currentId
-
-navigator.clipboard.writeText(url)
-
-alert("Link copiado")
-
-}
-
-viewer.onclick=()=>viewer.style.display="none"
 
 for(let i=1;i<=TOTAL_NFT;i++){
-
 createCard(i)
-
 }
