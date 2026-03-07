@@ -81,3 +81,76 @@ fecha:new Date()
 })
 
 }
+
+/* FIREWORKS */
+
+const canvas=document.getElementById("fireworks")
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=200
+
+let particles=[]
+
+function firework(){
+
+let x=Math.random()*canvas.width
+let y=150
+
+for(let i=0;i<30;i++){
+
+particles.push({
+
+x:x,
+y:y,
+vx:(Math.random()-0.5)*6,
+vy:(Math.random()-0.5)*6,
+life:60
+
+})
+
+}
+
+}
+
+setInterval(firework,1200)
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+particles.forEach((p,i)=>{
+
+p.x+=p.vx
+p.y+=p.vy
+p.life--
+
+ctx.fillStyle="cyan"
+ctx.fillRect(p.x,p.y,3,3)
+
+if(p.life<=0) particles.splice(i,1)
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
+/* MOVIMIENTO NFT */
+
+function moverNFT(){
+
+document.querySelectorAll(".nft").forEach(nft=>{
+
+let x=(Math.random()*20)-10
+let y=(Math.random()*20)-10
+
+nft.style.transform=`translate(${x}px,${y}px)`
+
+})
+
+}
+
+setInterval(moverNFT,4000)
