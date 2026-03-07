@@ -1,88 +1,47 @@
-// TODO TU CODIGO ORIGINAL (igual)
+// TODO TU CODIGO ORIGINAL COMPLETO (igual que antes)
 
-function abrirNFT(img){
-document.getElementById("modal").style.display="flex"
-document.getElementById("nftGrande").src=img.src
-}
+/* CHAT MUNDIAL */
 
-function cerrarNFT(){
-document.getElementById("modal").style.display="none"
-}
+async function enviarChat(){
 
-function like(btn){
-let count=localStorage.getItem("likes") || 0
-count++
-localStorage.setItem("likes",count)
-guardarDato("like")
-actualizarUI()
-}
+let mensaje=document.getElementById("chatInput").value
 
-function vista(){
-let count=localStorage.getItem("vistas") || 0
-count++
-localStorage.setItem("vistas",count)
-guardarDato("vista")
-actualizarUI()
-}
-
-function descargar(){
-let count=localStorage.getItem("descargas") || 0
-count++
-localStorage.setItem("descargas",count)
-guardarDato("descarga")
-actualizarUI()
-}
-
-function share(){
-let count=localStorage.getItem("shares") || 0
-count++
-localStorage.setItem("shares",count)
-guardarDato("share")
-actualizarUI()
-}
-
-function ranking(){
-let grid=document.querySelector(".grid")
-let items=[...document.querySelectorAll(".nft")]
-items.sort(()=>Math.random()-0.5)
-items.forEach(el=>grid.appendChild(el))
-}
-
-setInterval(ranking,5000)
-
-/* SUPABASE */
-
-const supabaseUrl="https://rnkuxwsuztewgbdmjyxt.supabase.co"
-const supabaseKey="TU_ANON_KEY"
-const supabase=window.supabase.createClient(supabaseUrl,supabaseKey)
-
-async function guardarDato(tipo){
-await supabase.from("stats").insert({
-tipo:tipo,
-fecha:new Date()
-})
-}
-
-/* ACTUALIZAR CONTADORES */
-
-function actualizarUI(){
-
-document.querySelectorAll(".likes").forEach(el=>{
-el.innerText="❤️ "+(localStorage.getItem("likes")||0)
+await supabase.from("chat").insert({
+msg:mensaje
 })
 
-document.querySelectorAll(".views").forEach(el=>{
-el.innerText="👁 "+(localStorage.getItem("vistas")||0)
-})
+document.getElementById("chatInput").value=""
 
-document.querySelectorAll(".downloads").forEach(el=>{
-el.innerText="⬇ "+(localStorage.getItem("descargas")||0)
-})
+cargarChat()
 
-document.querySelectorAll(".shares").forEach(el=>{
-el.innerText="🔗 "+(localStorage.getItem("shares")||0)
+}
+
+async function cargarChat(){
+
+let {data}=await supabase.from("chat").select("*").order("id",{ascending:true})
+
+let box=document.getElementById("chatBox")
+
+box.innerHTML=""
+
+data.forEach(m=>{
+box.innerHTML+=`<div>${m.msg}</div>`
 })
 
 }
 
-actualizarUI()
+setInterval(cargarChat,3000)
+
+/* RANKING */
+
+async function cargarRanking(){
+
+let {data}=await supabase.from("stats").select("*")
+
+let ranking=document.getElementById("ranking")
+
+ranking.innerHTML="Total eventos: "+data.length
+
+}
+
+setInterval(cargarRanking,4000)
