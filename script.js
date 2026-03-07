@@ -1,121 +1,123 @@
-
 const supabase = window.supabase.createClient(
 "https://rnkuxwsuztewgbdmjyxt.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 )
 
-const gallery=document.getElementById("gallery")
+const gallery = document.getElementById("gallery")
 
-const viewer=document.getElementById("viewer")
+const viewer = document.getElementById("viewer")
+const viewerImg = document.getElementById("viewer-img")
 
-const viewerImg=document.getElementById("viewer-img")
+const likeBtn = document.getElementById("likeBtn")
+const downloadBtn = document.getElementById("downloadBtn")
+const shareBtn = document.getElementById("shareBtn")
 
-const likeBtn=document.getElementById("likeBtn")
+const likeCount = document.getElementById("likeCount")
+const downloadCount = document.getElementById("downloadCount")
+const shareCount = document.getElementById("shareCount")
+const viewCount = document.getElementById("viewCount")
 
-const downloadBtn=document.getElementById("downloadBtn")
+let currentId = null
 
-const shareBtn=document.getElementById("shareBtn")
-
-const shareMenu=document.getElementById("shareMenu")
-
-let currentNFT=0
-
-const TOTAL=9
-
-for(let i=1;i<=TOTAL;i++){
-
-createNFT(i)
-
-}
+const TOTAL_NFT = 9
 
 function createNFT(id){
 
-const img=`images/nft${id}.png`
+const img = `images/nft${id}.png`
 
-const card=document.createElement("div")
+const card = document.createElement("div")
 
-card.className="card"
+card.className = "card"
 
-card.innerHTML=`<img src="${img}">`
+card.innerHTML = `<img src="${img}">`
 
 gallery.appendChild(card)
 
-card.onclick=()=>openNFT(id,img)
+card.onclick = () => openViewer(id,img)
 
 }
 
-async function openNFT(id,img){
+async function openViewer(id,img){
+
+currentId=id
 
 viewer.style.display="flex"
 
 viewerImg.src=img
 
-currentNFT=id
+let {data}=await supabase
+.from("nfts")
+.select("*")
+.eq("id",id)
+.single()
 
-let {data}=await supabase.from("nfts").select("*").eq("id",id).single()
+if(!data) return
 
-if(!data)return
+let views=data.views+1
 
-document.getElementById("likeCount").textContent=data.likes
+await supabase
+.from("nfts")
+.update({views:views})
+.eq("id",id)
 
-document.getElementById("downloadCount").textContent=data.downloads
-
-document.getElementById("shareCount").textContent=data.shares
-
-document.getElementById("viewCount").textContent=data.views+1
-
-await supabase.from("nfts").update({views:data.views+1}).eq("id",id)
+likeCount.textContent=data.likes
+downloadCount.textContent=data.downloads
+shareCount.textContent=data.shares
+viewCount.textContent=views
 
 }
 
-viewer.onclick=()=>viewer.style.display="none"
-
 likeBtn.onclick=async()=>{
 
-let count=parseInt(document.getElementById("likeCount").textContent)+1
+let count=parseInt(likeCount.textContent)+1
 
-document.getElementById("likeCount").textContent=count
+likeCount.textContent=count
 
-await supabase.from("nfts").update({likes:count}).eq("id",currentNFT)
+await supabase
+.from("nfts")
+.update({likes:count})
+.eq("id",currentId)
 
 }
 
 downloadBtn.onclick=async()=>{
 
-let count=parseInt(document.getElementById("downloadCount").textContent)+1
+let count=parseInt(downloadCount.textContent)+1
 
-document.getElementById("downloadCount").textContent=count
+downloadCount.textContent=count
 
-await supabase.from("nfts").update({downloads:count}).eq("id",currentNFT)
+await supabase
+.from("nfts")
+.update({downloads:count})
+.eq("id",currentId)
 
-window.open(`images/nft${currentNFT}.png`)
-
-}
-
-shareBtn.onclick=()=>{
-
-shareMenu.style.display="flex"
+window.open(viewerImg.src)
 
 }
 
-shareMenu.querySelectorAll("button").forEach(btn=>{
+shareBtn.onclick=async()=>{
 
-btn.onclick=async()=>{
+let count=parseInt(shareCount.textContent)+1
 
-let count=parseInt(document.getElementById("shareCount").textContent)+1
+shareCount.textContent=count
 
-document.getElementById("shareCount").textContent=count
+await supabase
+.from("nfts")
+.update({shares:count})
+.eq("id",currentId)
 
-await supabase.from("nfts").update({shares:count}).eq("id",currentNFT)
-
-const url=window.location.href+"#nft"+currentNFT
+const url = window.location.origin + window.location.pathname + "#nft"+currentId
 
 navigator.clipboard.writeText(url)
 
-alert("Link copiado para compartir")
-
-shareMenu.style.display="none"
+alert("Link copiado")
 
 }
 
-})
+viewer.onclick=()=>viewer.style.display="none"
+
+for(let i=1;i<=TOTAL_NFT;i++){
+
+createNFT(i)
+
+}
