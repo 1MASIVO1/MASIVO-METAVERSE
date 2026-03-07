@@ -28,8 +28,8 @@ z-index:-1;
 
 .logoContainer{
 position:relative;
-margin-top:60px;
-margin-bottom:60px;
+margin-top:40px;
+margin-bottom:40px;
 }
 
 .titulo{
@@ -38,52 +38,45 @@ font-family:'Orbitron',sans-serif;
 font-size:90px;
 letter-spacing:12px;
 
-color:#1f3cff;
+color:#2a50ff;
 
 -webkit-text-stroke:2px #7ec8ff;
 
 text-shadow:
-0 0 10px #1f3cff,
-0 0 25px #1f3cff,
-0 0 45px #0a1aff;
+0 0 10px #2a50ff,
+0 0 25px #2a50ff,
+0 0 50px #0a1aff;
 
-position:relative;
 display:inline-block;
 
-}
-
-.titulo::after{
-
-content:"";
-position:absolute;
-left:-5%;
-top:0;
-width:110%;
-height:100%;
-
-border-top:2px solid #7ec8ff;
-border-bottom:2px solid #7ec8ff;
-
-animation:rayoBorde 3s linear infinite;
-
-opacity:0.8;
+animation:energiaBorde 4s linear infinite;
 
 }
 
-@keyframes rayoBorde{
+@keyframes energiaBorde{
 
 0%{
-transform:translateX(-100%);
-opacity:0;
+-webkit-text-stroke:2px #6bb6ff;
+text-shadow:
+0 0 10px #2a50ff,
+0 0 25px #2a50ff,
+0 0 40px #0a1aff;
 }
 
 50%{
-opacity:1;
+-webkit-text-stroke:2px #9fe0ff;
+text-shadow:
+0 0 15px #3a60ff,
+0 0 30px #3a60ff,
+0 0 60px #1a33ff;
 }
 
 100%{
-transform:translateX(100%);
-opacity:0;
+-webkit-text-stroke:2px #6bb6ff;
+text-shadow:
+0 0 10px #2a50ff,
+0 0 25px #2a50ff,
+0 0 40px #0a1aff;
 }
 
 }
@@ -101,7 +94,7 @@ pointer-events:none;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:30px;
-padding:20px 40px 40px 40px;
+padding:10px 40px 40px 40px;
 }
 
 .nft{
