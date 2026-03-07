@@ -1,93 +1,83 @@
 body{
-
-background:black;
-font-family:Arial;
 margin:0;
-padding:0;
-text-align:center;
+font-family:Arial;
+background:black;
 color:white;
 overflow-x:hidden;
-
 }
 
-/* FONDO METAVERSO */
-
-body::before{
-
-content:"";
+#videoFondo{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:radial-gradient(circle,#00111f,#000000);
-animation:space 10s infinite alternate;
+object-fit:cover;
+z-index:-2;
+}
+
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
 z-index:-1;
-
 }
 
-@keyframes space{
-
-0%{filter:brightness(1)}
-100%{filter:brightness(1.4)}
-
-}
-
-/* TITULO (NO TOCADO) */
-
-.title{
-
+.titulo{
+text-align:center;
 font-size:60px;
 margin-top:40px;
-
+color:#00ffff;
 }
 
-/* CONTADOR */
-
-.nft-counter{
-
-margin:20px;
-font-size:20px;
-
-}
-
-/* GALERIA */
-
-.gallery{
-
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
 gap:30px;
 padding:40px;
-
+max-width:1200px;
+margin:auto;
 }
-
-/* NFT */
 
 .nft{
+background:#111;
+padding:10px;
+border-radius:12px;
+text-align:center;
+animation:flotar 6s infinite ease-in-out;
+}
 
-width:220px;
-border-radius:15px;
+.nft img{
+width:100%;
+border-radius:10px;
 cursor:pointer;
-transition:0.4s;
-box-shadow:0 0 20px rgba(0,255,255,0.2);
-
 }
 
-/* HOVER */
-
-.nft:hover{
-
-transform:scale(1.1);
-box-shadow:0 0 40px cyan;
-
+.botones{
+display:flex;
+justify-content:space-around;
+margin-top:10px;
 }
 
-/* ZOOM VIEWER */
+button{
+background:black;
+border:1px solid white;
+color:white;
+padding:6px 10px;
+cursor:pointer;
+border-radius:6px;
+}
 
-#zoomViewer{
+@keyframes flotar{
+0%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+100%{transform:translateY(0)}
+}
 
+.modal{
 position:fixed;
 top:0;
 left:0;
@@ -97,12 +87,15 @@ background:rgba(0,0,0,0.9);
 display:none;
 justify-content:center;
 align-items:center;
-
 }
 
-#zoomViewer img{
-
-width:500px;
+.modal img{
+max-width:80%;
 border-radius:20px;
+animation:zoom 0.5s;
+}
 
+@keyframes zoom{
+from{transform:scale(0.5)}
+to{transform:scale(1)}
 }
