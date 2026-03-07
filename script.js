@@ -15,7 +15,8 @@ const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
 
 function obtenerUsuario(){
 
-let fp=navigator.userAgent+
+let fp=
+navigator.userAgent+
 screen.width+
 screen.height+
 navigator.language
@@ -27,7 +28,7 @@ return btoa(fp)
 
 
 /* ===================== */
-/* LIKE GLOBAL */
+/* LIKE */
 /* ===================== */
 
 async function like(btn){
@@ -118,9 +119,9 @@ document.querySelectorAll(".nft").forEach(nft=>{
 
 let id=nft.getAttribute("data-id")
 
-let views=conteo[id] || 0
+let num=conteo[id] || 0
 
-nft.querySelector(".views").innerText="👁 "+views
+nft.querySelector(".views").innerText="👁 "+num
 
 })
 
@@ -229,6 +230,7 @@ let btn=event.target
 let nft=btn.closest(".nft")
 
 let id=nft.getAttribute("data-id")
+
 let usuario=obtenerUsuario()
 
 let {data}=await supabaseClient
@@ -269,6 +271,7 @@ let btn=event.target
 let nft=btn.closest(".nft")
 
 let id=nft.getAttribute("data-id")
+
 let usuario=obtenerUsuario()
 
 let {data}=await supabaseClient
@@ -287,7 +290,8 @@ await supabaseClient
 
 cargarShares()
 
-let link=window.location.origin+
+let link=
+window.location.origin+
 window.location.pathname+
 "#nft"+id
 
@@ -329,14 +333,40 @@ cargarViews()
 
 window.location.hash="nft"+id
 
-window.open(img.src,"_blank")
+window.open(img.src)
 
 }
 
 
 
 /* ===================== */
-/* CARGAR AL INICIAR */
+/* ABRIR NFT DESDE LINK */
+/* ===================== */
+
+function abrirDesdeHash(){
+
+if(window.location.hash){
+
+let id=window.location.hash.replace("#nft","")
+
+let nft=document.querySelector('.nft[data-id="'+id+'"]')
+
+if(nft){
+
+let img=nft.querySelector("img")
+
+img.scrollIntoView()
+
+}
+
+}
+
+}
+
+
+
+/* ===================== */
+/* INICIAR */
 /* ===================== */
 
 window.onload=function(){
@@ -345,5 +375,7 @@ cargarLikes()
 cargarViews()
 cargarDownloads()
 cargarShares()
+
+abrirDesdeHash()
 
 }
