@@ -2,15 +2,15 @@
 /* CONEXION SUPABASE */
 /* ===================== */
 
-const SUPABASE_URL= "https://rnkuxwsuztewgbdmjyxt.supabase.co"
-const SUPABASE_KEY= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
+const SUPABASE_URL="https://rnkuxwsuztewgbdmjyxt.supabase.co"
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
 
 
 
 /* ===================== */
-/* CREAR FINGERPRINT */
+/* FINGERPRINT USUARIO */
 /* ===================== */
 
 function obtenerUsuario(){
@@ -27,7 +27,7 @@ return btoa(fp)
 
 
 /* ===================== */
-/* LIKE GLOBAL + ANTISPAM */
+/* LIKE GLOBAL */
 /* ===================== */
 
 async function like(btn){
@@ -90,31 +90,6 @@ nft.querySelector(".likes").innerText="❤️ "+likes
 })
 
 ranking()
-
-}
-
-
-
-/* ===================== */
-/* RANKING */
-/* ===================== */
-
-function ranking(){
-
-let grid=document.querySelector(".grid")
-
-let items=[...document.querySelectorAll(".nft")]
-
-items.sort((a,b)=>{
-
-let likeA=parseInt(a.querySelector(".likes").innerText.replace(/\D/g,''))
-let likeB=parseInt(b.querySelector(".likes").innerText.replace(/\D/g,''))
-
-return likeB-likeA
-
-})
-
-items.forEach(el=>grid.appendChild(el))
 
 }
 
@@ -220,6 +195,31 @@ nft.querySelector(".shares").innerText="🔗 "+num
 
 
 /* ===================== */
+/* RANKING */
+/* ===================== */
+
+function ranking(){
+
+let grid=document.querySelector(".grid")
+
+let items=[...document.querySelectorAll(".nft")]
+
+items.sort((a,b)=>{
+
+let likeA=parseInt(a.querySelector(".likes").innerText.replace(/\D/g,''))
+let likeB=parseInt(b.querySelector(".likes").innerText.replace(/\D/g,''))
+
+return likeB-likeA
+
+})
+
+items.forEach(el=>grid.appendChild(el))
+
+}
+
+
+
+/* ===================== */
 /* DESCARGAR */
 /* ===================== */
 
@@ -229,7 +229,6 @@ let btn=event.target
 let nft=btn.closest(".nft")
 
 let id=nft.getAttribute("data-id")
-
 let usuario=obtenerUsuario()
 
 let {data}=await supabaseClient
@@ -270,7 +269,6 @@ let btn=event.target
 let nft=btn.closest(".nft")
 
 let id=nft.getAttribute("data-id")
-
 let usuario=obtenerUsuario()
 
 let {data}=await supabaseClient
@@ -289,11 +287,13 @@ await supabaseClient
 
 cargarShares()
 
-let link=window.location.href+"#nft"+id
+let link=window.location.origin+
+window.location.pathname+
+"#nft"+id
 
 navigator.clipboard.writeText(link)
 
-alert("Link copiado")
+alert("Link del NFT copiado")
 
 }
 
@@ -326,6 +326,8 @@ await supabaseClient
 }
 
 cargarViews()
+
+window.location.hash="nft"+id
 
 window.open(img.src,"_blank")
 
