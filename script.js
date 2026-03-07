@@ -2,15 +2,15 @@
 /* CONEXION SUPABASE */
 /* ===================== */
 
-const SUPABASE_URL=https://rnkuxwsuztewgbdmjyxt.supabase.co
-const SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
+const SUPABASE_URL="TU_URL_SUPABASE"
+const SUPABASE_KEY="TU_PUBLIC_KEY"
 
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
 
 
 
 /* ===================== */
-/* LIKE GLOBAL INTERNET */
+/* LIKE GLOBAL + ANTISPAM */
 /* ===================== */
 
 async function like(btn){
@@ -18,27 +18,36 @@ async function like(btn){
 let nft=btn.closest(".nft")
 let id=nft.getAttribute("data-id")
 
-let el=nft.querySelector(".likes")
+/* VERIFICAR SI YA DIO LIKE */
 
-let num=parseInt(el.innerText.replace(/\D/g,''))
+if(localStorage.getItem("like_"+id)){
 
-num++
+alert("Ya diste like a este NFT")
+return
 
-el.innerText="❤️ "+num
+}
+
+/* GUARDAR LIKE LOCAL */
+
+localStorage.setItem("like_"+id,"true")
+
+/* GUARDAR LIKE GLOBAL */
 
 await supabaseClient
 .from("likes")
 .insert([{nft:id}])
+
+cargarLikes()
 
 }
 
 
 
 /* ===================== */
-/* RANKING MUNDIAL */
+/* CARGAR LIKES GLOBALES */
 /* ===================== */
 
-async function rankingGlobal(){
+async function cargarLikes(){
 
 let {data}=await supabaseClient
 .from("likes")
@@ -49,10 +58,31 @@ let conteo={}
 data.forEach(row=>{
 
 if(!conteo[row.nft]) conteo[row.nft]=0
-
 conteo[row.nft]++
 
 })
+
+document.querySelectorAll(".nft").forEach(nft=>{
+
+let id=nft.getAttribute("data-id")
+
+let likes=conteo[id] || 0
+
+nft.querySelector(".likes").innerText="❤️ "+likes
+
+})
+
+ranking()
+
+}
+
+
+
+/* ===================== */
+/* RANKING MUNDIAL */
+/* ===================== */
+
+function ranking(){
 
 let grid=document.querySelector(".grid")
 
@@ -60,10 +90,10 @@ let items=[...document.querySelectorAll(".nft")]
 
 items.sort((a,b)=>{
 
-let idA=a.getAttribute("data-id")
-let idB=b.getAttribute("data-id")
+let likeA=parseInt(a.querySelector(".likes").innerText.replace(/\D/g,''))
+let likeB=parseInt(b.querySelector(".likes").innerText.replace(/\D/g,''))
 
-return (conteo[idB]||0)-(conteo[idA]||0)
+return likeB-likeA
 
 })
 
@@ -71,50 +101,10 @@ items.forEach(el=>grid.appendChild(el))
 
 }
 
-setInterval(rankingGlobal,4000)
-
-
-
-/* ===================== */
-/* SISTEMA LOGROS */
-/* ===================== */
-
-function actualizarLogros(){
-
-document.querySelectorAll(".nft").forEach(nft=>{
-
-let likes=parseInt(nft.querySelector(".likes").innerText.replace(/\D/g,''))
-
-let views=parseInt(nft.querySelector(".views").innerText.replace(/\D/g,''))
-
-let downloads=parseInt(nft.querySelector(".downloads").innerText.replace(/\D/g,''))
-
-let shares=parseInt(nft.querySelector(".shares").innerText.replace(/\D/g,''))
-
-let logros=
-Math.floor(likes/100)+
-Math.floor(views/100)+
-Math.floor(downloads/100)+
-Math.floor(shares/100)
-
-nft.querySelector(".logroNum").innerText=logros
-
-if(logros>0){
-
-nft.classList.add("aura")
-
-}
-
-})
-
-}
-
-setInterval(actualizarLogros,2000)
-
 
 
 /* ===================== */
-/* BOTONES NORMALES */
+/* VISTAS */
 /* ===================== */
 
 function vista(){
@@ -133,6 +123,10 @@ el.innerText="👁 "+num
 }
 
 
+
+/* ===================== */
+/* DESCARGAS */
+/* ===================== */
 
 function descargar(){
 
@@ -159,6 +153,10 @@ a.click()
 
 
 
+/* ===================== */
+/* SHARE */
+/* ===================== */
+
 function share(){
 
 let btn=event.target
@@ -172,9 +170,19 @@ num++
 
 el.innerText="🔗 "+num
 
+let link=window.location.href+"#nft"+nft.getAttribute("data-id")
+
+navigator.clipboard.writeText(link)
+
+alert("Link copiado")
+
 }
 
 
+
+/* ===================== */
+/* ABRIR NFT */
+/* ===================== */
 
 function abrirNFT(img){
 
@@ -189,5 +197,17 @@ num++
 el.innerText="👁 "+num
 
 window.open(img.src,"_blank")
+
+}
+
+
+
+/* ===================== */
+/* CARGAR AL INICIAR */
+/* ===================== */
+
+window.onload=function(){
+
+cargarLikes()
 
 }
