@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://rnkuxwsuztewgbdmjyxt.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc3MTk4NTgyNCwiZXhwIjoyMDg3NTYxODI0fQ.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -25,7 +25,6 @@ const id = obtenerIdDesdeImagen(img);
 nftActual = id;
 
 sumarVista(id);
-actualizarStats(id);
 ```
 
 }
@@ -73,8 +72,6 @@ await supabase
     .from("nfts")
     .update({likes:data.likes + 1})
     .eq("id",id);
-
-actualizarStats(id);
 ```
 
 }
@@ -96,8 +93,6 @@ await supabase
     .from("nfts")
     .update({descargas:data.descargas + 1})
     .eq("id",nftActual);
-
-actualizarStats(nftActual);
 ```
 
 }
@@ -119,8 +114,6 @@ await supabase
     .from("nfts")
     .update({shares:data.shares + 1})
     .eq("id",nftActual);
-
-actualizarStats(nftActual);
 ```
 
 }
@@ -154,39 +147,48 @@ if(red==="whatsapp")
 
 }
 
-async function actualizarStats(id){
+async function rankingNFTs(){
 
 ```
 const { data } = await supabase
     .from("nfts")
     .select("*")
-    .eq("id",id)
-    .single();
+    .order("likes",{ascending:false})
+    .limit(5);
 
 if(!data) return;
 
-const stats = document.getElementById("stats");
+let ranking = document.getElementById("ranking");
 
-if(stats){
-    stats.innerHTML =
-    "❤️ Likes: "+data.likes+
-    " | 👁 Views: "+data.vistas+
-    " | ⬇ Downloads: "+data.descargas+
-    " | 🔗 Shares: "+data.shares;
-}
+if(!ranking) return;
+
+ranking.innerHTML = "";
+
+data.forEach(nft =>{
+
+    let div = document.createElement("div");
+    div.innerHTML =
+    "🏆 NFT "+nft.id+
+    " | ❤️ "+nft.likes+
+    " | 👁 "+nft.vistas;
+
+    ranking.appendChild(div);
+});
 ```
 
 }
 
-function convertirEmojis(texto){
+function activarFlotacion(){
 
 ```
-return texto
-.replace(":)", "😊")
-.replace(":D", "😄")
-.replace("<3", "❤️")
-.replace(":fire:", "🔥")
-.replace(":rocket:", "🚀");
+const nfts = document.querySelectorAll(".nft");
+
+nfts.forEach((nft,i)=>{
+
+    nft.style.animation =
+    "flotar "+(6+i)+"s ease-in-out infinite";
+
+});
 ```
 
 }
@@ -195,17 +197,15 @@ async function enviarMensaje(){
 
 ```
 const input = document.getElementById("mensajeInput");
-let texto = input.value.trim();
+const texto = input.value.trim();
 
-if(texto === "") return;
-
-texto = convertirEmojis(texto);
+if(texto==="") return;
 
 await supabase
     .from("chat")
     .insert([{mensaje:texto}]);
 
-input.value = "";
+input.value="";
 
 cargarMensajes();
 ```
@@ -223,21 +223,25 @@ const { data } = await supabase
 
 const contenedor = document.getElementById("mensajes");
 
-contenedor.innerHTML = "";
+contenedor.innerHTML="";
 
 if(!data) return;
 
-data.forEach(m => {
+data.forEach(m =>{
 
     const div = document.createElement("div");
     div.innerHTML = m.mensaje;
 
     contenedor.appendChild(div);
+
 });
 ```
 
 }
 
 setInterval(cargarMensajes,2000);
+setInterval(rankingNFTs,4000);
 
 cargarMensajes();
+rankingNFTs();
+activarFlotacion();
