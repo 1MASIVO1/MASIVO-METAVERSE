@@ -28,23 +28,22 @@ z-index:-1;
 
 .logoContainer{
 position:relative;
-margin-top:140px;
-margin-bottom:200px;
+margin-top:150px;
+margin-bottom:250px;
 }
 
 .titulo{
 font-family:'Orbitron',sans-serif;
 font-size:90px;
 letter-spacing:12px;
+color:#2f55ff;
 
-color:#2b50ff;
-
--webkit-text-stroke:1px #6bb6ff;
+-webkit-text-stroke:1px #6fb3ff;
 
 text-shadow:
-0 0 10px rgba(43,80,255,0.8),
-0 0 25px rgba(43,80,255,0.6),
-0 0 40px rgba(43,80,255,0.4);
+0 0 8px rgba(47,85,255,0.7),
+0 0 20px rgba(47,85,255,0.5),
+0 0 40px rgba(47,85,255,0.3);
 
 display:inline-block;
 }
