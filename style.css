@@ -32,54 +32,48 @@ margin-top:40px;
 margin-bottom:40px;
 }
 
+/* LOGO MASIVO */
+
 .titulo{
 
 font-family:'Orbitron',sans-serif;
-font-size:90px;
+font-size:95px;
 letter-spacing:12px;
 
-color:#2a50ff;
+color:#2b50ff;
 
 -webkit-text-stroke:2px #7ec8ff;
 
 text-shadow:
-0 0 10px #2a50ff,
-0 0 25px #2a50ff,
-0 0 50px #0a1aff;
+0 0 10px #2b50ff,
+0 0 25px #2b50ff,
+0 0 60px #0a1aff;
 
 display:inline-block;
 
-animation:energiaBorde 4s linear infinite;
+animation:logoGlow 4s ease-in-out infinite alternate;
 
 }
 
-@keyframes energiaBorde{
+@keyframes logoGlow{
 
-0%{
--webkit-text-stroke:2px #6bb6ff;
+from{
 text-shadow:
-0 0 10px #2a50ff,
-0 0 25px #2a50ff,
-0 0 40px #0a1aff;
+0 0 10px #2b50ff,
+0 0 25px #2b50ff,
+0 0 60px #0a1aff;
 }
 
-50%{
--webkit-text-stroke:2px #9fe0ff;
+to{
 text-shadow:
-0 0 15px #3a60ff,
-0 0 30px #3a60ff,
-0 0 60px #1a33ff;
-}
-
-100%{
--webkit-text-stroke:2px #6bb6ff;
-text-shadow:
-0 0 10px #2a50ff,
-0 0 25px #2a50ff,
-0 0 40px #0a1aff;
+0 0 20px #4a6cff,
+0 0 40px #4a6cff,
+0 0 90px #1a33ff;
 }
 
 }
+
+/* FIREWORKS SOLO EN TITULO */
 
 #fireworks{
 position:absolute;
@@ -90,23 +84,38 @@ height:100%;
 pointer-events:none;
 }
 
+/* GRID NFT */
+
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:30px;
+gap:35px;
 padding:10px 40px 40px 40px;
 }
 
 .nft{
-background:rgba(0,0,0,0.7);
-padding:10px;
-border-radius:10px;
+background:rgba(0,0,0,0.6);
+padding:12px;
+border-radius:12px;
+transition:transform 0.3s, box-shadow 0.3s;
 }
 
 .nft img{
 width:100%;
-border-radius:10px;
+border-radius:12px;
 cursor:pointer;
+}
+
+/* HOVER PROFESIONAL NFT */
+
+.nft:hover{
+
+transform:translateY(-10px) scale(1.03);
+
+box-shadow:
+0 0 20px rgba(0,100,255,0.7),
+0 0 40px rgba(0,100,255,0.4);
+
 }
 
 .botones{
@@ -120,6 +129,11 @@ cursor:pointer;
 background:none;
 border:none;
 color:white;
+transition:transform 0.2s;
+}
+
+.botones button:hover{
+transform:scale(1.3);
 }
 
 .modal{
