@@ -28,57 +28,42 @@ z-index:-1;
 
 .logoContainer{
 position:relative;
-margin-top:80px;
+margin-top:120px;
+margin-bottom:120px;
 }
 
 .titulo{
 font-family:'Orbitron',sans-serif;
-font-size:70px;
-letter-spacing:8px;
-color:#1f4fff;
+font-size:80px;
+letter-spacing:10px;
+color:#1e3cff;
+
+-webkit-text-stroke:1px #4ea3ff;
 
 text-shadow:
-0 0 5px #1f4fff,
-0 0 15px #1f4fff,
-0 0 25px #0a2cff,
-0 0 40px #001eff;
+0 0 5px #1e3cff,
+0 0 15px #1e3cff,
+0 0 25px #0a1aff;
 
-position:relative;
+animation:glow 3s ease-in-out infinite alternate;
+
 display:inline-block;
 }
 
-.tituloAnimado{
-position:relative;
+@keyframes glow{
+
+from{
+text-shadow:
+0 0 5px #1e3cff,
+0 0 10px #1e3cff,
+0 0 20px #0a1aff;
 }
 
-.tituloAnimado::after{
-
-content:"";
-position:absolute;
-top:0;
-left:-100%;
-width:100%;
-height:100%;
-
-background:linear-gradient(
-120deg,
-transparent,
-rgba(255,255,255,0.8),
-transparent
-);
-
-animation:rayo 4s linear infinite;
-
-}
-
-@keyframes rayo{
-
-0%{
-left:-100%;
-}
-
-100%{
-left:100%;
+to{
+text-shadow:
+0 0 10px #4ea3ff,
+0 0 20px #4ea3ff,
+0 0 40px #0a1aff;
 }
 
 }
