@@ -1,134 +1,83 @@
-console.log("MASIVO METAVERSE loaded");
+function abrirNFT(img){
 
-const supabaseUrl = "https://rnkuxwsuztewgbdmjyxt.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-const cards = document.querySelectorAll(".nft-card");
-const zoomViewer = document.getElementById("zoomViewer");
-const zoomImg = document.getElementById("zoomImg");
-
-cards.forEach(async card=>{
-
-const id = card.dataset.id;
-
-let { data } = await supabase
-.from("nft_stats")
-.select("*")
-.eq("id",id)
-.single();
-
-if(!data){
-
-await supabase.from("nft_stats").insert({id:id});
-
-data={likes:0,views:0,downloads:0,shares:0};
+document.getElementById("modal").style.display="flex"
+document.getElementById("nftGrande").src=img.src
 
 }
 
-updateUI(card,data);
+function cerrarNFT(){
 
-card.querySelector(".nft").onclick=()=>{
-
-zoomViewer.style.display="flex";
-zoomImg.src=card.querySelector(".nft").src;
-
-updateStat(id,"views");
-
-};
-
-card.querySelector(".like").onclick=()=>{
-
-updateStat(id,"likes");
-
-};
-
-card.querySelector(".download").onclick=()=>{
-
-updateStat(id,"downloads");
-
-window.open(card.querySelector(".nft").src);
-
-};
-
-card.querySelector(".share").onclick=()=>{
-
-updateStat(id,"shares");
-
-navigator.share?.({
-title:"MASIVO NFT",
-url:location.href
-});
-
-};
-
-});
-
-async function updateStat(id,field){
-
-let { data } = await supabase
-.from("nft_stats")
-.select("*")
-.eq("id",id)
-.single();
-
-let value=data[field]+1;
-
-await supabase
-.from("nft_stats")
-.update({[field]:value})
-.eq("id",id);
-
-location.reload();
+document.getElementById("modal").style.display="none"
 
 }
 
-function updateUI(card,data){
+function like(btn){
 
-card.querySelector(".likes").textContent=data.likes;
-card.querySelector(".views").textContent=data.views;
-card.querySelector(".downloads").textContent=data.downloads;
-card.querySelector(".shares").textContent=data.shares;
+let count=localStorage.getItem("likes") || 0
+count++
+localStorage.setItem("likes",count)
 
-}
-
-/* CHAT */
-
-const chatBox=document.getElementById("chatBox");
-const chatInput=document.getElementById("chatInput");
-
-document.getElementById("sendChat").onclick=async()=>{
-
-const msg=chatInput.value;
-
-await supabase.from("chat_messages").insert({
-
-user_name:"user",
-message:msg
-
-});
-
-chatInput.value="";
-
-loadChat();
-
-};
-
-async function loadChat(){
-
-let { data } = await supabase
-.from("chat_messages")
-.select("*")
-.order("created_at",{ascending:true});
-
-chatBox.innerHTML="";
-
-data.forEach(m=>{
-
-chatBox.innerHTML+=`<p><b>${m.user_name}</b>: ${m.message}</p>`;
-
-});
+guardarDato("like")
 
 }
 
-setInterval(loadChat,2000);
+function vista(){
+
+let count=localStorage.getItem("vistas") || 0
+count++
+localStorage.setItem("vistas",count)
+
+guardarDato("vista")
+
+}
+
+function descargar(){
+
+let count=localStorage.getItem("descargas") || 0
+count++
+localStorage.setItem("descargas",count)
+
+guardarDato("descarga")
+
+}
+
+function share(){
+
+let count=localStorage.getItem("shares") || 0
+count++
+localStorage.setItem("shares",count)
+
+guardarDato("share")
+
+}
+
+function ranking(){
+
+let grid=document.querySelector(".grid")
+
+let items=[...document.querySelectorAll(".nft")]
+
+items.sort(()=>Math.random()-0.5)
+
+items.forEach(el=>grid.appendChild(el))
+
+}
+
+setInterval(ranking,5000)
+
+/* SUPABASE */
+
+const supabaseUrl="https://rnkuxwsuztewgbdmjyxt.supabase.co"
+const supabaseKey="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+const supabase=window.supabase.createClient(supabaseUrl,supabaseKey)
+
+async function guardarDato(tipo){
+
+await supabase.from("stats").insert({
+
+tipo:tipo,
+fecha:new Date()
+
+})
+
+}
