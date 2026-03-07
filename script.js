@@ -3,20 +3,21 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-function obtenerID(img){
+let nftActual = null
 
+function obtenerID(img){
 let nombre = img.src.split("/").pop()
 let numero = nombre.replace("nft","").replace(".png","")
 return parseInt(numero)
-
 }
 
 async function abrirNFT(img){
 
 document.getElementById("modal").style.display="flex"
-document.getElementById("nftGrande").src=img.src
+document.getElementById("nftGrande").src = img.src
 
 let id = obtenerID(img)
+nftActual = id
 
 const { data } = await supabase
 .from("nfts")
@@ -32,9 +33,7 @@ await supabase
 }
 
 function cerrarNFT(){
-
 document.getElementById("modal").style.display="none"
-
 }
 
 async function like(btn){
@@ -55,69 +54,106 @@ await supabase
 
 }
 
-async function vista(){
-
-let img = document.getElementById("nftGrande")
-let id = obtenerID(img)
-
-const { data } = await supabase
-.from("nfts")
-.select("vistas")
-.eq("id",id)
-.single()
-
-await supabase
-.from("nfts")
-.update({vistas:data.vistas+1})
-.eq("id",id)
-
-}
-
 async function descargar(){
 
-let img = document.getElementById("nftGrande")
-let id = obtenerID(img)
+if(!nftActual) return
 
 const { data } = await supabase
 .from("nfts")
 .select("descargas")
-.eq("id",id)
+.eq("id",nftActual)
 .single()
 
 await supabase
 .from("nfts")
 .update({descargas:data.descargas+1})
-.eq("id",id)
+.eq("id",nftActual)
 
 }
 
 async function share(){
 
-let img = document.getElementById("nftGrande")
-let id = obtenerID(img)
+if(!nftActual) return
 
 const { data } = await supabase
 .from("nfts")
 .select("shares")
-.eq("id",id)
+.eq("id",nftActual)
 .single()
 
 await supabase
 .from("nfts")
 .update({shares:data.shares+1})
-.eq("id",id)
+.eq("id",nftActual)
 
 }
 
-function ranking(){
+function abrirShare(){
+document.getElementById("shareMenu").style.display="block"
+}
 
-let grid=document.querySelector(".grid")
-let items=[...document.querySelectorAll(".nft")]
+function compartir(red){
 
-items.sort(()=>Math.random()-0.5)
+share()
 
-items.forEach(el=>grid.appendChild(el))
+let url = window.location.href
+
+if(red==="facebook")
+window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`)
+
+if(red==="twitter")
+window.open(`https://twitter.com/intent/tweet?url=${url}`)
+
+if(red==="reddit")
+window.open(`https://reddit.com/submit?url=${url}`)
+
+if(red==="telegram")
+window.open(`https://t.me/share/url?url=${url}`)
+
+if(red==="whatsapp")
+window.open(`https://wa.me/?text=${url}`)
 
 }
 
-setInterval(ranking,5000)
+async function enviarMensaje(){
+
+let input = document.getElementById("mensajeInput")
+let texto = input.value
+
+if(texto==="") return
+
+await supabase
+.from("chat")
+.insert([{mensaje:texto}])
+
+input.value=""
+
+cargarMensajes()
+
+}
+
+async function cargarMensajes(){
+
+const { data } = await supabase
+.from("chat")
+.select("*")
+.order("id",{ascending:true})
+.limit(50)
+
+let contenedor = document.getElementById("mensajes")
+
+contenedor.innerHTML=""
+
+data.forEach(m =>{
+
+let div=document.createElement("div")
+div.textContent=m.mensaje
+contenedor.appendChild(div)
+
+})
+
+}
+
+setInterval(cargarMensajes,2000)
+
+cargarMensajes()
