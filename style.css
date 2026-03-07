@@ -33,45 +33,52 @@ margin-top:80px;
 
 .titulo{
 font-family:'Orbitron',sans-serif;
-font-size:60px;
-letter-spacing:6px;
-color:#0d47ff;
+font-size:70px;
+letter-spacing:8px;
+color:#1f4fff;
+
+text-shadow:
+0 0 5px #1f4fff,
+0 0 15px #1f4fff,
+0 0 25px #0a2cff,
+0 0 40px #001eff;
+
 position:relative;
 display:inline-block;
 }
 
 .tituloAnimado{
-color:#1a4dff;
 position:relative;
 }
 
-.tituloAnimado::before{
-content:"MASIVO METAVERSE";
+.tituloAnimado::after{
+
+content:"";
 position:absolute;
-left:0;
 top:0;
-color:transparent;
--webkit-text-stroke:2px #00aaff;
-overflow:hidden;
-width:0%;
-animation:rayo 3s linear infinite;
+left:-100%;
+width:100%;
+height:100%;
+
+background:linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,0.8),
+transparent
+);
+
+animation:rayo 4s linear infinite;
+
 }
 
 @keyframes rayo{
 
 0%{
-width:0%;
-filter:drop-shadow(0 0 10px #00aaff);
-}
-
-50%{
-width:100%;
-filter:drop-shadow(0 0 20px #00eaff);
+left:-100%;
 }
 
 100%{
-width:0%;
-filter:drop-shadow(0 0 10px #00aaff);
+left:100%;
 }
 
 }
