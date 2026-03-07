@@ -125,6 +125,39 @@ items.forEach(el=>grid.appendChild(el))
 
 
 /* ===================== */
+/* CARGAR VIEWS GLOBALES */
+/* ===================== */
+
+async function cargarViews(){
+
+let {data}=await supabaseClient
+.from("nft_views")
+.select("*")
+
+let conteo={}
+
+data.forEach(row=>{
+
+if(!conteo[row.nft_id]) conteo[row.nft_id]=0
+conteo[row.nft_id]++
+
+})
+
+document.querySelectorAll(".nft").forEach(nft=>{
+
+let id=nft.getAttribute("data-id")
+
+let views=conteo[id] || 0
+
+nft.querySelector(".views").innerText="👁 "+views
+
+})
+
+}
+
+
+
+/* ===================== */
 /* VISTAS */
 /* ===================== */
 
@@ -205,17 +238,34 @@ alert("Link copiado")
 /* ABRIR NFT */
 /* ===================== */
 
-function abrirNFT(img){
+async function abrirNFT(img){
 
 let nft=img.closest(".nft")
+let id=nft.getAttribute("data-id")
 
-let el=nft.querySelector(".views")
+let usuario=obtenerUsuario()
 
-let num=parseInt(el.innerText.replace(/\D/g,''))
+/* VERIFICAR SI YA VIO ESTE NFT */
 
-num++
+let {data}=await supabaseClient
+.from("nft_views")
+.select("*")
+.eq("nft_id",id)
+.eq("visitor",usuario)
 
-el.innerText="👁 "+num
+/* SI NO EXISTE VIEW */
+
+if(data.length===0){
+
+await supabaseClient
+.from("nft_views")
+.insert([{nft_id:id,visitor:usuario}])
+
+}
+
+/* RECARGAR VIEWS GLOBALES */
+
+cargarViews()
 
 window.open(img.src,"_blank")
 
@@ -230,5 +280,6 @@ window.open(img.src,"_blank")
 window.onload=function(){
 
 cargarLikes()
+cargarViews()
 
 }
