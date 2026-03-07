@@ -1,112 +1,31 @@
-const SUPABASE_URL="https://rnkuxwsuztewgbdmjyxt.supabase.co"
-const SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
+console.log("MASIVO METAVERSE loaded");
 
-const supabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
+const nfts = document.querySelectorAll(".nft");
+const zoomViewer = document.getElementById("zoomViewer");
+const zoomImg = document.getElementById("zoomImg");
+const nftCount = document.getElementById("nftCount");
 
-function obtenerID(img){
+/* CONTADOR */
 
-let nombre=img.src.split("/").pop()
-let numero=nombre.replace("nft","").replace(".png","")
+nftCount.textContent = nfts.length;
 
-return parseInt(numero)
+/* ZOOM NFT */
 
-}
+nfts.forEach(nft =>{
 
-async function like(btn){
+nft.addEventListener("click",()=>{
 
-let nft=btn.closest(".nft")
-let img=nft.querySelector("img")
+zoomViewer.style.display="flex";
+zoomImg.src=nft.src;
 
-let id=obtenerID(img)
+});
 
-const {data}=await supabase
-.from("nfts")
-.select("likes")
-.eq("id",id)
-.single()
+});
 
-if(!data)return
+/* CERRAR ZOOM */
 
-let nuevo=data.likes+1
+zoomViewer.addEventListener("click",()=>{
 
-await supabase
-.from("nfts")
-.update({likes:nuevo})
-.eq("id",id)
+zoomViewer.style.display="none";
 
-btn.innerText="❤️ "+nuevo
-
-}
-
-async function vista(img){
-
-let id=obtenerID(img)
-
-const {data}=await supabase
-.from("nfts")
-.select("vistas")
-.eq("id",id)
-.single()
-
-if(!data)return
-
-let nuevo=data.vistas+1
-
-await supabase
-.from("nfts")
-.update({vistas:nuevo})
-.eq("id",id)
-
-}
-
-async function descargar(btn){
-
-let nft=btn.closest(".nft")
-let img=nft.querySelector("img")
-
-let id=obtenerID(img)
-
-const {data}=await supabase
-.from("nfts")
-.select("descargas")
-.eq("id",id)
-.single()
-
-if(!data)return
-
-let nuevo=data.descargas+1
-
-await supabase
-.from("nfts")
-.update({descargas:nuevo})
-.eq("id",id)
-
-btn.innerText="⬇ "+nuevo
-
-}
-
-async function compartir(btn){
-
-let nft=btn.closest(".nft")
-let img=nft.querySelector("img")
-
-let id=obtenerID(img)
-
-const {data}=await supabase
-.from("nfts")
-.select("shares")
-.eq("id",id)
-.single()
-
-if(!data)return
-
-let nuevo=data.shares+1
-
-await supabase
-.from("nfts")
-.update({shares:nuevo})
-.eq("id",id)
-
-btn.innerText="🔗 "+nuevo
-
-}
+});
