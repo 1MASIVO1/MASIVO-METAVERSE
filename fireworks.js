@@ -49,3 +49,34 @@ requestAnimationFrame(animar)
 setInterval(crear,2000)
 
 animar()
+
+
+
+/* ============================= */
+/* AJUSTE AUTOMATICO RESPONSIVE */
+/* ============================= */
+
+window.addEventListener("resize",()=>{
+
+canvas.width=window.innerWidth
+canvas.height=200
+
+})
+
+
+
+/* ============================= */
+/* EFECTO EXTRA SALUDO INICIAL */
+/* ============================= */
+
+function megaExplosion(){
+
+for(let i=0;i<5;i++){
+
+crear()
+
+}
+
+}
+
+setTimeout(megaExplosion,1000)
