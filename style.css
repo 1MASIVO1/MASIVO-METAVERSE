@@ -28,44 +28,25 @@ z-index:-1;
 
 .logoContainer{
 position:relative;
-margin-top:120px;
-margin-bottom:120px;
+margin-top:140px;
+margin-bottom:200px;
 }
 
 .titulo{
 font-family:'Orbitron',sans-serif;
-font-size:80px;
-letter-spacing:10px;
-color:#1e3cff;
+font-size:90px;
+letter-spacing:12px;
 
--webkit-text-stroke:1px #4ea3ff;
+color:#2b50ff;
+
+-webkit-text-stroke:1px #6bb6ff;
 
 text-shadow:
-0 0 5px #1e3cff,
-0 0 15px #1e3cff,
-0 0 25px #0a1aff;
-
-animation:glow 3s ease-in-out infinite alternate;
+0 0 10px rgba(43,80,255,0.8),
+0 0 25px rgba(43,80,255,0.6),
+0 0 40px rgba(43,80,255,0.4);
 
 display:inline-block;
-}
-
-@keyframes glow{
-
-from{
-text-shadow:
-0 0 5px #1e3cff,
-0 0 10px #1e3cff,
-0 0 20px #0a1aff;
-}
-
-to{
-text-shadow:
-0 0 10px #4ea3ff,
-0 0 20px #4ea3ff,
-0 0 40px #0a1aff;
-}
-
 }
 
 #fireworks{
