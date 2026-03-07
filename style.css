@@ -1,14 +1,17 @@
 body{
+
 margin:0;
 font-family:Arial, Helvetica, sans-serif;
 background:black;
 color:white;
 overflow-x:hidden;
+
 }
 
-/* VIDEO FONDO (NO TOCAR) */
+/* VIDEO FONDO */
 
 #videoFondo{
+
 position:fixed;
 top:0;
 left:0;
@@ -16,11 +19,13 @@ width:100%;
 height:100%;
 object-fit:cover;
 z-index:-2;
+
 }
 
-/* CAPA OSCURA */
+/* OSCURECER VIDEO */
 
 .overlay{
+
 position:fixed;
 top:0;
 left:0;
@@ -28,30 +33,34 @@ width:100%;
 height:100%;
 background:rgba(0,0,0,0.5);
 z-index:-1;
+
 }
 
 /* TITULO */
 
 .titulo{
+
 text-align:center;
 font-size:60px;
 margin-top:40px;
-color:#00ffff;
+color:#00eaff;
+text-shadow:0 0 20px #00eaff;
+
 }
 
-/* CONTENEDOR NFT */
+/* GALERIA */
 
-.grid{
+.gallery{
 
 display:grid;
 
-/* 4 NFT POR FILA */
+grid-template-columns:repeat(4,1fr);
 
-grid-template-columns:repeat(4, 250px);
+gap:30px;
 
-justify-content:center;
+max-width:1200px;
 
-gap:40px;
+margin:auto;
 
 padding:40px;
 
@@ -59,39 +68,41 @@ padding:40px;
 
 /* TARJETA NFT */
 
-.nft{
+.card{
 
 background:#111;
 
-padding:10px;
-
 border-radius:10px;
+
+padding:10px;
 
 text-align:center;
 
-transition:0.3s;
+animation:float 6s ease-in-out infinite;
 
 }
 
-.nft:hover{
+/* ANIMACION FLOTANTE */
 
-transform:scale(1.05);
+@keyframes float{
+
+0%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+100%{transform:translateY(0)}
 
 }
 
-/* IMAGEN */
+.card img{
 
-.nft img{
-
-width:250px;
-
-border-radius:8px;
+width:100%;
+border-radius:10px;
+cursor:pointer;
 
 }
 
 /* BOTONES */
 
-.botones{
+.actions{
 
 display:flex;
 
@@ -104,23 +115,68 @@ margin-top:10px;
 button{
 
 background:black;
-
 border:1px solid white;
-
 color:white;
-
-padding:6px 10px;
-
+padding:5px 8px;
 cursor:pointer;
-
-border-radius:5px;
 
 }
 
 button:hover{
 
 background:white;
-
 color:black;
+
+}
+
+/* VISOR NFT */
+
+#viewer{
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+display:none;
+
+justify-content:center;
+align-items:center;
+
+background:rgba(0,0,0,0.9);
+
+}
+
+#viewer img{
+
+max-width:80%;
+
+animation:zoom 0.4s;
+
+}
+
+/* ANIMACION ABRIR NFT */
+
+@keyframes zoom{
+
+from{transform:scale(0.5)}
+to{transform:scale(1)}
+
+}
+
+/* RANKING */
+
+#ranking{
+
+text-align:center;
+
+margin-top:20px;
+
+font-size:20px;
+
+color:#00eaff;
 
 }
