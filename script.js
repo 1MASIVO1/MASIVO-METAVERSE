@@ -6,8 +6,6 @@ const supabase=window.supabase.createClient(supabaseUrl,supabaseKey)
 
 
 
-/* movimiento metaverso */
-
 function moverNFTs(){
 
 document.querySelectorAll(".nft").forEach(nft=>{
@@ -26,62 +24,18 @@ setInterval(moverNFTs,4000)
 
 
 
-async function ordenarNFT(){
-
-let {data}=await supabase.from("stats").select("*")
-
-let likes=data.filter(x=>x.tipo==="like").length
-
-let grid=document.querySelector(".grid")
-
-let items=[...document.querySelectorAll(".nft")]
-
-items.sort(()=>Math.random()-0.5+likes)
-
-items.forEach(el=>grid.appendChild(el))
-
-}
-
-setInterval(ordenarNFT,5000)
-
-
-
-function actualizarLogros(){
-
-document.querySelectorAll(".nft").forEach(nft=>{
-
-let likes=parseInt(nft.querySelector(".likes").innerText.replace(/\D/g,''))
-
-let views=parseInt(nft.querySelector(".views").innerText.replace(/\D/g,''))
-
-let downloads=parseInt(nft.querySelector(".downloads").innerText.replace(/\D/g,''))
-
-let shares=parseInt(nft.querySelector(".shares").innerText.replace(/\D/g,''))
-
-let logros=
-Math.floor(likes/100)+
-Math.floor(views/100)+
-Math.floor(downloads/100)+
-Math.floor(shares/100)
-
-nft.querySelector(".logroNum").innerText=logros
-
-if(logros>0){
-nft.classList.add("aura")
-}
-
-})
-
-}
-
-setInterval(actualizarLogros,2000)
-
-
-
 function like(btn){
 
 let nft=btn.closest(".nft")
+
+nft.classList.add("likeGlow")
+
+setTimeout(()=>{
+nft.classList.remove("likeGlow")
+},800)
+
 let el=nft.querySelector(".likes")
+
 let num=parseInt(el.innerText.replace(/\D/g,''))
 
 num++
@@ -94,50 +48,10 @@ supabase.from("stats").insert({tipo:"like"})
 
 
 
-function vista(btn){
-
-let nft=btn.closest(".nft")
-let el=nft.querySelector(".views")
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="👁 "+num
-
-supabase.from("stats").insert({tipo:"view"})
-
-}
-
-
-
-function descargar(btn){
-
-let nft=btn.closest(".nft")
-let el=nft.querySelector(".downloads")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="⬇ "+num
-
-let img=nft.querySelector("img").src
-
-let a=document.createElement("a")
-
-a.href=img
-a.download="masivo-"+Date.now()+".png"
-a.click()
-
-supabase.from("stats").insert({tipo:"download"})
-
-}
-
-
-
 function share(btn){
 
 let nft=btn.closest(".nft")
+
 let el=nft.querySelector(".shares")
 
 let num=parseInt(el.innerText.replace(/\D/g,''))
@@ -148,80 +62,22 @@ el.innerText="🔗 "+num
 
 let img=nft.querySelector("img").src
 
+if(navigator.share){
+
+navigator.share({
+title:"MASIVO NFT",
+text:"Mira este NFT del metaverso MASIVO",
+url:img
+})
+
+}else{
+
 navigator.clipboard.writeText(img)
 
 alert("Link copiado 🚀")
 
+}
+
 supabase.from("stats").insert({tipo:"share"})
 
 }
-
-
-
-function abrirNFT(img){
-
-let nft=img.closest(".nft")
-
-let el=nft.querySelector(".views")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="👁 "+num
-
-supabase.from("stats").insert({tipo:"view"})
-
-window.open(img.src,"_blank")
-
-}
-
-
-
-/* fondo metaverse */
-
-const canvas=document.getElementById("metaverse")
-const ctx=canvas.getContext("2d")
-
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
-
-let particles=[]
-
-for(let i=0;i<120;i++){
-
-particles.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2,
-speedX:(Math.random()-0.5)*0.5,
-speedY:(Math.random()-0.5)*0.5
-})
-
-}
-
-function draw(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-ctx.fillStyle="#00ffff"
-
-particles.forEach(p=>{
-
-p.x+=p.speedX
-p.y+=p.speedY
-
-if(p.x<0||p.x>canvas.width) p.speedX*=-1
-if(p.y<0||p.y>canvas.height) p.speedY*=-1
-
-ctx.beginPath()
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
-ctx.fill()
-
-})
-
-requestAnimationFrame(draw)
-
-}
-
-draw()
