@@ -1,12 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
 
 <meta charset="UTF-8">
 <title>MASIVO METAVERSE</title>
 
-<link rel="stylesheet" href="style.css">
+<style>
+
+body{
+margin:0;
+background:black;
+color:white;
+font-family:Arial;
+overflow-x:hidden;
+}
+
+#background{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
+#nft-gallery{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+gap:20px;
+padding:40px;
+}
+
+.nft img{
+width:100%;
+border-radius:10px;
+animation:float 6s ease-in-out infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(0px)}
+50%{transform:translateY(-20px)}
+100%{transform:translateY(0px)}
+}
+
+</style>
 
 </head>
 
@@ -14,48 +52,84 @@
 
 <canvas id="background"></canvas>
 
-<header>
-<div id="logo-container">
-<h1 id="logo">MASIVO METAVERSE</h1>
-<canvas id="fireworks"></canvas>
-</div>
-</header>
+<h1 style="text-align:center;font-size:50px;margin-top:40px;">
+MASIVO METAVERSE
+</h1>
 
-<section id="nft-gallery"></section>
+<div id="nft-gallery"></div>
 
-<section id="rankings">
+<script>
 
-<h2>TOP LIKES</h2>
-<div id="ranking-likes"></div>
+const canvas=document.getElementById("background")
+const ctx=canvas.getContext("2d")
 
-<h2>TOP VIEWS</h2>
-<div id="ranking-views"></div>
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
 
-<h2>TOP SHARES</h2>
-<div id="ranking-shares"></div>
+let particles=[]
 
-<h2>TOP DOWNLOADS</h2>
-<div id="ranking-downloads"></div>
+for(let i=0;i<150;i++){
 
-</section>
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2,
+speedX:(Math.random()-0.5)*0.6,
+speedY:(Math.random()-0.5)*0.6
+})
 
-<section id="chat">
+}
 
-<h2>CHAT MUNDIAL</h2>
+function animate(){
 
-<div id="chat-messages"></div>
+ctx.clearRect(0,0,canvas.width,canvas.height)
 
-<input id="chat-input" placeholder="Escribe un mensaje...">
+particles.forEach(p=>{
 
-<button id="send-message">Enviar</button>
+p.x+=p.speedX
+p.y+=p.speedY
 
-</section>
+if(p.x<0||p.x>canvas.width)p.speedX*=-1
+if(p.y<0||p.y>canvas.height)p.speedY*=-1
 
-<script src="main.js"></script>
+ctx.beginPath()
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
+ctx.fillStyle="white"
+ctx.fill()
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
+const gallery=document.getElementById("nft-gallery")
+
+const totalNFT=1000
+
+for(let i=1;i<=totalNFT;i++){
+
+const nft=document.createElement("div")
+nft.className="nft"
+
+const img=document.createElement("img")
+
+img.src="https://raw.githubusercontent.com/1MASIVO1/MASIVO-METAVERSE/main/images/"+i+".png"
+
+img.onerror=function(){
+nft.remove()
+}
+
+nft.appendChild(img)
+
+gallery.appendChild(nft)
+
+}
+
+</script>
 
 </body>
 
 </html>
-<script src="ranking.js"></script>
-<script src="share.js"></script>
-<script src="chat.js"></script>
