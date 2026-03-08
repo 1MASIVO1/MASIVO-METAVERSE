@@ -27,20 +27,34 @@ z-index:1;
 
 .titulo{
 text-align:center;
-font-size:60px;
+font-size:80px;
 margin-top:40px;
-color:#00ffff;
-animation:logoEnergy 6s linear infinite;
+font-weight:bold;
+color:white;
+
 text-shadow:
-0 0 10px #00ffff,
+0 0 10px #ffffff,
 0 0 20px #00ffff,
-0 0 40px #00ffff;
+0 0 40px #00ffff,
+0 0 80px #00ffff;
+
+animation:logoPulse 4s infinite;
 }
 
-@keyframes logoEnergy{
-0%{letter-spacing:2px}
-50%{letter-spacing:6px}
-100%{letter-spacing:2px}
+@keyframes logoPulse{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.05);
+}
+
+100%{
+transform:scale(1);
+}
+
 }
 
 .grid{
@@ -90,9 +104,11 @@ border-radius:6px;
 }
 
 @keyframes flotar{
+
 0%{transform:translateY(0)}
 50%{transform:translateY(-10px)}
 100%{transform:translateY(0)}
+
 }
 
 .logros{
@@ -107,11 +123,4 @@ box-shadow:
 0 0 30px #00ffff,
 0 0 45px #00ffff;
 transition:0.4s;
-}
-
-.likeGlow{
-box-shadow:
-0 0 20px #ff00ff,
-0 0 40px #ff00ff,
-0 0 60px #ff00ff;
 }
