@@ -1,28 +1,164 @@
-/* TODO TU CODIGO ORIGINAL */
+/* ============================ */
+/* CONFIG SUPABASE (si usas DB) */
+/* ============================ */
 
-/* RANKING REAL */
+const SUPABASE_URL=https://rnkuxwsuztewgbdmjyxt.supabase.co
+const SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
 
-async function ordenarNFT(){
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)
 
-let {data}=await supabase.from("stats").select("*")
+/* ============================ */
+/* CREAR NFT GRID AUTOMATICO */
+/* ============================ */
 
-let likes=data.filter(x=>x.tipo==="like").length
+const grid=document.getElementById("gridNFT")
 
-let grid=document.querySelector(".grid")
+for(let i=1;i<=9;i++){
 
-let items=[...document.querySelectorAll(".nft")]
+let nft=document.createElement("div")
+nft.className="nft"
+nft.dataset.id=i
 
-items.sort(()=>Math.random()-0.5 + likes)
+nft.innerHTML=`
 
-items.forEach(el=>grid.appendChild(el))
+<img src="images/nft${i}.png">
+
+<div class="logros">⭐ <span class="logroNum">0</span></div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+
+<button class="btnLike">❤️</button>
+<button class="btnView">👁</button>
+<button class="btnDownload">⬇</button>
+<button class="btnShare">🔗</button>
+
+</div>
+`
+
+grid.appendChild(nft)
 
 }
 
-setInterval(ordenarNFT,5000)
+/* ============================ */
+/* EVENTOS */
+/* ============================ */
 
+document.addEventListener("click",(e)=>{
 
+let nft=e.target.closest(".nft")
+if(!nft) return
 
-/* SISTEMA DE LOGROS */
+if(e.target.classList.contains("btnLike")) like(nft)
+if(e.target.classList.contains("btnView")) vista(nft)
+if(e.target.classList.contains("btnDownload")) descargar(nft)
+if(e.target.classList.contains("btnShare")) share(nft)
+
+if(e.target.tagName==="IMG") abrirNFT(e.target)
+
+})
+
+/* ============================ */
+/* FUNCIONES CONTADORES */
+/* ============================ */
+
+function actualizarContador(el){
+
+let num=parseInt(el.innerText.replace(/\D/g,''))
+
+num++
+
+return num
+
+}
+
+/* ============================ */
+
+function like(nft){
+
+let el=nft.querySelector(".likes")
+
+let num=actualizarContador(el)
+
+el.innerText="❤️ "+num
+
+}
+
+/* ============================ */
+
+function vista(nft){
+
+let el=nft.querySelector(".views")
+
+let num=actualizarContador(el)
+
+el.innerText="👁 "+num
+
+}
+
+/* ============================ */
+
+function descargar(nft){
+
+let el=nft.querySelector(".downloads")
+
+let num=actualizarContador(el)
+
+el.innerText="⬇ "+num
+
+let img=nft.querySelector("img").src
+
+let a=document.createElement("a")
+
+a.href=img
+a.download="masivo-nft.png"
+
+a.click()
+
+}
+
+/* ============================ */
+
+function share(nft){
+
+let el=nft.querySelector(".shares")
+
+let num=actualizarContador(el)
+
+el.innerText="🔗 "+num
+
+if(navigator.share){
+
+navigator.share({
+title:"MASIVO NFT",
+url:window.location.href
+})
+
+}
+
+}
+
+/* ============================ */
+
+function abrirNFT(img){
+
+let nft=img.closest(".nft")
+
+vista(nft)
+
+window.open(img.src,"_blank")
+
+}
+
+/* ============================ */
+/* SISTEMA LOGROS */
+/* ============================ */
 
 function actualizarLogros(){
 
@@ -37,6 +173,7 @@ let downloads=parseInt(nft.querySelector(".downloads").innerText.replace(/\D/g,'
 let shares=parseInt(nft.querySelector(".shares").innerText.replace(/\D/g,''))
 
 let logros=
+
 Math.floor(likes/100)+
 Math.floor(views/100)+
 Math.floor(downloads/100)+
@@ -56,99 +193,26 @@ nft.classList.add("aura")
 
 setInterval(actualizarLogros,2000)
 
+/* ============================ */
+/* RANKING DINAMICO */
+/* ============================ */
 
+function ordenarNFT(){
 
-/* ================= */
-/* FUNCIONES BOTONES */
-/* ================= */
+let items=[...document.querySelectorAll(".nft")]
 
-function like(btn){
+items.sort((a,b)=>{
 
-let nft=btn.closest(".nft")
+let likesA=parseInt(a.querySelector(".likes").innerText.replace(/\D/g,''))
 
-let el=nft.querySelector(".likes")
+let likesB=parseInt(b.querySelector(".likes").innerText.replace(/\D/g,''))
 
-let num=parseInt(el.innerText.replace(/\D/g,''))
+return likesB-likesA
 
-num++
+})
 
-el.innerText="❤️ "+num
-
-}
-
-
-
-function vista(){
-
-let btn=event.target
-let nft=btn.closest(".nft")
-
-let el=nft.querySelector(".views")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="👁 "+num
+items.forEach(el=>grid.appendChild(el))
 
 }
 
-
-
-function descargar(){
-
-let btn=event.target
-let nft=btn.closest(".nft")
-
-let el=nft.querySelector(".downloads")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="⬇ "+num
-
-let img=nft.querySelector("img").src
-
-let a=document.createElement("a")
-
-a.href=img
-a.download="masivo-nft.png"
-a.click()
-
-}
-
-
-
-function share(){
-
-let btn=event.target
-let nft=btn.closest(".nft")
-
-let el=nft.querySelector(".shares")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="🔗 "+num
-
-}
-
-
-
-function abrirNFT(img){
-
-let nft=img.closest(".nft")
-
-let el=nft.querySelector(".views")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="👁 "+num
-
-window.open(img.src,"_blank")
-
-}
+setInterval(ordenarNFT,5000)
