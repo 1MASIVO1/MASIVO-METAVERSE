@@ -5,6 +5,7 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
 
+
 // CARGAR STATS AL ABRIR
 async function cargarStats(){
 
@@ -57,15 +58,17 @@ sumarView(id,nft)
 
 // CERRAR NFT
 function cerrarNFT(){
-
 document.getElementById("nftModal").style.display = "none"
-
 }
 
 
 
-// SUMAR VIEW (CORREGIDO)
+// SUMAR VIEW (ANTI SPAM)
 async function sumarView(id,nft){
+
+if(localStorage.getItem("view_"+id)) return
+
+localStorage.setItem("view_"+id,true)
 
 const { data, error } = await supabaseClient
 .from("nfts")
@@ -94,13 +97,20 @@ checkLogro(id,nft,views)
 
 
 
-// LIKE
+// LIKE (ANTI SPAM)
 async function like(event,btn){
 
 event.stopPropagation()
 
 let nft = btn.closest(".nft")
 let id = nft.dataset.id
+
+if(localStorage.getItem("like_"+id)){
+alert("Ya diste like a este NFT")
+return
+}
+
+localStorage.setItem("like_"+id,true)
 
 const { data } = await supabaseClient
 .from("nfts")
@@ -131,6 +141,13 @@ event.stopPropagation()
 
 let nft = btn.closest(".nft")
 let id = nft.dataset.id
+
+if(localStorage.getItem("download_"+id)){
+alert("Ya descargaste este NFT")
+return
+}
+
+localStorage.setItem("download_"+id,true)
 
 let img = nft.querySelector("img").src
 
@@ -175,6 +192,10 @@ navigator.clipboard.writeText(link)
 
 alert("Link copiado")
 
+if(localStorage.getItem("share_"+id)) return
+
+localStorage.setItem("share_"+id,true)
+
 const { data } = await supabaseClient
 .from("nfts")
 .select("shares")
@@ -197,7 +218,7 @@ checkLogro(id,nft,shares)
 
 
 
-// SISTEMA DE LOGROS
+// SISTEMA DE LOGROS (GLOBAL)
 async function checkLogro(id,nft,total){
 
 if(total % 100 === 0){
