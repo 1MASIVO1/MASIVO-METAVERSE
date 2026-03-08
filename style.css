@@ -6,6 +6,8 @@ color:white;
 overflow-x:hidden;
 }
 
+/* FONDO METAVERSE */
+
 #metaverse{
 position:fixed;
 top:0;
@@ -14,6 +16,8 @@ width:100%;
 height:100%;
 z-index:-3;
 }
+
+/* FUEGOS ARTIFICIALES LOGO */
 
 #fireworks{
 position:fixed;
@@ -25,6 +29,8 @@ pointer-events:none;
 z-index:1;
 }
 
+/* TITULO MASIVO */
+
 .titulo{
 text-align:center;
 font-size:90px;
@@ -32,6 +38,13 @@ margin-top:40px;
 font-weight:bold;
 color:white;
 letter-spacing:6px;
+
+text-shadow:
+0 0 10px white,
+0 0 20px white,
+0 0 40px #00ffff,
+0 0 80px #00ffff;
+
 animation:logoAnim 6s infinite ease-in-out;
 }
 
@@ -51,6 +64,8 @@ transform:scale(1);
 
 }
 
+/* GRID NFT */
+
 .grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -60,14 +75,41 @@ max-width:1200px;
 margin:auto;
 }
 
+/* NFT CARD */
+
 .nft{
 background:#111;
 padding:10px;
 border-radius:12px;
 text-align:center;
+
+border:1px solid rgba(255,255,255,0.1);
+
+box-shadow:
+0 0 10px rgba(255,255,255,0.05);
+
+backdrop-filter:blur(6px);
+
 animation:flotar 6s infinite ease-in-out;
-transition:transform 2s ease;
+
+transition:
+transform 2s ease,
+box-shadow 0.4s ease;
 }
+
+/* HOVER NFT */
+
+.nft:hover{
+
+transform:scale(1.06);
+
+box-shadow:
+0 0 20px rgba(0,255,255,0.4),
+0 0 40px rgba(0,255,255,0.2);
+
+}
+
+/* STATS */
 
 .stats{
 display:flex;
@@ -76,11 +118,23 @@ font-size:12px;
 margin-top:5px;
 }
 
+/* IMAGEN NFT */
+
 .nft img{
 width:100%;
 border-radius:10px;
 cursor:pointer;
+
+transition:transform 0.4s;
 }
+
+.nft img:hover{
+
+transform:scale(1.03);
+
+}
+
+/* BOTONES */
 
 .botones{
 display:flex;
@@ -95,7 +149,25 @@ color:white;
 padding:6px 10px;
 cursor:pointer;
 border-radius:6px;
+
+transition:
+background 0.3s,
+transform 0.2s,
+box-shadow 0.3s;
 }
+
+button:hover{
+
+background:#111;
+
+transform:scale(1.1);
+
+box-shadow:
+0 0 10px white;
+
+}
+
+/* ANIMACION FLOTAR */
 
 @keyframes flotar{
 
@@ -105,15 +177,37 @@ border-radius:6px;
 
 }
 
+/* LOGROS */
+
 .logros{
 color:#ffd700;
 font-size:14px;
 margin-top:5px;
+
+text-shadow:
+0 0 6px gold;
 }
+
+/* AURA NFT DESBLOQUEADA */
 
 .aura{
 box-shadow:
 0 0 15px white,
-0 0 25px white;
+0 0 25px white,
+0 0 40px #00ffff;
+
 transition:0.4s;
+}
+
+/* EFECTO LIKE */
+
+.likeGlow{
+
+box-shadow:
+0 0 20px #ff0077,
+0 0 40px #ff0077,
+0 0 60px #ff0077;
+
+transition:0.3s;
+
 }
