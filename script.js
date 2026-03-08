@@ -264,3 +264,83 @@ abrirNFT(img)
 }
 
 }
+
+
+
+//////////////////////////////////////////////////////
+// SISTEMA DE ACHIEVEMENTS CON VIDEO (NUEVO)
+//////////////////////////////////////////////////////
+
+async function openAchievements(event,btn){
+
+event.stopPropagation()
+
+let nft = btn.closest(".nft")
+let id = nft.dataset.id
+
+let modal = document.getElementById("achModal")
+let list = document.getElementById("achList")
+
+modal.style.display="flex"
+
+list.innerHTML="Loading..."
+
+const { data, error } = await supabaseClient
+.from("nfts")
+.select("logros")
+.eq("id",id)
+.single()
+
+if(error){
+list.innerHTML="Error loading achievements"
+return
+}
+
+let totalLogros = data.logros || 0
+
+list.innerHTML=""
+
+if(totalLogros===0){
+
+list.innerHTML="No achievements unlocked yet"
+return
+
+}
+
+for(let i=1;i<=totalLogros;i++){
+
+let nivel = i*100
+
+let bloque = document.createElement("div")
+
+bloque.style.marginBottom="25px"
+
+bloque.innerHTML = `
+
+<h3>Achievement ${nivel}</h3>
+
+<video width="100%" controls>
+<source src="videos/logros/${id}_${nivel}.mp4" type="video/mp4">
+</video>
+
+<br><br>
+
+<a href="videos/logros/${id}_${nivel}.mp4" download>
+<button>Download Video</button>
+</a>
+
+`
+
+list.appendChild(bloque)
+
+}
+
+}
+
+
+
+function closeAchievements(){
+
+document.getElementById("achModal").style.display="none"
+
+}
