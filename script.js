@@ -1,6 +1,5 @@
-// CONFIGURACION SUPABASE
-const supabaseUrl = https://rnkuxwsuztewgbdmjyxt.supabase.co
-const supabaseKey = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
+const supabaseUrl = "https://rnkuxwsuztewgbdmjyxt.supabase.co"
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
@@ -9,7 +8,7 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 // CARGAR DATOS
 async function cargarStats(){
 
-let { data, error } = await supabaseClient
+const { data, error } = await supabaseClient
 .from("nfts")
 .select("*")
 
@@ -18,7 +17,7 @@ console.log(error)
 return
 }
 
-data.forEach(nft=>{
+data.forEach(nft => {
 
 let card = document.querySelector(`.nft[data-id='${nft.id}']`)
 
@@ -34,7 +33,7 @@ card.querySelector(".logroNum").innerText = nft.logros
 
 }
 
-window.addEventListener("load",cargarStats)
+window.addEventListener("load", cargarStats)
 
 
 
@@ -58,24 +57,26 @@ sumarView(id,nft)
 
 // CERRAR NFT
 function cerrarNFT(){
-document.getElementById("nftModal").style.display="none"
+
+document.getElementById("nftModal").style.display = "none"
+
 }
 
 
 
-// VIEWS
+// SUMAR VIEW
 async function sumarView(id,nft){
 
 let span = nft.querySelector(".views")
 
-let num = parseInt(span.innerText.replace("👁","")) + 1
+let views = parseInt(span.innerText.replace("👁","")) + 1
 
-span.innerText = "👁 " + num
+span.innerText = "👁 " + views
 
 await supabaseClient
 .from("nfts")
-.update({views:num})
-.eq("id",id)
+.update({ views: views })
+.eq("id", id)
 
 }
 
@@ -91,20 +92,20 @@ let id = nft.dataset.id
 
 let span = nft.querySelector(".likes")
 
-let num = parseInt(span.innerText.replace("❤️","")) + 1
+let likes = parseInt(span.innerText.replace("❤️","")) + 1
 
-span.innerText = "❤️ " + num
+span.innerText = "❤️ " + likes
 
 await supabaseClient
 .from("nfts")
-.update({likes:num})
-.eq("id",id)
+.update({ likes: likes })
+.eq("id", id)
 
 }
 
 
 
-// DOWNLOAD
+// DESCARGAR
 async function descargar(event,btn){
 
 event.stopPropagation()
@@ -121,14 +122,14 @@ a.click()
 
 let span = nft.querySelector(".downloads")
 
-let num = parseInt(span.innerText.replace("⬇","")) + 1
+let downloads = parseInt(span.innerText.replace("⬇","")) + 1
 
-span.innerText = "⬇ " + num
+span.innerText = "⬇ " + downloads
 
 await supabaseClient
 .from("nfts")
-.update({downloads:num})
-.eq("id",id)
+.update({ downloads: downloads })
+.eq("id", id)
 
 }
 
@@ -150,13 +151,13 @@ alert("Link copiado")
 
 let span = nft.querySelector(".shares")
 
-let num = parseInt(span.innerText.replace("🔗","")) + 1
+let shares = parseInt(span.innerText.replace("🔗","")) + 1
 
-span.innerText = "🔗 " + num
+span.innerText = "🔗 " + shares
 
 await supabaseClient
 .from("nfts")
-.update({shares:num})
-.eq("id",id)
+.update({ shares: shares })
+.eq("id", id)
 
 }
