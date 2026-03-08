@@ -9,17 +9,7 @@
 
 <body>
 
-<!-- SALUDO INICIAL -->
-<div id="saludoInicial">
-<h1>MASIVO</h1>
-<p>Bienvenido al Metaverse</p>
-</div>
-
 <canvas id="fireworks"></canvas>
-
-<video autoplay muted loop id="videoFondo">
-<source src="video.mp4" type="video/mp4">
-</video>
 
 <div class="overlay"></div>
 
@@ -193,14 +183,6 @@
 
 <script src="fireworks.js"></script>
 <script src="script.js"></script>
-
-<script>
-setTimeout(()=>{
-let saludo=document.getElementById("saludoInicial")
-saludo.classList.add("ocultarSaludo")
-setTimeout(()=>{saludo.remove()},1000)
-},3000)
-</script>
 
 </body>
 </html>
