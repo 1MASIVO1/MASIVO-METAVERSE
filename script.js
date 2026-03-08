@@ -1,191 +1,181 @@
-function getData(tipo,id){
+// SUPABASE CONNECTION
+const SUPABASE_URL = "TU_URL_SUPABASE";
+const SUPABASE_KEY = "TU_PUBLIC_ANON_KEY";
 
-return parseInt(localStorage.getItem(tipo+"_"+id)) || 0
-
-}
-
-function setData(tipo,id,valor){
-
-localStorage.setItem(tipo+"_"+id,valor)
-
-document.getElementById(tipo+"-"+id).innerText=valor
-
-verificarLogros(id)
-
-}
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
+// ABRIR NFT
+function abrirNFT(img){
 
-function likeNFT(e,id){
+let modal = document.getElementById("nftModal");
+let modalImg = document.getElementById("modalImg");
 
-e.stopPropagation()
+modal.style.display = "flex";
+modalImg.src = img.src;
 
-let v=getData("likes",id)+1
+let nft = img.closest(".nft");
+let id = nft.dataset.id;
 
-setData("likes",id,v)
+contarVista(nft,id);
 
 }
 
 
-
-function descargarNFT(e,id,img){
-
-e.stopPropagation()
-
-let v=getData("descargas",id)+1
-
-setData("descargas",id,v)
-
-let a=document.createElement("a")
-
-a.href=img
-
-a.download="nft.png"
-
-a.click()
-
-}
-
-
-
-function compartirNFT(e,id){
-
-e.stopPropagation()
-
-let link=window.location.origin+
-window.location.pathname+
-"?nft="+id
-
-navigator.clipboard.writeText(link)
-
-alert("Link copiado")
-
-let v=getData("compartir",id)+1
-
-setData("compartir",id,v)
-
-}
-
-
-
-function abrirNFT(e,id,img){
-
-if(e)e.stopPropagation()
-
-document.getElementById("modalNFTimg").src=img
-
-document.getElementById("nftModal").style.display="flex"
-
-let v=getData("vistas",id)+1
-
-setData("vistas",id,v)
-
-}
-
-
-
+// CERRAR NFT
 function cerrarNFT(){
+document.getElementById("nftModal").style.display = "none";
+}
 
-document.getElementById("nftModal").style.display="none"
+
+// LIKE
+async function like(btn){
+
+let nft = btn.closest(".nft");
+let id = nft.dataset.id;
+
+let span = nft.querySelector(".likes");
+let num = parseInt(span.innerText.replace("❤️","")) + 1;
+
+span.innerText = "❤️ " + num;
+
+await supabase
+.from("nft_stats")
+.update({likes:num})
+.eq("id",id);
+
+checkLogros(nft,num,"likes");
 
 }
 
 
+// CONTAR VISTA SOLO AL ABRIR
+async function contarVista(nft,id){
 
-function verificarLogros(id){
+let span = nft.querySelector(".views");
+let num = parseInt(span.innerText.replace("👁","")) + 1;
 
-let likes=getData("likes",id)
+span.innerText = "👁 " + num;
 
-let vistas=getData("vistas",id)
+await supabase
+.from("nft_stats")
+.update({views:num})
+.eq("id",id);
 
-let descargas=getData("descargas",id)
-
-let compartir=getData("compartir",id)
-
-let total=likes+vistas+descargas+compartir
-
-let estrellas=Math.floor(total/100)
-
-localStorage.setItem("estrellas_"+id,estrellas)
-
-document.getElementById("stars-"+id).innerText=estrellas
-
-if(total%100==0){
-
-animacionLogro()
-
-}
+checkLogros(nft,num,"views");
 
 }
 
 
+// BOTON VISTA MANUAL
+function vista(btn){
 
-function animacionLogro(){
+let nft = btn.closest(".nft");
+let id = nft.dataset.id;
 
-let div=document.createElement("div")
+contarVista(nft,id);
 
-div.className="logroAnim"
+}
 
-div.innerText="🏆 LOGRO DESBLOQUEADO"
 
-document.body.appendChild(div)
+// DESCARGAR
+async function descargar(btn){
+
+let nft = btn.closest(".nft");
+let id = nft.dataset.id;
+
+let img = nft.querySelector("img").src;
+
+let a = document.createElement("a");
+a.href = img;
+a.download = "nft.png";
+a.click();
+
+let span = nft.querySelector(".downloads");
+let num = parseInt(span.innerText.replace("⬇","")) + 1;
+
+span.innerText = "⬇ " + num;
+
+await supabase
+.from("nft_stats")
+.update({downloads:num})
+.eq("id",id);
+
+checkLogros(nft,num,"downloads");
+
+}
+
+
+// SHARE
+async function share(btn){
+
+let nft = btn.closest(".nft");
+let id = nft.dataset.id;
+
+let url = window.location.href + "?nft=" + id;
+
+navigator.clipboard.writeText(url);
+
+alert("Link copiado para compartir!");
+
+let span = nft.querySelector(".shares");
+let num = parseInt(span.innerText.replace("🔗","")) + 1;
+
+span.innerText = "🔗 " + num;
+
+await supabase
+.from("nft_stats")
+.update({shares:num})
+.eq("id",id);
+
+checkLogros(nft,num,"shares");
+
+}
+
+
+// SISTEMA DE LOGROS
+function checkLogros(nft,num,tipo){
+
+let logro = nft.querySelector(".logroNum");
+
+let puntos = parseInt(logro.innerText);
+
+if(num === 10) puntos += 1;
+if(num === 50) puntos += 2;
+if(num === 100) puntos += 3;
+
+logro.innerText = puntos;
+
+if(num === 10 || num === 50 || num === 100){
+
+nft.classList.add("logroAnim");
 
 setTimeout(()=>{
+nft.classList.remove("logroAnim")
+},1000);
 
-div.remove()
-
-},2000)
+}
 
 }
 
 
+// ABRIR NFT DESDE LINK
+window.onload = function(){
 
-function abrirLogros(e,id){
+let params = new URLSearchParams(window.location.search);
+let nftID = params.get("nft");
 
-if(e)e.stopPropagation()
+if(nftID){
 
-let cont=document.getElementById("listaLogros")
-
-cont.innerHTML=""
-
-let estrellas=parseInt(localStorage.getItem("estrellas_"+id)) || 0
-
-for(let i=1;i<=estrellas;i++){
-
-let box=document.createElement("div")
-
-box.className="logroBox"
-
-box.innerText="Logro "+i+" desbloqueado"
-
-cont.appendChild(box)
-
-}
-
-document.getElementById("logrosModal").style.display="flex"
-
-}
-
-
-
-function cerrarLogros(){
-
-document.getElementById("logrosModal").style.display="none"
-
-}
-
-
-
-window.onload=function(){
-
-let params=new URLSearchParams(window.location.search)
-
-let nft=params.get("nft")
+let nft = document.querySelector(`.nft[data-id='${nftID}']`);
 
 if(nft){
 
-abrirNFT(null,nft,"images/1.png")
+let img = nft.querySelector("img");
+abrirNFT(img);
 
 }
 
 }
+
+};
