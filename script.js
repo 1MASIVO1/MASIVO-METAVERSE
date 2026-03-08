@@ -1,3 +1,4 @@
+// CONEXION SUPABASE
 const SUPABASE_URL = https://rnkuxwsuztewgbdmjyxt.supabase.co
 const SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
 
@@ -5,14 +6,16 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
 
 
-// CARGAR DATOS AL ABRIR PAGINA
-async function cargarStats(){
+// CARGAR DATOS GUARDADOS
+async function cargarDatos(){
 
 let { data } = await db.from("nft_stats").select("*")
 
-data.forEach(nft=>{
+data.forEach(nft => {
 
 let card = document.querySelector(`.nft[data-id="${nft.id}"]`)
+
+if(card){
 
 card.querySelector(".likes").innerText = "❤️ " + nft.likes
 card.querySelector(".views").innerText = "👁 " + nft.views
@@ -20,13 +23,11 @@ card.querySelector(".downloads").innerText = "⬇ " + nft.downloads
 card.querySelector(".shares").innerText = "🔗 " + nft.shares
 card.querySelector(".logroNum").innerText = nft.logros
 
+}
+
 })
 
 }
-
-
-
-window.onload = cargarStats
 
 
 
@@ -42,20 +43,22 @@ modalImg.src = img.src
 let nft = img.closest(".nft")
 let id = nft.dataset.id
 
-let views = parseInt(nft.querySelector(".views").innerText.replace("👁","")) + 1
+let views = nft.querySelector(".views")
+let num = parseInt(views.innerText.replace("👁","")) + 1
 
-nft.querySelector(".views").innerText = "👁 " + views
+views.innerText = "👁 " + num
 
 await db.from("nft_stats")
-.update({views:views})
+.update({views:num})
 .eq("id",id)
 
-checkLogro(nft)
+checkViewsLogro(nft,num)
 
 }
 
 
 
+// CERRAR NFT
 function cerrarNFT(){
 
 document.getElementById("nftModal").style.display = "none"
@@ -72,15 +75,17 @@ event.stopPropagation()
 let nft = btn.closest(".nft")
 let id = nft.dataset.id
 
-let likes = parseInt(nft.querySelector(".likes").innerText.replace("❤️","")) + 1
+let span = nft.querySelector(".likes")
 
-nft.querySelector(".likes").innerText = "❤️ " + likes
+let num = parseInt(span.innerText.replace("❤️","")) + 1
+
+span.innerText = "❤️ " + num
 
 await db.from("nft_stats")
-.update({likes:likes})
+.update({likes:num})
 .eq("id",id)
 
-checkLogro(nft)
+checkLikeLogro(nft,num)
 
 }
 
@@ -101,15 +106,17 @@ a.href = img
 a.download = "nft.png"
 a.click()
 
-let downloads = parseInt(nft.querySelector(".downloads").innerText.replace("⬇","")) + 1
+let span = nft.querySelector(".downloads")
 
-nft.querySelector(".downloads").innerText = "⬇ " + downloads
+let num = parseInt(span.innerText.replace("⬇","")) + 1
+
+span.innerText = "⬇ " + num
 
 await db.from("nft_stats")
-.update({downloads:downloads})
+.update({downloads:num})
 .eq("id",id)
 
-checkLogro(nft)
+checkDownloadLogro(nft,num)
 
 }
 
@@ -129,38 +136,151 @@ navigator.clipboard.writeText(link)
 
 alert("Link copiado")
 
-let shares = parseInt(nft.querySelector(".shares").innerText.replace("🔗","")) + 1
+let span = nft.querySelector(".shares")
 
-nft.querySelector(".shares").innerText = "🔗 " + shares
+let num = parseInt(span.innerText.replace("🔗","")) + 1
+
+span.innerText = "🔗 " + num
 
 await db.from("nft_stats")
-.update({shares:shares})
+.update({shares:num})
 .eq("id",id)
 
-checkLogro(nft)
+checkShareLogro(nft,num)
 
 }
 
 
 
-// LOGROS CADA 100
-async function checkLogro(nft){
+// LOGRO LIKE
+function checkLikeLogro(nft,num){
 
-let id = nft.dataset.id
+if(num % 100 === 0){
 
-let likes = parseInt(nft.querySelector(".likes").innerText.replace("❤️",""))
-let views = parseInt(nft.querySelector(".views").innerText.replace("👁",""))
-let downloads = parseInt(nft.querySelector(".downloads").innerText.replace("⬇",""))
-let shares = parseInt(nft.querySelector(".shares").innerText.replace("🔗",""))
+let logro = nft.querySelector(".logroNum")
 
-let total = likes + views + downloads + shares
+logro.innerText = parseInt(logro.innerText) + 1
 
-let logros = Math.floor(total/100)
+animacionLike(nft)
 
-nft.querySelector(".logroNum").innerText = logros
+}
 
-await db.from("nft_stats")
-.update({logros:logros})
-.eq("id",id)
+}
+
+
+// LOGRO VIEWS
+function checkViewsLogro(nft,num){
+
+if(num % 100 === 0){
+
+let logro = nft.querySelector(".logroNum")
+
+logro.innerText = parseInt(logro.innerText) + 1
+
+animacionViews(nft)
+
+}
+
+}
+
+
+// LOGRO DOWNLOAD
+function checkDownloadLogro(nft,num){
+
+if(num % 100 === 0){
+
+let logro = nft.querySelector(".logroNum")
+
+logro.innerText = parseInt(logro.innerText) + 1
+
+animacionDownload(nft)
+
+}
+
+}
+
+
+// LOGRO SHARE
+function checkShareLogro(nft,num){
+
+if(num % 100 === 0){
+
+let logro = nft.querySelector(".logroNum")
+
+logro.innerText = parseInt(logro.innerText) + 1
+
+animacionShare(nft)
+
+}
+
+}
+
+
+
+// ANIMACIONES
+function animacionLike(nft){
+
+nft.classList.add("likeAnim")
+
+setTimeout(()=>{
+nft.classList.remove("likeAnim")
+},1000)
+
+}
+
+function animacionViews(nft){
+
+nft.classList.add("viewAnim")
+
+setTimeout(()=>{
+nft.classList.remove("viewAnim")
+},1000)
+
+}
+
+function animacionDownload(nft){
+
+nft.classList.add("downloadAnim")
+
+setTimeout(()=>{
+nft.classList.remove("downloadAnim")
+},1000)
+
+}
+
+function animacionShare(nft){
+
+nft.classList.add("shareAnim")
+
+setTimeout(()=>{
+nft.classList.remove("shareAnim")
+},1000)
+
+}
+
+
+
+// ABRIR NFT DESDE LINK + CARGAR DATOS
+window.onload = async function(){
+
+await cargarDatos()
+
+let params = new URLSearchParams(window.location.search)
+
+let nftID = params.get("nft")
+
+if(nftID){
+
+let nft = document.querySelector(`.nft[data-id='${nftID}']`)
+
+if(nft){
+
+let img = nft.querySelector("img")
+
+abrirNFT(img)
+
+}
+
+}
 
 }
