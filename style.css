@@ -1,18 +1,10 @@
+
 body{
 margin:0;
 font-family:Arial;
 background:black;
 color:white;
 overflow-x:hidden;
-}
-
-#metaverse{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:-3;
 }
 
 #fireworks{
@@ -25,29 +17,31 @@ pointer-events:none;
 z-index:1;
 }
 
-.titulo{
-text-align:center;
-font-size:90px;
-margin-top:40px;
-font-weight:bold;
-color:white;
-letter-spacing:6px;
-
-text-shadow:
-0 0 10px white,
-0 0 20px white,
-0 0 40px #00ffff,
-0 0 80px #00ffff;
-
-animation:logoAnim 6s infinite ease-in-out;
+#videoFondo{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-2;
 }
 
-@keyframes logoAnim{
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+z-index:-1;
+}
 
-0%{transform:scale(1);}
-50%{transform:scale(1.06);}
-100%{transform:scale(1);}
-
+.titulo{
+text-align:center;
+font-size:60px;
+margin-top:40px;
+color:#00ffff;
 }
 
 .grid{
@@ -64,27 +58,7 @@ background:#111;
 padding:10px;
 border-radius:12px;
 text-align:center;
-
-border:1px solid rgba(255,255,255,0.1);
-
-box-shadow:
-0 0 10px rgba(255,255,255,0.05);
-
 animation:flotar 6s infinite ease-in-out;
-
-transition:
-transform 2s ease,
-box-shadow 0.4s ease;
-}
-
-.nft:hover{
-
-transform:scale(1.06);
-
-box-shadow:
-0 0 20px rgba(0,255,255,0.4),
-0 0 40px rgba(0,255,255,0.2);
-
 }
 
 .stats{
@@ -115,17 +89,53 @@ cursor:pointer;
 border-radius:6px;
 }
 
-button:hover{
-background:#111;
+#ranking{
+max-width:400px;
+margin:auto;
+padding:20px;
+}
+
+#chatBox{
+max-width:400px;
+height:200px;
+overflow:auto;
+border:1px solid white;
+margin:auto;
+padding:10px;
 }
 
 @keyframes flotar{
-
 0%{transform:translateY(0)}
 50%{transform:translateY(-10px)}
 100%{transform:translateY(0)}
-
 }
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal img{
+max-width:80%;
+border-radius:20px;
+animation:zoom 0.5s;
+}
+
+@keyframes zoom{
+from{transform:scale(0.5)}
+to{transform:scale(1)}
+}
+
+/* ========================= */
+/* AGREGADO PARA LOGROS NFT */
+/* ========================= */
 
 .logros{
 color:#ffd700;
@@ -133,11 +143,10 @@ font-size:14px;
 margin-top:5px;
 }
 
-.likeGlow{
-
+.aura{
 box-shadow:
-0 0 20px #ff0077,
-0 0 40px #ff0077,
-0 0 60px #ff0077;
-
+0 0 15px #00ffff,
+0 0 30px #00ffff,
+0 0 45px #00ffff;
+transition:0.4s;
 }
