@@ -1,7 +1,3 @@
-/* ========================= */
-/* CONEXION SUPABASE MASIVO */
-/* ========================= */
-
 const supabaseUrl = "https://rnkuxwsuztewgbdmjyxt.supabase.co"
 
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
@@ -9,10 +5,6 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
 
 
-
-/* ================= */
-/* RANKING REAL */
-/* ================= */
 
 async function ordenarNFT(){
 
@@ -33,10 +25,6 @@ items.forEach(el=>grid.appendChild(el))
 setInterval(ordenarNFT,5000)
 
 
-
-/* ================= */
-/* SISTEMA DE LOGROS */
-/* ================= */
 
 function actualizarLogros(){
 
@@ -59,9 +47,7 @@ Math.floor(shares/100)
 nft.querySelector(".logroNum").innerText=logros
 
 if(logros>0){
-
 nft.classList.add("aura")
-
 }
 
 })
@@ -71,10 +57,6 @@ nft.classList.add("aura")
 setInterval(actualizarLogros,2000)
 
 
-
-/* ================= */
-/* FUNCIONES BOTONES */
-/* ================= */
 
 function like(btn){
 
@@ -154,7 +136,7 @@ let img=nft.querySelector("img").src
 
 navigator.clipboard.writeText(img)
 
-alert("Link copiado para compartir 🚀")
+alert("Link copiado 🚀")
 
 supabase.from("stats").insert({tipo:"share"})
 
