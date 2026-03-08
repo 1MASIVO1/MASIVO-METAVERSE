@@ -1,6 +1,6 @@
 const supabaseUrl="https://rnkuxwsuztewgbdmjyxt.supabase.co"
 
-const supabaseKey="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
+const supabaseKey="TU_SUPABASE_KEY"
 
 const supabase=window.supabase.createClient(supabaseUrl,supabaseKey)
 
@@ -42,7 +42,10 @@ num++
 
 el.innerText="❤️ "+num
 
-supabase.from("stats").insert({tipo:"like"})
+supabase.from("stats").insert({
+tipo:"like",
+nft_id:nft.dataset.id
+})
 
 }
 
@@ -60,7 +63,10 @@ num++
 
 el.innerText="👁 "+num
 
-supabase.from("stats").insert({tipo:"view"})
+supabase.from("stats").insert({
+tipo:"view",
+nft_id:nft.dataset.id
+})
 
 }
 
@@ -85,7 +91,10 @@ a.href=img
 a.download="masivo-nft.png"
 a.click()
 
-supabase.from("stats").insert({tipo:"download"})
+supabase.from("stats").insert({
+tipo:"download",
+nft_id:nft.dataset.id
+})
 
 }
 
@@ -121,7 +130,10 @@ alert("Link copiado 🚀")
 
 }
 
-supabase.from("stats").insert({tipo:"share"})
+supabase.from("stats").insert({
+tipo:"share",
+nft_id:nft.dataset.id
+})
 
 }
 
@@ -141,6 +153,9 @@ el.innerText="👁 "+num
 
 window.open(img.src,"_blank")
 
-supabase.from("stats").insert({tipo:"view"})
+supabase.from("stats").insert({
+tipo:"view",
+nft_id:nft.dataset.id
+})
 
 }
