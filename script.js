@@ -1,8 +1,8 @@
-const supabaseUrl = "https://rnkuxwsuztewgbdmjyxt.supabase.co"
+const supabaseUrl="https://rnkuxwsuztewgbdmjyxt.supabase.co"
 
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
+const supabaseKey="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
+const supabase=window.supabase.createClient(supabaseUrl,supabaseKey)
 
 
 
@@ -16,7 +16,7 @@ let grid=document.querySelector(".grid")
 
 let items=[...document.querySelectorAll(".nft")]
 
-items.sort(()=>Math.random()-0.5 + likes)
+items.sort(()=>Math.random()-0.5+likes)
 
 items.forEach(el=>grid.appendChild(el))
 
@@ -161,3 +161,45 @@ supabase.from("stats").insert({tipo:"view"})
 window.open(img.src,"_blank")
 
 }
+
+
+
+/* TOP MASIVO */
+
+function actualizarRanking(){
+
+let nfts=[...document.querySelectorAll(".nft")]
+
+let ranking=nfts.map(nft=>{
+
+let likes=parseInt(
+nft.querySelector(".likes").innerText.replace(/\D/g,'')
+)
+
+let img=nft.querySelector("img").src
+
+return {likes,img}
+
+})
+
+ranking.sort((a,b)=>b.likes-a.likes)
+
+let cont=document.getElementById("rankingLista")
+
+cont.innerHTML=""
+
+ranking.slice(0,3).forEach((r,i)=>{
+
+let div=document.createElement("div")
+
+div.innerHTML=
+"#"+(i+1)+" ❤️"+r.likes+
+"<br><img src='"+r.img+"' width='80'>"
+
+cont.appendChild(div)
+
+})
+
+}
+
+setInterval(actualizarRanking,3000)
