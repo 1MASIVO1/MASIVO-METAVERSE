@@ -13,16 +13,6 @@ margin:0;
 background:black;
 color:white;
 font-family:Arial;
-overflow-x:hidden;
-}
-
-#background{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:-1;
 }
 
 h1{
@@ -38,27 +28,22 @@ gap:20px;
 padding:40px;
 }
 
+.nft{
+background:#111;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
 .nft img{
 width:100%;
 border-radius:10px;
-animation:float 6s ease-in-out infinite;
 }
 
-@keyframes float{
-0%{transform:translateY(0px)}
-50%{transform:translateY(-20px)}
-100%{transform:translateY(0px)}
-}
-
-#rankings{
-padding:40px;
-}
-
-.ranking-box{
-background:#111;
-padding:20px;
-margin-bottom:20px;
-border-radius:10px;
+.share-buttons button{
+margin:5px;
+padding:5px 10px;
+cursor:pointer;
 }
 
 </style>
@@ -67,97 +52,11 @@ border-radius:10px;
 
 <body>
 
-<canvas id="background"></canvas>
-
 <h1>MASIVO METAVERSE</h1>
 
 <div id="nft-gallery"></div>
 
-<section id="rankings">
-
-<div class="ranking-box">
-<h2>TOP LIKES</h2>
-<div id="ranking-likes"></div>
-</div>
-
-<div class="ranking-box">
-<h2>TOP VISTAS</h2>
-<div id="ranking-views"></div>
-</div>
-
-<div class="ranking-box">
-<h2>TOP COMPARTIDOS</h2>
-<div id="ranking-shares"></div>
-</div>
-
-<div class="ranking-box">
-<h2>TOP DESCARGAS</h2>
-<div id="ranking-downloads"></div>
-</div>
-
-</section>
-
-<script type="module">
-
-import { createClient } from "https://esm.sh/@supabase/supabase-js"
-
-const supabase = createClient(
-"TU_SUPABASE_URL",
-"TU_SUPABASE_ANON_KEY"
-)
-
-async function cargarRanking(){
-
-const likes = await supabase
-.from("nft_stats")
-.select("*")
-.order("likes",{ascending:false})
-.limit(10)
-
-const views = await supabase
-.from("nft_stats")
-.select("*")
-.order("views",{ascending:false})
-.limit(10)
-
-const shares = await supabase
-.from("nft_stats")
-.select("*")
-.order("shares",{ascending:false})
-.limit(10)
-
-const downloads = await supabase
-.from("nft_stats")
-.select("*")
-.order("downloads",{ascending:false})
-.limit(10)
-
-mostrarRanking(likes.data,"ranking-likes","❤️")
-mostrarRanking(views.data,"ranking-views","👁️")
-mostrarRanking(shares.data,"ranking-shares","🔗")
-mostrarRanking(downloads.data,"ranking-downloads","⬇️")
-
-}
-
-function mostrarRanking(data,contenedor,icono){
-
-const div=document.getElementById(contenedor)
-
-div.innerHTML=""
-
-data.forEach(nft=>{
-
-const item=document.createElement("div")
-
-item.innerHTML="NFT "+nft.id+" "+icono+" "+(nft.likes || nft.views || nft.shares || nft.downloads)
-
-div.appendChild(item)
-
-})
-
-}
-
-cargarRanking()
+<script>
 
 const gallery=document.getElementById("nft-gallery")
 
@@ -174,9 +73,104 @@ img.onerror=function(){
 nft.remove()
 }
 
+const share=document.createElement("div")
+share.className="share-buttons"
+
+share.innerHTML=`
+<button onclick="shareFacebook(${i})">Facebook</button>
+<button onclick="shareX(${i})">X</button>
+<button onclick="shareReddit(${i})">Reddit</button>
+<button onclick="shareTelegram(${i})">Telegram</button>
+<button onclick="shareWhatsApp(${i})">WhatsApp</button>
+<button onclick="shareLinkedIn(${i})">LinkedIn</button>
+<button onclick="sharePinterest(${i})">Pinterest</button>
+<button onclick="shareTumblr(${i})">Tumblr</button>
+`
+
 nft.appendChild(img)
+nft.appendChild(share)
 
 gallery.appendChild(nft)
+
+}
+
+function shareFacebook(id){
+
+const url="https://tusitio.com/nft/"+id
+
+window.open(
+"https://www.facebook.com/sharer/sharer.php?u="+url
+)
+
+}
+
+function shareX(id){
+
+const url="https://tusitio.com/nft/"+id
+
+window.open(
+"https://twitter.com/intent/tweet?url="+url
+)
+
+}
+
+function shareReddit(id){
+
+const url="https://tusitio.com/nft/"+id
+
+window.open(
+"https://www.reddit.com/submit?url="+url
+)
+
+}
+
+function shareTelegram(id){
+
+const url="https://tusitio.com/nft/"+id
+
+window.open(
+"https://t.me/share/url?url="+url
+)
+
+}
+
+function shareWhatsApp(id){
+
+const url="https://tusitio.com/nft/"+id
+
+window.open(
+"https://api.whatsapp.com/send?text="+url
+)
+
+}
+
+function shareLinkedIn(id){
+
+const url="https://tusitio.com/nft/"+id
+
+window.open(
+"https://www.linkedin.com/sharing/share-offsite/?url="+url
+)
+
+}
+
+function sharePinterest(id){
+
+const url="https://tusitio.com/nft/"+id
+
+window.open(
+"https://pinterest.com/pin/create/button/?url="+url
+)
+
+}
+
+function shareTumblr(id){
+
+const url="https://tusitio.com/nft/"+id
+
+window.open(
+"https://www.tumblr.com/widgets/share/tool?canonicalUrl="+url
+)
 
 }
 
