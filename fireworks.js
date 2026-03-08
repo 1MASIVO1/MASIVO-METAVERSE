@@ -1,68 +1,79 @@
-const canvas=document.getElementById("fireworks")
-const ctx=canvas.getContext("2d")
+const canvas = document.getElementById("fireworks")
+const ctx = canvas.getContext("2d")
 
-canvas.width=window.innerWidth
-canvas.height=200
-
-let particles=[]
-
-function crear(x,y){
-
-for(let i=0;i<40;i++){
-
-particles.push({
-x:x,
-y:y,
-vx:(Math.random()-0.5)*6,
-vy:(Math.random()-0.5)*6,
-life:80,
-color:"rgb("+Math.random()*255+","+Math.random()*255+","+Math.random()*255+")"
-})
-
+function resizeCanvas(){
+    canvas.width = window.innerWidth
+    canvas.height = 220
 }
+
+resizeCanvas()
+
+let particles = []
+
+function crearExplosion(x,y){
+
+    for(let i=0;i<70;i++){
+
+        particles.push({
+            x:x,
+            y:y,
+            vx:(Math.random()-0.5)*8,
+            vy:(Math.random()-0.5)*8,
+            life:100,
+            size:Math.random()*3+1,
+            color:`hsl(${Math.random()*360},100%,60%)`
+        })
+
+    }
 
 }
 
 function explosionLogo(){
 
-let logo=document.getElementById("tituloLogo")
-let rect=logo.getBoundingClientRect()
+    const logo = document.getElementById("tituloLogo")
 
-let x=rect.left+rect.width/2
-let y=rect.top+rect.height/2
+    if(!logo) return
 
-crear(x,y)
+    const rect = logo.getBoundingClientRect()
+
+    const canvasRect = canvas.getBoundingClientRect()
+
+    const x = rect.left + rect.width/2 - canvasRect.left
+    const y = rect.top + rect.height/2 - canvasRect.top
+
+    crearExplosion(x,y)
 
 }
 
 function animar(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height)
+    ctx.clearRect(0,0,canvas.width,canvas.height)
 
-particles.forEach(p=>{
+    ctx.globalCompositeOperation = "lighter"
 
-p.x+=p.vx
-p.y+=p.vy
-p.life--
+    particles.forEach(p=>{
 
-ctx.fillStyle=p.color
-ctx.fillRect(p.x,p.y,3,3)
+        p.x += p.vx
+        p.y += p.vy
+        p.life--
 
-})
+        ctx.beginPath()
+        ctx.fillStyle = p.color
+        ctx.shadowColor = p.color
+        ctx.shadowBlur = 15
+        ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
+        ctx.fill()
 
-particles=particles.filter(p=>p.life>0)
+    })
 
-requestAnimationFrame(animar)
+    particles = particles.filter(p => p.life > 0)
+
+    requestAnimationFrame(animar)
 
 }
 
-setInterval(explosionLogo,3000)
+setInterval(explosionLogo,2500)
 
 animar()
 
-window.addEventListener("resize",()=>{
-
-canvas.width=window.innerWidth
-canvas.height=200
-
-})
+window.addEventListener("resize",resizeCanvas)
