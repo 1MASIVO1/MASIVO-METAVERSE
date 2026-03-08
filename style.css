@@ -31,13 +31,13 @@ to{ text-shadow:0 0 30px magenta }
 .grid{
 
 display:grid;
-grid-template-columns:repeat(3,260px);
-justify-content:center;
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:30px;
 padding:40px;
+max-width:1200px;
+margin:auto;
 
 }
-
 
 .nft{
 
