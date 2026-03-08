@@ -1,38 +1,70 @@
-const supabaseUrl="https://rnkuxwsuztewgbdmjyxt.supabase.co"
+/* TODO TU CODIGO ORIGINAL */
 
-const supabaseKey="TU_SUPABASE_KEY"
+/* RANKING REAL */
 
-const supabase=window.supabase.createClient(supabaseUrl,supabaseKey)
+async function ordenarNFT(){
+
+let {data}=await supabase.from("stats").select("*")
+
+let likes=data.filter(x=>x.tipo==="like").length
+
+let grid=document.querySelector(".grid")
+
+let items=[...document.querySelectorAll(".nft")]
+
+items.sort(()=>Math.random()-0.5 + likes)
+
+items.forEach(el=>grid.appendChild(el))
+
+}
+
+setInterval(ordenarNFT,5000)
 
 
 
-function moverNFTs(){
+/* SISTEMA DE LOGROS */
+
+function actualizarLogros(){
 
 document.querySelectorAll(".nft").forEach(nft=>{
 
-let x=(Math.random()*20)-10
-let y=(Math.random()*20)-10
-let r=(Math.random()*6)-3
+let likes=parseInt(nft.querySelector(".likes").innerText.replace(/\D/g,''))
 
-nft.style.transform="translate("+x+"px,"+y+"px) rotate("+r+"deg)"
+let views=parseInt(nft.querySelector(".views").innerText.replace(/\D/g,''))
+
+let downloads=parseInt(nft.querySelector(".downloads").innerText.replace(/\D/g,''))
+
+let shares=parseInt(nft.querySelector(".shares").innerText.replace(/\D/g,''))
+
+let logros=
+Math.floor(likes/100)+
+Math.floor(views/100)+
+Math.floor(downloads/100)+
+Math.floor(shares/100)
+
+nft.querySelector(".logroNum").innerText=logros
+
+if(logros>0){
+
+nft.classList.add("aura")
+
+}
 
 })
 
 }
 
-setInterval(moverNFTs,4000)
+setInterval(actualizarLogros,2000)
 
 
+
+/* ================= */
+/* FUNCIONES BOTONES */
+/* ================= */
 
 function like(btn){
 
 let nft=btn.closest(".nft")
-
-nft.classList.add("likeGlow")
-
-setTimeout(()=>{
-nft.classList.remove("likeGlow")
-},800)
 
 let el=nft.querySelector(".likes")
 
@@ -42,17 +74,13 @@ num++
 
 el.innerText="❤️ "+num
 
-supabase.from("stats").insert({
-tipo:"like",
-nft_id:nft.dataset.id
-})
-
 }
 
 
 
-function vista(btn){
+function vista(){
 
+let btn=event.target
 let nft=btn.closest(".nft")
 
 let el=nft.querySelector(".views")
@@ -63,17 +91,13 @@ num++
 
 el.innerText="👁 "+num
 
-supabase.from("stats").insert({
-tipo:"view",
-nft_id:nft.dataset.id
-})
-
 }
 
 
 
-function descargar(btn){
+function descargar(){
 
+let btn=event.target
 let nft=btn.closest(".nft")
 
 let el=nft.querySelector(".downloads")
@@ -87,21 +111,18 @@ el.innerText="⬇ "+num
 let img=nft.querySelector("img").src
 
 let a=document.createElement("a")
+
 a.href=img
 a.download="masivo-nft.png"
 a.click()
-
-supabase.from("stats").insert({
-tipo:"download",
-nft_id:nft.dataset.id
-})
 
 }
 
 
 
-function share(btn){
+function share(){
 
+let btn=event.target
 let nft=btn.closest(".nft")
 
 let el=nft.querySelector(".shares")
@@ -111,29 +132,6 @@ let num=parseInt(el.innerText.replace(/\D/g,''))
 num++
 
 el.innerText="🔗 "+num
-
-let img=nft.querySelector("img").src
-
-if(navigator.share){
-
-navigator.share({
-title:"MASIVO NFT",
-text:"Mira este NFT del metaverso MASIVO",
-url:img
-})
-
-}else{
-
-navigator.clipboard.writeText(img)
-
-alert("Link copiado 🚀")
-
-}
-
-supabase.from("stats").insert({
-tipo:"share",
-nft_id:nft.dataset.id
-})
 
 }
 
@@ -152,10 +150,5 @@ num++
 el.innerText="👁 "+num
 
 window.open(img.src,"_blank")
-
-supabase.from("stats").insert({
-tipo:"view",
-nft_id:nft.dataset.id
-})
 
 }
