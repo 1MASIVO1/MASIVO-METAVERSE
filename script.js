@@ -6,6 +6,29 @@ const supabase=window.supabase.createClient(supabaseUrl,supabaseKey)
 
 
 
+/* ========================= */
+/* MOVIMIENTO METAVERSO NFT */
+/* ========================= */
+
+function moverNFTs(){
+
+document.querySelectorAll(".nft").forEach(nft=>{
+
+let x=(Math.random()*20)-10
+let y=(Math.random()*20)-10
+let r=(Math.random()*6)-3
+
+nft.style.transform=
+"translate("+x+"px,"+y+"px) rotate("+r+"deg)"
+
+})
+
+}
+
+setInterval(moverNFTs,4000)
+
+
+
 async function ordenarNFT(){
 
 let {data}=await supabase.from("stats").select("*")
@@ -161,45 +184,3 @@ supabase.from("stats").insert({tipo:"view"})
 window.open(img.src,"_blank")
 
 }
-
-
-
-/* TOP MASIVO */
-
-function actualizarRanking(){
-
-let nfts=[...document.querySelectorAll(".nft")]
-
-let ranking=nfts.map(nft=>{
-
-let likes=parseInt(
-nft.querySelector(".likes").innerText.replace(/\D/g,'')
-)
-
-let img=nft.querySelector("img").src
-
-return {likes,img}
-
-})
-
-ranking.sort((a,b)=>b.likes-a.likes)
-
-let cont=document.getElementById("rankingLista")
-
-cont.innerHTML=""
-
-ranking.slice(0,3).forEach((r,i)=>{
-
-let div=document.createElement("div")
-
-div.innerHTML=
-"#"+(i+1)+" ❤️"+r.likes+
-"<br><img src='"+r.img+"' width='80'>"
-
-cont.appendChild(div)
-
-})
-
-}
-
-setInterval(actualizarRanking,3000)
