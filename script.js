@@ -1,124 +1,46 @@
-/* ========================= */
-/* RANKING AUTOMATICO NFT   */
-/* ========================= */
+function getData(tipo,id){
 
-function ordenarNFT(){
-
-let grid=document.getElementById("gridNFT")
-
-let items=[...document.querySelectorAll(".nft")]
-
-items.sort((a,b)=>{
-
-let likesA=parseInt(a.querySelector(".likes").innerText.replace(/\D/g,''))
-let likesB=parseInt(b.querySelector(".likes").innerText.replace(/\D/g,''))
-
-return likesB-likesA
-
-})
-
-items.forEach(el=>grid.appendChild(el))
+return parseInt(localStorage.getItem(tipo+"_"+id)) || 0
 
 }
 
-setInterval(ordenarNFT,5000)
+function setData(tipo,id,valor){
 
+localStorage.setItem(tipo+"_"+id,valor)
 
+document.getElementById(tipo+"-"+id).innerText=valor
 
-/* ========================= */
-/* SISTEMA DE LOGROS        */
-/* ========================= */
-
-function actualizarLogros(){
-
-document.querySelectorAll(".nft").forEach(nft=>{
-
-let likes=parseInt(nft.querySelector(".likes").innerText.replace(/\D/g,''))
-let views=parseInt(nft.querySelector(".views").innerText.replace(/\D/g,''))
-let downloads=parseInt(nft.querySelector(".downloads").innerText.replace(/\D/g,''))
-let shares=parseInt(nft.querySelector(".shares").innerText.replace(/\D/g,''))
-
-let logros=
-Math.floor(likes/100)+
-Math.floor(views/100)+
-Math.floor(downloads/100)+
-Math.floor(shares/100)
-
-nft.querySelector(".logroNum").innerText=logros
-
-if(logros>0){
-
-nft.classList.add("aura")
-
-}
-
-})
-
-}
-
-setInterval(actualizarLogros,2000)
-
-
-
-/* ================= */
-/* FUNCIONES BOTONES */
-/* ================= */
-
-function like(btn){
-
-let nft=btn.closest(".nft")
-
-let el=nft.querySelector(".likes")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="❤️ "+num
+verificarLogros(id)
 
 }
 
 
 
-/* ================= */
+function likeNFT(e,id){
 
-function vista(btn){
+e.stopPropagation()
 
-let nft=btn.closest(".nft")
+let v=getData("likes",id)+1
 
-let el=nft.querySelector(".views")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="👁 "+num
+setData("likes",id,v)
 
 }
 
 
 
-/* ================= */
+function descargarNFT(e,id,img){
 
-function descargar(btn){
+e.stopPropagation()
 
-let nft=btn.closest(".nft")
+let v=getData("descargas",id)+1
 
-let el=nft.querySelector(".downloads")
-
-let num=parseInt(el.innerText.replace(/\D/g,''))
-
-num++
-
-el.innerText="⬇ "+num
-
-let img=nft.querySelector("img").src
+setData("descargas",id,v)
 
 let a=document.createElement("a")
 
 a.href=img
 
-a.download="masivo-nft.png"
+a.download="nft.png"
 
 a.click()
 
@@ -126,38 +48,144 @@ a.click()
 
 
 
-/* ================= */
+function compartirNFT(e,id){
 
-function share(btn){
+e.stopPropagation()
 
-let nft=btn.closest(".nft")
+let link=window.location.origin+
+window.location.pathname+
+"?nft="+id
 
-let el=nft.querySelector(".shares")
+navigator.clipboard.writeText(link)
 
-let num=parseInt(el.innerText.replace(/\D/g,''))
+alert("Link copiado")
 
-num++
+let v=getData("compartir",id)+1
 
-el.innerText="🔗 "+num
+setData("compartir",id,v)
 
 }
 
 
 
-/* ================= */
+function abrirNFT(e,id,img){
 
-function abrirNFT(img){
+if(e)e.stopPropagation()
 
-let nft=img.closest(".nft")
+document.getElementById("modalNFTimg").src=img
 
-let el=nft.querySelector(".views")
+document.getElementById("nftModal").style.display="flex"
 
-let num=parseInt(el.innerText.replace(/\D/g,''))
+let v=getData("vistas",id)+1
 
-num++
+setData("vistas",id,v)
 
-el.innerText="👁 "+num
+}
 
-window.open(img.src,"_blank")
+
+
+function cerrarNFT(){
+
+document.getElementById("nftModal").style.display="none"
+
+}
+
+
+
+function verificarLogros(id){
+
+let likes=getData("likes",id)
+
+let vistas=getData("vistas",id)
+
+let descargas=getData("descargas",id)
+
+let compartir=getData("compartir",id)
+
+let total=likes+vistas+descargas+compartir
+
+let estrellas=Math.floor(total/100)
+
+localStorage.setItem("estrellas_"+id,estrellas)
+
+document.getElementById("stars-"+id).innerText=estrellas
+
+if(total%100==0){
+
+animacionLogro()
+
+}
+
+}
+
+
+
+function animacionLogro(){
+
+let div=document.createElement("div")
+
+div.className="logroAnim"
+
+div.innerText="🏆 LOGRO DESBLOQUEADO"
+
+document.body.appendChild(div)
+
+setTimeout(()=>{
+
+div.remove()
+
+},2000)
+
+}
+
+
+
+function abrirLogros(e,id){
+
+if(e)e.stopPropagation()
+
+let cont=document.getElementById("listaLogros")
+
+cont.innerHTML=""
+
+let estrellas=parseInt(localStorage.getItem("estrellas_"+id)) || 0
+
+for(let i=1;i<=estrellas;i++){
+
+let box=document.createElement("div")
+
+box.className="logroBox"
+
+box.innerText="Logro "+i+" desbloqueado"
+
+cont.appendChild(box)
+
+}
+
+document.getElementById("logrosModal").style.display="flex"
+
+}
+
+
+
+function cerrarLogros(){
+
+document.getElementById("logrosModal").style.display="none"
+
+}
+
+
+
+window.onload=function(){
+
+let params=new URLSearchParams(window.location.search)
+
+let nft=params.get("nft")
+
+if(nft){
+
+abrirNFT(null,nft,"images/1.png")
+
+}
 
 }
