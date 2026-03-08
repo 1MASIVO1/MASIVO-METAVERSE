@@ -1,37 +1,18 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js"
+
+const supabase = createClient(
+"TU_SUPABASE_URL",
+"TU_SUPABASE_KEY"
+)
+
 async function enviarMensaje(){
 
-let input=document.getElementById("chatInput")
+const texto=document.getElementById("mensaje").value
 
-let texto=input.value
-
-await supabase
-
-.from("chat")
-
-.insert({mensaje:texto})
-
-input.value=""
+await supabase.from("global_chat").insert([
+{ message:texto }
+])
 
 }
 
-async function cargarChat(){
-
-const {data}=await supabase
-
-.from("chat")
-
-.select("*")
-
-const div=document.getElementById("mensajes")
-
-div.innerHTML=""
-
-data.forEach(m=>{
-
-div.innerHTML+=`<div>${m.mensaje}</div>`
-
-})
-
-}
-
-setInterval(cargarChat,2000)
+document.getElementById("enviar").onclick=enviarMensaje
