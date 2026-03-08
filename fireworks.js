@@ -11,13 +11,13 @@ function crear(){
 let x=Math.random()*canvas.width
 let y=Math.random()*200
 
-for(let i=0;i<25;i++){
+for(let i=0;i<30;i++){
 
 particles.push({
 x:x,
 y:y,
-vx:(Math.random()-0.5)*4,
-vy:(Math.random()-0.5)*4,
+vx:(Math.random()-0.5)*5,
+vy:(Math.random()-0.5)*5,
 life:60
 })
 
