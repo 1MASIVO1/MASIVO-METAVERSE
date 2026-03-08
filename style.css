@@ -1,91 +1,143 @@
-const canvas = document.getElementById("fireworks")
-const ctx = canvas.getContext("2d")
+body{
+margin:0;
+font-family:Arial;
+background:black;
+color:white;
+overflow-x:hidden;
+}
 
-function resizeCanvas(){
+#metaverse{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-3;
+}
 
-canvas.width=window.innerWidth
-canvas.height=220
+#fireworks{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:200px;
+pointer-events:none;
+z-index:1;
+}
+
+.titulo{
+text-align:center;
+font-size:90px;
+margin-top:40px;
+font-weight:bold;
+color:white;
+letter-spacing:6px;
+
+text-shadow:
+0 0 10px white,
+0 0 20px white,
+0 0 40px #00ffff,
+0 0 80px #00ffff;
+
+animation:logoAnim 6s infinite ease-in-out;
+}
+
+@keyframes logoAnim{
+
+0%{transform:scale(1);}
+50%{transform:scale(1.06);}
+100%{transform:scale(1);}
 
 }
 
-resizeCanvas()
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:30px;
+padding:40px;
+max-width:1200px;
+margin:auto;
+}
 
-let particles=[]
+.nft{
+background:#111;
+padding:10px;
+border-radius:12px;
+text-align:center;
 
-function crearExplosion(x,y){
+border:1px solid rgba(255,255,255,0.1);
 
-for(let i=0;i<70;i++){
+box-shadow:
+0 0 10px rgba(255,255,255,0.05);
 
-particles.push({
+animation:flotar 6s infinite ease-in-out;
 
-x:x,
-y:y,
+transition:
+transform 2s ease,
+box-shadow 0.4s ease;
+}
 
-vx:(Math.random()-0.5)*8,
-vy:(Math.random()-0.5)*8,
+.nft:hover{
 
-life:100,
+transform:scale(1.06);
 
-size:Math.random()*3+1,
-
-color:`hsl(${Math.random()*360},100%,60%)`
-
-})
+box-shadow:
+0 0 20px rgba(0,255,255,0.4),
+0 0 40px rgba(0,255,255,0.2);
 
 }
 
+.stats{
+display:flex;
+justify-content:space-around;
+font-size:12px;
+margin-top:5px;
 }
 
-function explosionLogo(){
-
-const logo=document.getElementById("tituloLogo")
-
-if(!logo) return
-
-const rect=logo.getBoundingClientRect()
-
-const canvasRect=canvas.getBoundingClientRect()
-
-const x=rect.left+rect.width/2-canvasRect.left
-const y=rect.top+rect.height/2-canvasRect.top
-
-crearExplosion(x,y)
-
+.nft img{
+width:100%;
+border-radius:10px;
+cursor:pointer;
 }
 
-function animar(){
+.botones{
+display:flex;
+justify-content:space-around;
+margin-top:10px;
+}
 
-ctx.clearRect(0,0,canvas.width,canvas.height)
+button{
+background:black;
+border:1px solid white;
+color:white;
+padding:6px 10px;
+cursor:pointer;
+border-radius:6px;
+}
 
-ctx.globalCompositeOperation="lighter"
+button:hover{
+background:#111;
+}
 
-particles.forEach(p=>{
+@keyframes flotar{
 
-p.x+=p.vx
-p.y+=p.vy
-
-p.life--
-
-ctx.beginPath()
-
-ctx.fillStyle=p.color
-ctx.shadowColor=p.color
-ctx.shadowBlur=15
-
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
-
-ctx.fill()
-
-})
-
-particles=particles.filter(p=>p.life>0)
-
-requestAnimationFrame(animar)
+0%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+100%{transform:translateY(0)}
 
 }
 
-setInterval(explosionLogo,2500)
+.logros{
+color:#ffd700;
+font-size:14px;
+margin-top:5px;
+}
 
-animar()
+.likeGlow{
 
-window.addEventListener("resize",resizeCanvas)
+box-shadow:
+0 0 20px #ff0077,
+0 0 40px #ff0077,
+0 0 60px #ff0077;
+
+}
