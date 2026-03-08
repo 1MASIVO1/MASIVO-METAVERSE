@@ -26,10 +26,13 @@ to{ text-shadow:0 0 30px magenta }
 }
 
 
+/* NFT UN POCO MAS PEQUEÑOS */
+
 .grid{
 
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(3,260px);
+justify-content:center;
 gap:20px;
 padding:40px;
 
@@ -133,14 +136,53 @@ cursor:pointer;
 }
 
 
-.logroAnim{
+/* ANIMACIONES LOGROS */
 
-animation: brillo 1s;
+.likeAnim{
+animation:likeGlow 1s;
+}
+
+.viewAnim{
+animation:viewGlow 1s;
+}
+
+.downloadAnim{
+animation:downloadGlow 1s;
+}
+
+.shareAnim{
+animation:shareGlow 1s;
+}
+
+
+@keyframes likeGlow{
+
+0%{ box-shadow:0 0 0px red }
+50%{ box-shadow:0 0 40px red }
+100%{ box-shadow:0 0 0px red }
 
 }
 
 
-@keyframes brillo{
+@keyframes viewGlow{
+
+0%{ box-shadow:0 0 0px cyan }
+50%{ box-shadow:0 0 40px cyan }
+100%{ box-shadow:0 0 0px cyan }
+
+}
+
+
+@keyframes downloadGlow{
+
+0%{ box-shadow:0 0 0px lime }
+50%{ box-shadow:0 0 40px lime }
+100%{ box-shadow:0 0 0px lime }
+
+}
+
+
+@keyframes shareGlow{
 
 0%{ box-shadow:0 0 0px gold }
 50%{ box-shadow:0 0 40px gold }
