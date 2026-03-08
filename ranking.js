@@ -1,25 +1,32 @@
-async function cargarRanking(){
+import { createClient } from "https://esm.sh/@supabase/supabase-js"
 
-const {data}=await supabase
+const supabase = createClient(
+"TU_SUPABASE_URL",
+"TU_SUPABASE_KEY"
+)
 
-.from("stats")
+async function cargarRankingLikes(){
 
+const { data } = await supabase
+.from("nft_stats")
 .select("*")
-
 .order("likes",{ascending:false})
-
 .limit(10)
 
-const div=document.getElementById("rankingLikes")
+const contenedor=document.getElementById("ranking-likes")
 
-div.innerHTML=""
+contenedor.innerHTML=""
 
-data.forEach(n=>{
+data.forEach(nft=>{
 
-div.innerHTML+=`NFT ${n.nft_id} ❤️ ${n.likes}`
+const div=document.createElement("div")
+
+div.innerHTML="NFT "+nft.id+" ❤️ "+nft.likes
+
+contenedor.appendChild(div)
 
 })
 
 }
 
-cargarRanking()
+cargarRankingLikes()
