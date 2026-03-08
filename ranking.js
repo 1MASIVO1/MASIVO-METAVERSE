@@ -1,8 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js"
 
 const supabase = createClient(
-"TU_SUPABASE_URL",
-"TU_SUPABASE_KEY"
+https://rnkuxwsuztewgbdmjyxt.supabase.co
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
 )
 
 async function cargarRankingLikes(){
