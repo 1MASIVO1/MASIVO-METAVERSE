@@ -5,7 +5,6 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
 
-
 // CARGAR STATS AL ABRIR
 async function cargarStats(){
 
@@ -207,6 +206,8 @@ await supabaseClient
 
 // ABRIR NFT DESDE LINK
 window.onload = function(){
+
+cargarStats()
 
 let params = new URLSearchParams(window.location.search)
 
