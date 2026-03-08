@@ -1,4 +1,4 @@
-// ABRIR NFT GRANDE
+// ABRIR NFT
 function abrirNFT(img){
 
 let modal = document.getElementById("nftModal")
@@ -8,10 +8,13 @@ modal.style.display = "flex"
 modalImg.src = img.src
 
 let nft = img.closest(".nft")
-let views = nft.querySelector(".views")
 
+let views = nft.querySelector(".views")
 let num = parseInt(views.innerText.replace("👁","")) + 1
+
 views.innerText = "👁 " + num
+
+checkViewsLogro(nft,num)
 
 }
 
@@ -30,30 +33,14 @@ function like(btn){
 event.stopPropagation()
 
 let nft = btn.closest(".nft")
+
 let span = nft.querySelector(".likes")
 
 let num = parseInt(span.innerText.replace("❤️","")) + 1
 
 span.innerText = "❤️ " + num
 
-checkLogro(nft)
-
-}
-
-
-// VISTA MANUAL
-function vista(btn){
-
-event.stopPropagation()
-
-let nft = btn.closest(".nft")
-let span = nft.querySelector(".views")
-
-let num = parseInt(span.innerText.replace("👁","")) + 1
-
-span.innerText = "👁 " + num
-
-checkLogro(nft)
+checkLikeLogro(nft,num)
 
 }
 
@@ -64,6 +51,7 @@ function descargar(btn){
 event.stopPropagation()
 
 let nft = btn.closest(".nft")
+
 let img = nft.querySelector("img").src
 
 let a = document.createElement("a")
@@ -74,9 +62,10 @@ a.click()
 let span = nft.querySelector(".downloads")
 
 let num = parseInt(span.innerText.replace("⬇","")) + 1
+
 span.innerText = "⬇ " + num
 
-checkLogro(nft)
+checkDownloadLogro(nft,num)
 
 }
 
@@ -101,26 +90,126 @@ let num = parseInt(span.innerText.replace("🔗","")) + 1
 
 span.innerText = "🔗 " + num
 
-checkLogro(nft)
+checkShareLogro(nft,num)
 
 }
 
 
-// SISTEMA DE LOGROS
-function checkLogro(nft){
 
-let likes = parseInt(nft.querySelector(".likes").innerText.replace("❤️",""))
-let views = parseInt(nft.querySelector(".views").innerText.replace("👁",""))
-let downloads = parseInt(nft.querySelector(".downloads").innerText.replace("⬇",""))
-let shares = parseInt(nft.querySelector(".shares").innerText.replace("🔗",""))
+// LOGRO LIKE
+function checkLikeLogro(nft,num){
 
-let total = likes + views + downloads + shares
+if(num % 100 === 0){
 
 let logro = nft.querySelector(".logroNum")
 
-logro.innerText = Math.floor(total / 100)
+logro.innerText = parseInt(logro.innerText) + 1
+
+animacionLike(nft)
 
 }
+
+}
+
+
+// LOGRO VIEWS
+function checkViewsLogro(nft,num){
+
+if(num % 100 === 0){
+
+let logro = nft.querySelector(".logroNum")
+
+logro.innerText = parseInt(logro.innerText) + 1
+
+animacionViews(nft)
+
+}
+
+}
+
+
+// LOGRO DOWNLOAD
+function checkDownloadLogro(nft,num){
+
+if(num % 100 === 0){
+
+let logro = nft.querySelector(".logroNum")
+
+logro.innerText = parseInt(logro.innerText) + 1
+
+animacionDownload(nft)
+
+}
+
+}
+
+
+// LOGRO SHARE
+function checkShareLogro(nft,num){
+
+if(num % 100 === 0){
+
+let logro = nft.querySelector(".logroNum")
+
+logro.innerText = parseInt(logro.innerText) + 1
+
+animacionShare(nft)
+
+}
+
+}
+
+
+
+// ANIMACIONES
+function animacionLike(nft){
+
+nft.classList.add("likeAnim")
+
+setTimeout(()=>{
+
+nft.classList.remove("likeAnim")
+
+},1000)
+
+}
+
+function animacionViews(nft){
+
+nft.classList.add("viewAnim")
+
+setTimeout(()=>{
+
+nft.classList.remove("viewAnim")
+
+},1000)
+
+}
+
+function animacionDownload(nft){
+
+nft.classList.add("downloadAnim")
+
+setTimeout(()=>{
+
+nft.classList.remove("downloadAnim")
+
+},1000)
+
+}
+
+function animacionShare(nft){
+
+nft.classList.add("shareAnim")
+
+setTimeout(()=>{
+
+nft.classList.remove("shareAnim")
+
+},1000)
+
+}
+
 
 
 // ABRIR NFT DESDE LINK
