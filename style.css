@@ -27,28 +27,22 @@ z-index:1;
 
 .titulo{
 text-align:center;
-font-size:80px;
+font-size:90px;
 margin-top:40px;
 font-weight:bold;
 color:white;
-
-text-shadow:
-0 0 10px #ffffff,
-0 0 20px #00ffff,
-0 0 40px #00ffff,
-0 0 80px #00ffff;
-
-animation:logoPulse 4s infinite;
+letter-spacing:6px;
+animation:logoAnim 6s infinite ease-in-out;
 }
 
-@keyframes logoPulse{
+@keyframes logoAnim{
 
 0%{
 transform:scale(1);
 }
 
 50%{
-transform:scale(1.05);
+transform:scale(1.06);
 }
 
 100%{
@@ -119,8 +113,7 @@ margin-top:5px;
 
 .aura{
 box-shadow:
-0 0 15px #00ffff,
-0 0 30px #00ffff,
-0 0 45px #00ffff;
+0 0 15px white,
+0 0 25px white;
 transition:0.4s;
 }
