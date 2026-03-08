@@ -4,15 +4,15 @@
 
 const supabaseUrl = "https://rnkuxwsuztewgbdmjyxt.supabase.co"
 
-const supabaseKey = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
 
 
 
-/* TODO TU CODIGO ORIGINAL */
-
+/* ================= */
 /* RANKING REAL */
+/* ================= */
 
 async function ordenarNFT(){
 
@@ -34,7 +34,9 @@ setInterval(ordenarNFT,5000)
 
 
 
+/* ================= */
 /* SISTEMA DE LOGROS */
+/* ================= */
 
 function actualizarLogros(){
 
@@ -92,9 +94,8 @@ supabase.from("stats").insert({tipo:"like"})
 
 
 
-function vista(){
+function vista(btn){
 
-let btn=event.target
 let nft=btn.closest(".nft")
 
 let el=nft.querySelector(".views")
@@ -111,9 +112,8 @@ supabase.from("stats").insert({tipo:"view"})
 
 
 
-function descargar(){
+function descargar(btn){
 
-let btn=event.target
 let nft=btn.closest(".nft")
 
 let el=nft.querySelector(".downloads")
@@ -129,7 +129,7 @@ let img=nft.querySelector("img").src
 let a=document.createElement("a")
 
 a.href=img
-a.download="masivo-nft.png"
+a.download="masivo-"+Date.now()+".png"
 a.click()
 
 supabase.from("stats").insert({tipo:"download"})
@@ -138,9 +138,8 @@ supabase.from("stats").insert({tipo:"download"})
 
 
 
-function share(){
+function share(btn){
 
-let btn=event.target
 let nft=btn.closest(".nft")
 
 let el=nft.querySelector(".shares")
@@ -150,6 +149,12 @@ let num=parseInt(el.innerText.replace(/\D/g,''))
 num++
 
 el.innerText="🔗 "+num
+
+let img=nft.querySelector("img").src
+
+navigator.clipboard.writeText(img)
+
+alert("Link copiado para compartir 🚀")
 
 supabase.from("stats").insert({tipo:"share"})
 
