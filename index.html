@@ -25,6 +25,12 @@ height:100%;
 z-index:-1;
 }
 
+h1{
+text-align:center;
+font-size:50px;
+margin-top:40px;
+}
+
 #nft-gallery{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
@@ -44,6 +50,17 @@ animation:float 6s ease-in-out infinite;
 100%{transform:translateY(0px)}
 }
 
+#rankings{
+padding:40px;
+}
+
+.ranking-box{
+background:#111;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+}
+
 </style>
 
 </head>
@@ -52,64 +69,99 @@ animation:float 6s ease-in-out infinite;
 
 <canvas id="background"></canvas>
 
-<h1 style="text-align:center;font-size:50px;margin-top:40px;">
-MASIVO METAVERSE
-</h1>
+<h1>MASIVO METAVERSE</h1>
 
 <div id="nft-gallery"></div>
 
-<script>
+<section id="rankings">
 
-const canvas=document.getElementById("background")
-const ctx=canvas.getContext("2d")
+<div class="ranking-box">
+<h2>TOP LIKES</h2>
+<div id="ranking-likes"></div>
+</div>
 
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
+<div class="ranking-box">
+<h2>TOP VISTAS</h2>
+<div id="ranking-views"></div>
+</div>
 
-let particles=[]
+<div class="ranking-box">
+<h2>TOP COMPARTIDOS</h2>
+<div id="ranking-shares"></div>
+</div>
 
-for(let i=0;i<150;i++){
+<div class="ranking-box">
+<h2>TOP DESCARGAS</h2>
+<div id="ranking-downloads"></div>
+</div>
 
-particles.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2,
-speedX:(Math.random()-0.5)*0.6,
-speedY:(Math.random()-0.5)*0.6
+</section>
+
+<script type="module">
+
+import { createClient } from "https://esm.sh/@supabase/supabase-js"
+
+const supabase = createClient(
+"TU_SUPABASE_URL",
+"TU_SUPABASE_ANON_KEY"
+)
+
+async function cargarRanking(){
+
+const likes = await supabase
+.from("nft_stats")
+.select("*")
+.order("likes",{ascending:false})
+.limit(10)
+
+const views = await supabase
+.from("nft_stats")
+.select("*")
+.order("views",{ascending:false})
+.limit(10)
+
+const shares = await supabase
+.from("nft_stats")
+.select("*")
+.order("shares",{ascending:false})
+.limit(10)
+
+const downloads = await supabase
+.from("nft_stats")
+.select("*")
+.order("downloads",{ascending:false})
+.limit(10)
+
+mostrarRanking(likes.data,"ranking-likes","❤️")
+mostrarRanking(views.data,"ranking-views","👁️")
+mostrarRanking(shares.data,"ranking-shares","🔗")
+mostrarRanking(downloads.data,"ranking-downloads","⬇️")
+
+}
+
+function mostrarRanking(data,contenedor,icono){
+
+const div=document.getElementById(contenedor)
+
+div.innerHTML=""
+
+data.forEach(nft=>{
+
+const item=document.createElement("div")
+
+item.innerHTML="NFT "+nft.id+" "+icono+" "+(nft.likes || nft.views || nft.shares || nft.downloads)
+
+div.appendChild(item)
+
 })
 
 }
 
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-particles.forEach(p=>{
-
-p.x+=p.speedX
-p.y+=p.speedY
-
-if(p.x<0||p.x>canvas.width)p.speedX*=-1
-if(p.y<0||p.y>canvas.height)p.speedY*=-1
-
-ctx.beginPath()
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
-ctx.fillStyle="white"
-ctx.fill()
-
-})
-
-requestAnimationFrame(animate)
-
-}
-
-animate()
+cargarRanking()
 
 const gallery=document.getElementById("nft-gallery")
 
-const totalNFT=1000
-
-for(let i=1;i<=totalNFT;i++){
+for(let i=1;i<=1000;i++){
 
 const nft=document.createElement("div")
 nft.className="nft"
