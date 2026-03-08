@@ -30,6 +30,17 @@ text-align:center;
 font-size:60px;
 margin-top:40px;
 color:#00ffff;
+animation:logoEnergy 6s linear infinite;
+text-shadow:
+0 0 10px #00ffff,
+0 0 20px #00ffff,
+0 0 40px #00ffff;
+}
+
+@keyframes logoEnergy{
+0%{letter-spacing:2px}
+50%{letter-spacing:6px}
+100%{letter-spacing:2px}
 }
 
 .grid{
@@ -96,4 +107,11 @@ box-shadow:
 0 0 30px #00ffff,
 0 0 45px #00ffff;
 transition:0.4s;
+}
+
+.likeGlow{
+box-shadow:
+0 0 20px #ff00ff,
+0 0 40px #ff00ff,
+0 0 60px #ff00ff;
 }
