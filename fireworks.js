@@ -16,7 +16,7 @@ y:y,
 vx:(Math.random()-0.5)*6,
 vy:(Math.random()-0.5)*6,
 life:80,
-color:"hsl("+Math.random()*360+",100%,60%)"
+color:"rgb("+Math.random()*255+","+Math.random()*255+","+Math.random()*255+")"
 })
 
 }
