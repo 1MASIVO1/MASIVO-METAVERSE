@@ -218,7 +218,7 @@ checkLogro(id,nft,shares)
 
 
 
-// SISTEMA DE LOGROS (GLOBAL)
+// SISTEMA DE LOGROS (GLOBAL + VIDEO)
 async function checkLogro(id,nft,total){
 
 if(total % 100 === 0){
@@ -233,6 +233,58 @@ await supabaseClient
 .from("nfts")
 .update({ logros: logros })
 .eq("id", id)
+
+mostrarLogro(id,nft)
+
+}
+
+}
+
+
+
+// MOSTRAR VIDEO LOGRO
+function mostrarLogro(id,nft){
+
+let video = document.createElement("video")
+
+video.src = "videos/nft"+id+".mp4"
+
+video.autoplay = true
+video.muted = false
+video.controls = false
+
+video.style.position = "absolute"
+video.style.width = "100%"
+video.style.height = "100%"
+video.style.top = "0"
+video.style.left = "0"
+video.style.objectFit = "cover"
+video.style.zIndex = "999"
+
+nft.appendChild(video)
+
+
+
+// SONIDO GLOBAL
+let sound = document.getElementById("achievementSound")
+
+if(sound){
+sound.currentTime = 0
+sound.play()
+}
+
+
+
+// FUEGOS ARTIFICIALES
+if(typeof lanzarFuegos === "function"){
+lanzarFuegos()
+}
+
+
+
+video.onended = () => {
+
+video.remove()
 
 }
 
