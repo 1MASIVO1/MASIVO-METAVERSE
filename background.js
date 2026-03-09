@@ -1,119 +1,130 @@
-// background.js - fondo videojuego AAA en canvas existente
+// background.js - fondo videojuego AAA solo Canvas 2D
 
 const canvas = document.getElementById('engineBackground');
-canvas.style.position = 'fixed';
-canvas.style.top = '0';
-canvas.style.left = '0';
-canvas.style.width = '100%';
-canvas.style.height = '100%';
-canvas.style.zIndex = '-1';
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
 document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setClearColor(0x0a0a1a);
-renderer.shadowMap.enabled = true;
+// --- CONFIGURACIÓN ---
+const numCharacters = 6;
+const numObjects = 10;
+const numParticles = 80;
 
-// --- ESCENA ---
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x0a0a1a, 0.02);
-
-// --- CÁMARA ---
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.set(0, 5, 15);
-
-// --- ILUMINACIÓN AAA ---
-const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-scene.add(ambient);
-
-const directional = new THREE.DirectionalLight(0xffffff, 1.2);
-directional.position.set(15,20,10);
-scene.add(directional);
-
-// --- SUELO ---
-const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(100,100),
-    new THREE.MeshStandardMaterial({ color:0x101020 })
-);
-floor.rotation.x = -Math.PI/2;
-floor.receiveShadow = true;
-scene.add(floor);
-
-// --- MUÑECOS ANIMADOS (simulación) ---
 const characters = [];
-const charGeom = new THREE.BoxGeometry(1,2,1);
-const charMat = new THREE.MeshStandardMaterial({ color:0x00ffff, metalness:0.5, roughness:0.3 });
+const objects = [];
+const particles = [];
 
-for(let i=0;i<6;i++){
-    const char = new THREE.Mesh(charGeom, charMat);
-    char.position.set((Math.random()-0.5)*20,1,(Math.random()-0.5)*20);
-    char.castShadow = true;
-    scene.add(char);
-    characters.push({ mesh: char, speed: 0.01+Math.random()*0.02 });
+// --- PERSONAJES ---
+for(let i=0;i<numCharacters;i++){
+    characters.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height/2 + canvas.height/4,
+        width: 30,
+        height: 50,
+        color: '#00ffff',
+        dx: (Math.random()-0.5)*2,
+        dy: (Math.random()-0.5)*2,
+        angle: Math.random()*Math.PI*2
+    });
 }
 
-// --- CRISTALES FLOTANTES ---
-const crystals = [];
-const crystalGeom = new THREE.OctahedronGeometry(0.5);
-const crystalMat = new THREE.MeshStandardMaterial({ color:0xff00ff, emissive:0xff00ff, emissiveIntensity:0.6 });
-
-for(let i=0;i<10;i++){
-    const c = new THREE.Mesh(crystalGeom, crystalMat);
-    c.position.set((Math.random()-0.5)*20,1+Math.random()*6,(Math.random()-0.5)*20);
-    scene.add(c);
-    crystals.push({ mesh: c, speed: 0.005+Math.random()*0.01 });
+// --- OBJETOS FLOTANTES ---
+for(let i=0;i<numObjects;i++){
+    objects.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        size: 20 + Math.random()*20,
+        color: 'rgba(255,0,255,0.7)',
+        dx: (Math.random()-0.5)*1,
+        dy: (Math.random()-0.5)*1,
+        angle: Math.random()*Math.PI*2
+    });
 }
 
 // --- PARTICULAS ---
-const particles = [];
-const pGeom = new THREE.SphereGeometry(0.05,8,8);
-const pMat = new THREE.MeshBasicMaterial({ color:0xffaa00, transparent:true, opacity:0.6 });
+for(let i=0;i<numParticles;i++){
+    particles.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        radius: 2 + Math.random()*3,
+        color: 'rgba(255,170,0,0.6)',
+        dy: 0.5 + Math.random()
+    });
+}
 
-for(let i=0;i<80;i++){
-    const p = new THREE.Mesh(pGeom, pMat.clone());
-    p.position.set((Math.random()-0.5)*30, Math.random()*10+1, (Math.random()-0.5)*30);
-    scene.add(p);
-    particles.push(p);
+// --- FUNCIÓN DE DIBUJO ---
+function drawBackground(){
+    const gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+    gradient.addColorStop(0,'#0d0d1a');
+    gradient.addColorStop(1,'#1a1a3d');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
+function drawCharacters(){
+    characters.forEach(c=>{
+        ctx.save();
+        ctx.translate(c.x,c.y);
+        ctx.rotate(Math.sin(Date.now()*0.001 + c.angle)*0.5);
+        ctx.fillStyle = c.color;
+        ctx.fillRect(-c.width/2,-c.height/2,c.width,c.height);
+        ctx.restore();
+
+        c.x += c.dx;
+        c.y += c.dy;
+        if(c.x<0) c.x=canvas.width;
+        if(c.x>canvas.width) c.x=0;
+        if(c.y<0) c.y=canvas.height;
+        if(c.y>canvas.height) c.y=0;
+    });
+}
+
+function drawObjects(){
+    objects.forEach(o=>{
+        ctx.save();
+        ctx.translate(o.x,o.y);
+        ctx.rotate(Math.sin(Date.now()*0.001 + o.angle));
+        ctx.fillStyle = o.color;
+        ctx.fillRect(-o.size/2,-o.size/2,o.size,o.size);
+        ctx.restore();
+
+        o.x += o.dx;
+        o.y += o.dy;
+        if(o.x<0) o.x=canvas.width;
+        if(o.x>canvas.width) o.x=0;
+        if(o.y<0) o.y=canvas.height;
+        if(o.y>canvas.height) o.y=0;
+    });
+}
+
+function drawParticles(){
+    particles.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        p.y -= p.dy;
+        if(p.y<0) p.y=canvas.height;
+    });
 }
 
 // --- ANIMACIÓN ---
 function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawBackground();
+    drawObjects();
+    drawCharacters();
+    drawParticles();
     requestAnimationFrame(animate);
-
-    // Muñecos
-    characters.forEach(c=>{
-        c.mesh.position.x += Math.sin(Date.now()*c.speed)*0.02;
-        c.mesh.position.z += Math.cos(Date.now()*c.speed)*0.02;
-        c.mesh.rotation.y += 0.005;
-        c.mesh.position.y = 1 + Math.sin(Date.now()*0.002+c.speed)*0.3; // flotación
-    });
-
-    // Cristales flotantes
-    crystals.forEach(c=>{
-        c.mesh.position.y += Math.sin(Date.now()*c.speed)*0.01;
-        c.mesh.rotation.y += 0.01;
-    });
-
-    // Partículas
-    particles.forEach(p=>{
-        p.position.y += Math.sin(Date.now()*0.001)*0.02;
-        if(p.position.y>12) p.position.y=1;
-    });
-
-    // Cámara movimiento sutil
-    camera.position.x = Math.sin(Date.now()*0.0005)*5;
-    camera.position.z = 15 + Math.cos(Date.now()*0.0003)*5;
-    camera.lookAt(0,0,0);
-
-    renderer.render(scene,camera);
 }
+
 animate();
 
 // --- RESPONSIVE ---
 window.addEventListener('resize',()=>{
-    camera.aspect = window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 });
