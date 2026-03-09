@@ -1,28 +1,25 @@
 /* RESET BASICO */
 
 body{
-
 margin:0;
 font-family:Arial, Helvetica, sans-serif;
 background:black;
 color:white;
 text-align:center;
 overflow-x:hidden;
-
 }
 
 
 /* CANVAS FONDO ENGINE */
 
 #engineBackground{
-
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
 z-index:-1;
-
+pointer-events:none;
 }
 
 
@@ -61,17 +58,13 @@ text-shadow:
 /* TOP MASIVO */
 
 #topMasivo{
-
 margin-top:20px;
 margin-bottom:20px;
-
 }
 
 #topMasivo h2{
-
 font-size:40px;
 margin:10px;
-
 }
 
 #topNombre{
@@ -96,7 +89,6 @@ text-shadow:0 0 30px orange;
 }
 
 
-
 /* GRID NFT */
 
 .grid{
@@ -111,7 +103,6 @@ margin:auto;
 }
 
 
-
 /* TARJETA NFT */
 
 .nft{
@@ -119,18 +110,19 @@ margin:auto;
 background:#111;
 border-radius:12px;
 padding:10px;
-transition:0.3s;
+
+transition:transform .3s;
+
 position:relative;
 overflow:hidden;
+
+box-shadow:0 0 10px rgba(0,255,255,0.2);
 
 }
 
 .nft:hover{
-
 transform:scale(1.05);
-
 }
-
 
 
 /* IMAGEN NFT */
@@ -144,7 +136,6 @@ cursor:pointer;
 }
 
 
-
 /* VIDEO DE LOGRO SOBRE NFT */
 
 .videoLogro{
@@ -154,12 +145,25 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-display:none;
+
+display:flex;
 align-items:center;
 justify-content:center;
+
 background:rgba(0,0,0,0.8);
+
 z-index:10;
 
+opacity:0;
+pointer-events:none;
+
+transition:opacity .4s;
+
+}
+
+.videoLogro.activo{
+opacity:1;
+pointer-events:auto;
 }
 
 .videoLogro video{
@@ -171,27 +175,20 @@ object-fit:cover;
 }
 
 
-
 /* LOGROS */
 
 .logros{
-
 font-size:18px;
 margin-top:5px;
-
 }
-
 
 
 /* STATS */
 
 .stats{
-
 margin-top:10px;
 font-size:14px;
-
 }
-
 
 
 /* BOTONES */
@@ -200,21 +197,24 @@ font-size:14px;
 
 margin:5px;
 padding:5px 10px;
+
 border:none;
 border-radius:5px;
+
 cursor:pointer;
+
 background:#222;
 color:white;
+
 font-size:14px;
+
+transition:.2s;
 
 }
 
 .botones button:hover{
-
 background:#444;
-
 }
-
 
 
 /* MODAL NFT */
@@ -222,14 +222,19 @@ background:#444;
 .nftModal{
 
 display:none;
+
 position:fixed;
 top:0;
 left:0;
+
 width:100%;
 height:100%;
+
 background:rgba(0,0,0,0.9);
-justify-content:center;
+
 align-items:center;
+justify-content:center;
+
 z-index:999;
 
 }
@@ -246,11 +251,11 @@ max-height:90%;
 position:absolute;
 top:20px;
 right:40px;
+
 font-size:40px;
 cursor:pointer;
 
 }
-
 
 
 /* PANEL LOGROS */
@@ -259,22 +264,23 @@ cursor:pointer;
 
 background:#111;
 padding:30px;
+
 border-radius:10px;
+
 max-width:500px;
 width:90%;
 
 }
 
 #achList{
-
 margin-top:20px;
-
 }
 
 .achItem{
 
 margin:10px 0;
 padding:10px;
+
 background:#222;
 border-radius:8px;
 
@@ -284,29 +290,28 @@ border-radius:8px;
 
 margin:5px;
 padding:5px 10px;
+
 border:none;
 border-radius:5px;
+
 cursor:pointer;
 
 background:#333;
 color:white;
 
+transition:.2s;
+
 }
 
 .achItem button:hover{
-
 background:#555;
-
 }
-
 
 
 /* ANIMACIONES DE BORDE DE LOGROS */
 
 .likeBorder{
-
 animation:likeBorder 2s infinite;
-
 }
 
 @keyframes likeBorder{
@@ -318,11 +323,8 @@ animation:likeBorder 2s infinite;
 }
 
 
-
 .viewBorder{
-
 animation:viewBorder 2s infinite;
-
 }
 
 @keyframes viewBorder{
@@ -334,11 +336,8 @@ animation:viewBorder 2s infinite;
 }
 
 
-
 .downloadBorder{
-
 animation:downloadBorder 2s infinite;
-
 }
 
 @keyframes downloadBorder{
@@ -350,11 +349,8 @@ animation:downloadBorder 2s infinite;
 }
 
 
-
 .shareBorder{
-
 animation:shareBorder 2s infinite;
-
 }
 
 @keyframes shareBorder{
