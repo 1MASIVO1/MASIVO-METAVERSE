@@ -1,178 +1,112 @@
-const canvas = document.createElement("canvas");
-const ctx = canvas.getContext("2d");
+import * as THREE from "https://cdn.skypack.dev/three@0.150.1";
 
-document.body.appendChild(canvas);
+const scene = new THREE.Scene();
 
-canvas.style.position = "fixed";
-canvas.style.top = 0;
-canvas.style.left = 0;
-canvas.style.zIndex = -1;
+const camera = new THREE.PerspectiveCamera(
+75,
+window.innerWidth/window.innerHeight,
+0.1,
+1000
+);
 
-function resize(){
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-}
+const renderer = new THREE.WebGLRenderer({alpha:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
 
-window.addEventListener("resize",resize);
-resize();
+renderer.domElement.style.position="fixed";
+renderer.domElement.style.top="0";
+renderer.domElement.style.left="0";
+renderer.domElement.style.zIndex="-1";
+
+document.body.appendChild(renderer.domElement);
+
+camera.position.z = 80;
 
 
-/* PARTICULAS LUZ */
+/* LUCES */
 
-let lights = [];
-
-for(let i=0;i<200;i++){
-lights.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2,
-speed:Math.random()*0.3+0.1
-})
-}
+const light = new THREE.PointLight(0x00ffff,2,500);
+light.position.set(0,50,50);
+scene.add(light);
 
 
 /* EDIFICIOS */
 
-let buildings = [];
+const buildings=[];
 
-for(let i=0;i<40;i++){
+for(let i=0;i<200;i++){
 
-let w = 60 + Math.random()*80
-let h = 200 + Math.random()*500
+const height = Math.random()*60+10;
 
-buildings.push({
-x: i*120,
-w,
-h
-})
+const geo = new THREE.BoxGeometry(6,height,6);
 
-}
+const mat = new THREE.MeshStandardMaterial({
+color:0x0a1c3a,
+emissive:0x001133
+});
 
+const mesh = new THREE.Mesh(geo,mat);
 
-/* CARRETERA */
+mesh.position.x = (Math.random()-0.5)*200;
+mesh.position.z = (Math.random()-0.5)*200;
+mesh.position.y = height/2;
 
-let roadOffset = 0
+scene.add(mesh);
 
-
-function drawSky(){
-
-let g = ctx.createLinearGradient(0,0,0,canvas.height)
-
-g.addColorStop(0,"#00d0ff")
-g.addColorStop(1,"#001533")
-
-ctx.fillStyle = g
-ctx.fillRect(0,0,canvas.width,canvas.height)
-
-}
-
-
-/* CIUDAD */
-
-function drawBuildings(){
-
-buildings.forEach(b=>{
-
-ctx.fillStyle="#0a1c3a"
-
-ctx.fillRect(b.x,canvas.height-b.h,b.w,b.h)
-
-
-/* ventanas */
-
-for(let y=canvas.height-b.h+20;y<canvas.height;y+=25){
-
-for(let x=b.x+10;x<b.x+b.w-10;x+=20){
-
-if(Math.random()>0.7){
-
-ctx.fillStyle="rgba(0,255,255,0.8)"
-ctx.fillRect(x,y,6,10)
-
-}
-
-}
-
-}
-
-/* carteles neon */
-
-if(Math.random()>0.96){
-
-ctx.fillStyle="rgba(255,0,255,0.9)"
-ctx.fillRect(b.x+10,canvas.height-b.h+30,40,20)
-
-}
-
-})
+buildings.push(mesh);
 
 }
 
 
 /* PARTICULAS */
 
-function drawLights(){
+const starGeo = new THREE.BufferGeometry();
+const starCount = 2000;
 
-lights.forEach(l=>{
+const positions = new Float32Array(starCount*3);
 
-ctx.beginPath()
-
-ctx.fillStyle="#00ffff"
-
-ctx.arc(l.x,l.y,l.size,0,Math.PI*2)
-
-ctx.fill()
-
-l.y -= l.speed
-
-if(l.y<0){
-
-l.y = canvas.height
-l.x = Math.random()*canvas.width
-
+for(let i=0;i<starCount*3;i++){
+positions[i]=(Math.random()-0.5)*600;
 }
 
-})
+starGeo.setAttribute(
+"position",
+new THREE.BufferAttribute(positions,3)
+);
 
-}
+const starMat = new THREE.PointsMaterial({
+color:0x00ffff,
+size:0.7
+});
 
-
-/* TRAFICO */
-
-function drawTraffic(){
-
-roadOffset += 2
-
-for(let i=0;i<30;i++){
-
-let x = (i*120 + roadOffset)%canvas.width
-let y = canvas.height - 60 - Math.sin(i)*40
-
-ctx.fillStyle="rgba(255,80,200,0.9)"
-
-ctx.fillRect(x,y,20,4)
-
-}
-
-}
+const stars = new THREE.Points(starGeo,starMat);
+scene.add(stars);
 
 
 /* ANIMACION */
 
 function animate(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height)
+requestAnimationFrame(animate);
 
-drawSky()
+stars.rotation.y += 0.0005;
 
-drawBuildings()
+buildings.forEach(b=>{
+b.material.emissiveIntensity =
+0.5 + Math.sin(Date.now()*0.002 + b.position.x)*0.5;
+});
 
-drawLights()
-
-drawTraffic()
-
-requestAnimationFrame(animate)
+renderer.render(scene,camera);
 
 }
 
-animate()
+animate();
+
+
+window.addEventListener("resize",()=>{
+
+camera.aspect = window.innerWidth/window.innerHeight;
+camera.updateProjectionMatrix();
+
+renderer.setSize(window.innerWidth,window.innerHeight);
+
+});
