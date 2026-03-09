@@ -77,7 +77,7 @@ display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
 gap:50px;
 padding:30px;
-max-width:1500'px;
+max-width:1400'px;
 margin:auto;
 
 }
