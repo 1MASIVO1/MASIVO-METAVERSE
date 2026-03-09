@@ -1,62 +1,203 @@
+/* RESET BASICO */
+
 body{
+
 margin:0;
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
 background:black;
 color:white;
 text-align:center;
+overflow-x:hidden;
+
 }
+
+
+/* CANVAS FONDO ENGINE */
+
+#engineBackground{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+
+}
+
+
+/* TITULO MASIVO */
 
 .titulo{
+
 font-size:100px;
-margin-top:-150px;
-animation: glow 2s infinite alternate;
-}
-
-.topMasivo{
 margin-top:40px;
-font-size:22px;
+letter-spacing:4px;
+font-weight:bold;
+
+animation:tituloGlow 3s infinite alternate;
+
+}
+
+@keyframes tituloGlow{
+
+0%{
+text-shadow:
+0 0 10px cyan,
+0 0 20px cyan,
+0 0 40px blue;
+}
+
+100%{
+text-shadow:
+0 0 20px magenta,
+0 0 40px magenta,
+0 0 80px purple;
+}
+
+}
+
+
+/* TOP MASIVO */
+
+#topMasivo{
+
+margin-top:20px;
+margin-bottom:20px;
+
+}
+
+#topMasivo h2{
+
+font-size:40px;
+margin:10px;
+
+}
+
+#topNombre{
+
+font-size:30px;
 color:gold;
+
+animation:topGlow 2s infinite alternate;
+
 }
 
-@keyframes glow{
-from{ text-shadow:0 0 10px cyan }
-to{ text-shadow:0 0 30px magenta }
+@keyframes topGlow{
+
+0%{
+text-shadow:0 0 10px gold;
 }
 
-/* resto del CSS exactamente igual que el tuyo */
+100%{
+text-shadow:0 0 30px orange;
+}
+
+}
+
+
+
+/* GRID NFT */
 
 .grid{
+
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
 gap:30px;
 padding:40px;
 max-width:1200px;
 margin:auto;
+
 }
 
+
+
+/* TARJETA NFT */
+
 .nft{
+
 background:#111;
-border-radius:10px;
+border-radius:12px;
 padding:10px;
 transition:0.3s;
+position:relative;
+overflow:hidden;
+
 }
 
 .nft:hover{
+
 transform:scale(1.05);
+
 }
 
+
+
+/* IMAGEN NFT */
+
 .nft img{
+
 width:100%;
 border-radius:10px;
 cursor:pointer;
+
 }
+
+
+
+/* VIDEO DE LOGRO SOBRE NFT */
+
+.videoLogro{
+
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:none;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,0.8);
+z-index:10;
+
+}
+
+.videoLogro video{
+
+width:100%;
+height:100%;
+object-fit:cover;
+
+}
+
+
+
+/* LOGROS */
+
+.logros{
+
+font-size:18px;
+margin-top:5px;
+
+}
+
+
+
+/* STATS */
 
 .stats{
+
 margin-top:10px;
 font-size:14px;
+
 }
 
+
+
+/* BOTONES */
+
 .botones button{
+
 margin:5px;
 padding:5px 10px;
 border:none;
@@ -64,18 +205,22 @@ border-radius:5px;
 cursor:pointer;
 background:#222;
 color:white;
+font-size:14px;
+
 }
 
 .botones button:hover{
+
 background:#444;
+
 }
 
-.logros{
-font-size:18px;
-margin-top:5px;
-}
+
+
+/* MODAL NFT */
 
 .nftModal{
+
 display:none;
 position:fixed;
 top:0;
@@ -86,94 +231,136 @@ background:rgba(0,0,0,0.9);
 justify-content:center;
 align-items:center;
 z-index:999;
+
 }
 
 .nftModal img{
+
 max-width:90%;
 max-height:90%;
+
 }
 
 .cerrarNFT{
+
 position:absolute;
 top:20px;
 right:40px;
 font-size:40px;
 cursor:pointer;
+
 }
 
-/* ANIMACIONES LOGROS */
 
-.likeAnim{
-animation:likeGlow 1s;
+
+/* PANEL LOGROS */
+
+#achContent{
+
+background:#111;
+padding:30px;
+border-radius:10px;
+max-width:500px;
+width:90%;
+
 }
 
-.viewAnim{
-animation:viewGlow 1s;
+#achList{
+
+margin-top:20px;
+
 }
 
-.downloadAnim{
-animation:downloadGlow 1s;
+.achItem{
+
+margin:10px 0;
+padding:10px;
+background:#222;
+border-radius:8px;
+
 }
 
-.shareAnim{
-animation:shareGlow 1s;
+.achItem button{
+
+margin:5px;
+padding:5px 10px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+
+background:#333;
+color:white;
+
 }
 
-@keyframes likeGlow{
-0%{ box-shadow:0 0 0px red }
-50%{ box-shadow:0 0 40px red }
-100%{ box-shadow:0 0 0px red }
+.achItem button:hover{
+
+background:#555;
+
 }
 
-@keyframes viewGlow{
-0%{ box-shadow:0 0 0px cyan }
-50%{ box-shadow:0 0 40px cyan }
-100%{ box-shadow:0 0 0px cyan }
+
+
+/* ANIMACIONES DE BORDE DE LOGROS */
+
+.likeBorder{
+
+animation:likeBorder 2s infinite;
+
 }
 
-@keyframes downloadGlow{
-0%{ box-shadow:0 0 0px lime }
-50%{ box-shadow:0 0 40px lime }
-100%{ box-shadow:0 0 0px lime }
+@keyframes likeBorder{
+
+0%{box-shadow:0 0 10px red}
+50%{box-shadow:0 0 30px red}
+100%{box-shadow:0 0 10px red}
+
 }
 
-@keyframes shareGlow{
-0%{ box-shadow:0 0 0px gold }
-50%{ box-shadow:0 0 40px gold }
-100%{ box-shadow:0 0 0px gold }
+
+
+.viewBorder{
+
+animation:viewBorder 2s infinite;
+
 }
 
-/* VIDEO LOGRO */
+@keyframes viewBorder{
 
-.nft{
-position:relative;
-overflow:hidden;
+0%{box-shadow:0 0 10px cyan}
+50%{box-shadow:0 0 30px cyan}
+100%{box-shadow:0 0 10px cyan}
+
 }
 
-.achievementVideo{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-pointer-events:none;
-z-index:10;
-animation: logroFade 4s linear;
+
+
+.downloadBorder{
+
+animation:downloadBorder 2s infinite;
+
 }
 
-@keyframes logroFade{
-0%{opacity:1}
-80%{opacity:1}
-100%{opacity:0}
+@keyframes downloadBorder{
+
+0%{box-shadow:0 0 10px lime}
+50%{box-shadow:0 0 30px lime}
+100%{box-shadow:0 0 10px lime}
+
 }
 
-#fireworks{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:-1;
+
+
+.shareBorder{
+
+animation:shareBorder 2s infinite;
+
+}
+
+@keyframes shareBorder{
+
+0%{box-shadow:0 0 10px gold}
+50%{box-shadow:0 0 30px gold}
+100%{box-shadow:0 0 10px gold}
+
 }
