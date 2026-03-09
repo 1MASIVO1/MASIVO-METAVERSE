@@ -5,28 +5,32 @@ font-family:Arial;
 background:black;
 color:white;
 text-align:center;
+overflow-x:hidden;
 
 }
 
+
+/* TITULO */
 
 .titulo{
 
 font-size:100px;
 margin-top:-150px;
 animation: glow 2s infinite alternate;
+letter-spacing:4px;
 
 }
-
 
 @keyframes glow{
 
 from{ text-shadow:0 0 10px cyan }
-to{ text-shadow:0 0 30px magenta }
+to{ text-shadow:0 0 40px magenta }
 
 }
 
 
-/* NFT UN POCO MAS PEQUEÑOS */
+
+/* GRID NFTs */
 
 .grid{
 
@@ -39,67 +43,114 @@ margin:auto;
 
 }
 
+
+
+/* TARJETA NFT */
+
 .nft{
 
-background:#111;
-border-radius:10px;
+background:linear-gradient(145deg,#111,#0a0a0a);
+border-radius:12px;
 padding:10px;
 transition:0.3s;
+position:relative;
+box-shadow:0 0 10px rgba(0,0,0,0.5);
 
 }
-
 
 .nft:hover{
 
-transform:scale(1.05);
+transform:scale(1.06);
+box-shadow:0 0 25px rgba(255,255,255,0.2);
 
 }
 
+
+
+/* IMAGEN NFT */
 
 .nft img{
 
 width:100%;
 border-radius:10px;
 cursor:pointer;
+transition:0.3s;
 
 }
 
+.nft img:hover{
+
+filter:brightness(1.1);
+
+}
+
+
+
+/* STATS */
 
 .stats{
 
 margin-top:10px;
 font-size:14px;
+display:flex;
+justify-content:space-around;
+opacity:0.9;
 
 }
 
+
+
+/* BOTONES */
+
+.botones{
+
+margin-top:8px;
+
+}
 
 .botones button{
 
 margin:5px;
-padding:5px 10px;
+padding:6px 12px;
 border:none;
-border-radius:5px;
+border-radius:6px;
 cursor:pointer;
 background:#222;
 color:white;
+transition:0.2s;
+font-size:14px;
 
 }
-
 
 .botones button:hover{
 
 background:#444;
+transform:scale(1.05);
 
 }
 
+.botones button:active{
+
+transform:scale(0.9);
+
+}
+
+
+
+/* LOGROS */
 
 .logros{
 
 font-size:18px;
 margin-top:5px;
+color:gold;
+text-shadow:0 0 8px gold;
 
 }
 
+
+
+/* MODAL NFT */
 
 .nftModal{
 
@@ -109,93 +160,12 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.9);
+background:rgba(0,0,0,0.92);
 justify-content:center;
 align-items:center;
 z-index:999;
 
 }
-
-
-.nftModal img{
-
-max-width:90%;
-max-height:90%;
-
-}
-
-
-.cerrarNFT{
-
-position:absolute;
-top:20px;
-right:40px;
-font-size:40px;
-cursor:pointer;
-
-}
-
-
-/* ANIMACIONES LOGROS */
-
-.likeAnim{
-animation:likeGlow 1s;
-}
-
-.viewAnim{
-animation:viewGlow 1s;
-}
-
-.downloadAnim{
-animation:downloadGlow 1s;
-}
-
-.shareAnim{
-animation:shareGlow 1s;
-}
-
-
-@keyframes likeGlow{
-
-0%{ box-shadow:0 0 0px red }
-50%{ box-shadow:0 0 40px red }
-100%{ box-shadow:0 0 0px red }
-
-}
-
-
-@keyframes viewGlow{
-
-0%{ box-shadow:0 0 0px cyan }
-50%{ box-shadow:0 0 40px cyan }
-100%{ box-shadow:0 0 0px cyan }
-
-}
-
-
-@keyframes downloadGlow{
-
-0%{ box-shadow:0 0 0px lime }
-50%{ box-shadow:0 0 40px lime }
-100%{ box-shadow:0 0 0px lime }
-
-}
-
-
-@keyframes shareGlow{
-
-0%{ box-shadow:0 0 0px gold }
-50%{ box-shadow:0 0 40px gold }
-100%{ box-shadow:0 0 0px gold }
-
-}
-
-
-/* =============================== */
-/* EXTRA NECESARIO PARA FUNCIONAR */
-/* =============================== */
-
-/* centra correctamente el modal */
 
 .nftModal.active{
 
@@ -203,11 +173,11 @@ display:flex;
 
 }
 
-
-/* animación cuando aparece el NFT grande */
-
 .nftModal img{
 
+max-width:90%;
+max-height:90%;
+border-radius:10px;
 animation:zoomNFT 0.3s;
 
 }
@@ -227,16 +197,88 @@ opacity:1;
 }
 
 
-/* efecto al hacer click en botones */
 
-.botones button:active{
+/* BOTON CERRAR */
 
-transform:scale(0.9);
+.cerrarNFT{
+
+position:absolute;
+top:20px;
+right:40px;
+font-size:40px;
+cursor:pointer;
+transition:0.2s;
+
+}
+
+.cerrarNFT:hover{
+
+transform:scale(1.2);
+color:red;
 
 }
 
 
-/* scroll bonito */
+
+/* ================= */
+/* ANIMACIONES NFT */
+/* ================= */
+
+.likeAnim{
+animation:likeGlow 1s;
+}
+
+.viewAnim{
+animation:viewGlow 1s;
+}
+
+.downloadAnim{
+animation:downloadGlow 1s;
+}
+
+.shareAnim{
+animation:shareGlow 1s;
+}
+
+
+
+@keyframes likeGlow{
+
+0%{ box-shadow:0 0 0px red }
+50%{ box-shadow:0 0 40px red }
+100%{ box-shadow:0 0 0px red }
+
+}
+
+@keyframes viewGlow{
+
+0%{ box-shadow:0 0 0px cyan }
+50%{ box-shadow:0 0 40px cyan }
+100%{ box-shadow:0 0 0px cyan }
+
+}
+
+@keyframes downloadGlow{
+
+0%{ box-shadow:0 0 0px lime }
+50%{ box-shadow:0 0 40px lime }
+100%{ box-shadow:0 0 0px lime }
+
+}
+
+@keyframes shareGlow{
+
+0%{ box-shadow:0 0 0px gold }
+50%{ box-shadow:0 0 40px gold }
+100%{ box-shadow:0 0 0px gold }
+
+}
+
+
+
+/* ================= */
+/* SCROLL BONITO */
+/* ================= */
 
 ::-webkit-scrollbar{
 
@@ -260,5 +302,43 @@ border-radius:10px;
 ::-webkit-scrollbar-thumb:hover{
 
 background:#555;
+
+}
+
+
+
+/* ================= */
+/* RESPONSIVE */
+/* ================= */
+
+@media(max-width:900px){
+
+.titulo{
+font-size:60px;
+margin-top:-80px;
+}
+
+.grid{
+padding:20px;
+gap:20px;
+}
+
+}
+
+@media(max-width:500px){
+
+.titulo{
+font-size:40px;
+margin-top:-40px;
+}
+
+.stats{
+font-size:12px;
+}
+
+.botones button{
+padding:5px 8px;
+font-size:12px;
+}
 
 }
