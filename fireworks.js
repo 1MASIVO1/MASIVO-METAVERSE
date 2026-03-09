@@ -1,276 +1,279 @@
 class Firework {
-  constructor(x, y, targetX, targetY, hue) {
 
-    this.x = x;
-    this.y = y;
+constructor(x, y, targetX, targetY, hue){
 
-    this.startX = x;
-    this.startY = y;
+this.x = x
+this.y = y
 
-    this.targetX = targetX;
-    this.targetY = targetY;
+this.startX = x
+this.startY = y
 
-    this.distanceToTarget = Math.hypot(targetX - x, targetY - y);
-    this.distanceTraveled = 0;
+this.targetX = targetX
+this.targetY = targetY
 
-    this.coordinates = [];
-    this.coordinateCount = 3;
+this.distanceToTarget = Math.hypot(targetX - x, targetY - y)
+this.distanceTraveled = 0
 
-    while (this.coordinateCount--) {
-      this.coordinates.push([this.x, this.y]);
-    }
+this.coordinates = []
+this.coordinateCount = 3
 
-    this.angle = Math.atan2(targetY - y, targetX - x);
-    this.speed = 2;
-    this.acceleration = 1.05;
-
-    this.brightness = Math.random() * 50 + 50;
-    this.targetRadius = 1;
-
-    this.hue = hue;
-  }
-
-  update(index, particles, system) {
-
-    this.coordinates.pop();
-    this.coordinates.unshift([this.x, this.y]);
-
-    if (this.targetRadius < 8) {
-      this.targetRadius += 0.3;
-    } else {
-      this.targetRadius = 1;
-    }
-
-    this.speed *= this.acceleration;
-
-    const vx = Math.cos(this.angle) * this.speed;
-    const vy = Math.sin(this.angle) * this.speed;
-
-    this.distanceTraveled = Math.hypot(
-      this.x + vx - this.startX,
-      this.y + vy - this.startY
-    );
-
-    if (this.distanceTraveled >= this.distanceToTarget) {
-
-      system.createParticles(this.targetX, this.targetY, this.hue);
-
-      system.fireworks.splice(index, 1);
-
-    } else {
-
-      this.x += vx;
-      this.y += vy;
-
-    }
-  }
-
-  draw(ctx) {
-
-    ctx.beginPath();
-
-    const last = this.coordinates[this.coordinates.length - 1];
-
-    ctx.moveTo(last[0], last[1]);
-    ctx.lineTo(this.x, this.y);
-
-    ctx.strokeStyle = `hsl(${this.hue},100%,${this.brightness}%)`;
-
-    ctx.stroke();
-
-  }
+while(this.coordinateCount--){
+this.coordinates.push([this.x,this.y])
 }
 
-class Particle {
+this.angle = Math.atan2(targetY - y, targetX - x)
+this.speed = 2
+this.acceleration = 1.05
 
-  constructor(x, y, hue) {
+this.brightness = Math.random()*50+50
+this.targetRadius = 1
 
-    this.x = x;
-    this.y = y;
+this.hue = hue
 
-    this.coordinates = [];
-
-    this.coordinateCount = 5;
-
-    while (this.coordinateCount--) {
-      this.coordinates.push([this.x, this.y]);
-    }
-
-    this.angle = Math.random() * Math.PI * 2;
-
-    this.speed = Math.random() * 10 + 1;
-
-    this.friction = 0.95;
-
-    this.gravity = 1;
-
-    this.hue = hue;
-
-    this.brightness = Math.random() * 50 + 50;
-
-    this.alpha = 1;
-
-    this.decay = Math.random() * 0.015 + 0.003;
-  }
-
-  update(index, particles) {
-
-    this.coordinates.pop();
-
-    this.coordinates.unshift([this.x, this.y]);
-
-    this.speed *= this.friction;
-
-    this.x += Math.cos(this.angle) * this.speed;
-
-    this.y += Math.sin(this.angle) * this.speed + this.gravity;
-
-    this.alpha -= this.decay;
-
-    if (this.alpha <= this.decay) {
-
-      particles.splice(index, 1);
-
-    }
-  }
-
-  draw(ctx) {
-
-    ctx.beginPath();
-
-    const last = this.coordinates[this.coordinates.length - 1];
-
-    ctx.moveTo(last[0], last[1]);
-
-    ctx.lineTo(this.x, this.y);
-
-    ctx.strokeStyle = `hsla(${this.hue},100%,${this.brightness}%,${this.alpha})`;
-
-    ctx.stroke();
-
-  }
 }
 
-export class FireworksSystem {
+update(index,particles,system){
 
-  constructor(canvas) {
+this.coordinates.pop()
+this.coordinates.unshift([this.x,this.y])
 
-    this.canvas = canvas;
+if(this.targetRadius < 8){
+this.targetRadius += 0.3
+}else{
+this.targetRadius = 1
+}
 
-    this.ctx = canvas.getContext("2d");
+this.speed *= this.acceleration
 
-    this.cw = canvas.width = window.innerWidth;
+const vx = Math.cos(this.angle) * this.speed
+const vy = Math.sin(this.angle) * this.speed
 
-    this.ch = canvas.height = window.innerHeight;
+this.distanceTraveled = Math.hypot(
+this.x + vx - this.startX,
+this.y + vy - this.startY
+)
 
-    this.fireworks = [];
+if(this.distanceTraveled >= this.distanceToTarget){
 
-    this.particles = [];
+system.createParticles(this.targetX,this.targetY,this.hue)
 
-    window.addEventListener("resize", () => this.resize());
+system.fireworks.splice(index,1)
 
-  }
+}else{
 
-  resize() {
+this.x += vx
+this.y += vy
 
-    this.cw = this.canvas.width = window.innerWidth;
+}
 
-    this.ch = this.canvas.height = window.innerHeight;
+}
 
-  }
+draw(ctx){
 
-  launch() {
+ctx.beginPath()
 
-    const startX = this.cw / 2;
+const last = this.coordinates[this.coordinates.length-1]
 
-    const startY = this.ch;
+ctx.moveTo(last[0],last[1])
+ctx.lineTo(this.x,this.y)
 
-    const targetX = Math.random() * this.cw;
+ctx.strokeStyle = `hsl(${this.hue},100%,${this.brightness}%)`
 
-    const targetY = Math.random() * this.ch / 2;
+ctx.stroke()
 
-    const hue = Math.floor(Math.random() * 360);
+}
 
-    this.fireworks.push(
+}
 
-      new Firework(startX, startY, targetX, targetY, hue)
 
-    );
 
-  }
+class Particle{
 
-  createParticles(x, y, hue) {
+constructor(x,y,hue){
 
-    let count = 50;
+this.x = x
+this.y = y
 
-    while (count--) {
+this.coordinates = []
 
-      this.particles.push(
+this.coordinateCount = 5
 
-        new Particle(x, y, hue)
+while(this.coordinateCount--){
+this.coordinates.push([this.x,this.y])
+}
 
-      );
+this.angle = Math.random()*Math.PI*2
 
-    }
+this.speed = Math.random()*10+1
 
-  }
+this.friction = 0.95
 
-  update() {
+this.gravity = 1
 
-    let i = this.fireworks.length;
+this.hue = hue
 
-    while (i--) {
+this.brightness = Math.random()*50+50
 
-      this.fireworks[i].update(i, this.particles, this);
+this.alpha = 1
 
-    }
+this.decay = Math.random()*0.015+0.003
 
-    let j = this.particles.length;
+}
 
-    while (j--) {
+update(index,particles){
 
-      this.particles[j].update(j, this.particles);
+this.coordinates.pop()
 
-    }
+this.coordinates.unshift([this.x,this.y])
 
-  }
+this.speed *= this.friction
 
-  draw() {
+this.x += Math.cos(this.angle)*this.speed
 
-    this.ctx.globalCompositeOperation = "destination-out";
+this.y += Math.sin(this.angle)*this.speed + this.gravity
 
-    this.ctx.fillStyle = "rgba(0,0,0,0.5)";
+this.alpha -= this.decay
 
-    this.ctx.fillRect(0, 0, this.cw, this.ch);
+if(this.alpha <= this.decay){
 
-    this.ctx.globalCompositeOperation = "lighter";
+particles.splice(index,1)
 
-    this.fireworks.forEach(f => f.draw(this.ctx));
+}
 
-    this.particles.forEach(p => p.draw(this.ctx));
+}
 
-  }
+draw(ctx){
 
-  loop() {
+ctx.beginPath()
 
-    requestAnimationFrame(() => this.loop());
+const last = this.coordinates[this.coordinates.length-1]
 
-    this.update();
+ctx.moveTo(last[0],last[1])
 
-    this.draw();
+ctx.lineTo(this.x,this.y)
 
-    if (Math.random() < 0.05) {
+ctx.strokeStyle = `hsla(${this.hue},100%,${this.brightness}%,${this.alpha})`
 
-      this.launch();
+ctx.stroke()
 
-    }
+}
 
-  }
+}
 
-  start() {
 
-    this.loop();
 
-  }
+class FireworksSystem{
+
+constructor(canvas){
+
+this.canvas = canvas
+
+this.ctx = canvas.getContext("2d")
+
+this.cw = canvas.width = window.innerWidth
+this.ch = canvas.height = window.innerHeight
+
+this.fireworks = []
+this.particles = []
+
+window.addEventListener("resize", () => this.resize())
+
+}
+
+resize(){
+
+this.cw = this.canvas.width = window.innerWidth
+this.ch = this.canvas.height = window.innerHeight
+
+}
+
+launch(){
+
+const startX = this.cw/2
+const startY = this.ch
+
+const targetX = Math.random()*this.cw
+const targetY = Math.random()*this.ch/2
+
+const hue = Math.floor(Math.random()*360)
+
+this.fireworks.push(
+
+new Firework(startX,startY,targetX,targetY,hue)
+
+)
+
+}
+
+createParticles(x,y,hue){
+
+let count = 50
+
+while(count--){
+
+this.particles.push(
+
+new Particle(x,y,hue)
+
+)
+
+}
+
+}
+
+update(){
+
+let i = this.fireworks.length
+
+while(i--){
+
+this.fireworks[i].update(i,this.particles,this)
+
+}
+
+let j = this.particles.length
+
+while(j--){
+
+this.particles[j].update(j,this.particles)
+
+}
+
+}
+
+draw(){
+
+this.ctx.globalCompositeOperation = "destination-out"
+
+this.ctx.fillStyle = "rgba(0,0,0,0.5)"
+
+this.ctx.fillRect(0,0,this.cw,this.ch)
+
+this.ctx.globalCompositeOperation = "lighter"
+
+this.fireworks.forEach(f => f.draw(this.ctx))
+this.particles.forEach(p => p.draw(this.ctx))
+
+}
+
+loop(){
+
+requestAnimationFrame(()=>this.loop())
+
+this.update()
+
+this.draw()
+
+if(Math.random()<0.05){
+this.launch()
+}
+
+}
+
+start(){
+
+this.loop()
+
+}
 
 }
