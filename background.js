@@ -11,23 +11,24 @@ window.addEventListener("resize", resize)
 
 
 
-/* OBJETOS GAMER */
+/* CAMARA */
 
-let objects=[]
+let cameraX = 0
 
-const types=["controller","coin","heart","star","sword","pixel"]
 
-for(let i=0;i<80;i++){
 
-objects.push({
+/* EDIFICIOS */
 
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-type:types[Math.floor(Math.random()*types.length)],
-size:Math.random()*20+10,
-speedY:Math.random()*0.5+0.2,
-speedX:(Math.random()-0.5)*0.5,
-angle:Math.random()*Math.PI
+let buildings=[]
+
+for(let i=0;i<120;i++){
+
+buildings.push({
+
+x:Math.random()*8000,
+width:Math.random()*120+60,
+height:Math.random()*500+150,
+windows:Math.floor(Math.random()*40)+10
 
 })
 
@@ -35,98 +36,211 @@ angle:Math.random()*Math.PI
 
 
 
-/* DIBUJAR OBJETOS */
+/* PANTALLAS DIGITALES */
 
-function drawObject(o){
+let billboards=[]
 
-ctx.save()
-ctx.translate(o.x,o.y)
-ctx.rotate(o.angle)
+for(let i=0;i<40;i++){
 
-switch(o.type){
+billboards.push({
 
-case "coin":
+x:Math.random()*8000,
+y:Math.random()*400+200,
+width:Math.random()*120+80,
+height:Math.random()*60+40,
+color:`hsl(${Math.random()*360},80%,60%)`
 
-ctx.fillStyle="gold"
-ctx.beginPath()
-ctx.arc(0,0,o.size,0,Math.PI*2)
-ctx.fill()
-
-break
-
-
-case "heart":
-
-ctx.fillStyle="red"
-
-ctx.beginPath()
-ctx.moveTo(0,o.size/2)
-ctx.bezierCurveTo(o.size,o.size*-0.3,o.size*-0.5,o.size*-1.2,0,-o.size*0.4)
-ctx.bezierCurveTo(o.size*0.5,o.size*-1.2,-o.size,o.size*-0.3,0,o.size/2)
-ctx.fill()
-
-break
-
-
-case "star":
-
-ctx.fillStyle="yellow"
-
-for(let i=0;i<5;i++){
-
-ctx.lineTo(
-Math.cos((18+i*72)/180*Math.PI)*o.size,
--Math.sin((18+i*72)/180*Math.PI)*o.size
-)
-
-ctx.lineTo(
-Math.cos((54+i*72)/180*Math.PI)*(o.size/2),
--Math.sin((54+i*72)/180*Math.PI)*(o.size/2)
-)
+})
 
 }
 
-ctx.closePath()
-ctx.fill()
-
-break
 
 
-case "controller":
+/* TRAFICO DE DATOS */
 
-ctx.fillStyle="#444"
-ctx.fillRect(-o.size,o.size*-0.4,o.size*2,o.size*0.8)
+let streams=[]
 
-ctx.fillStyle="black"
-ctx.beginPath()
-ctx.arc(-o.size*0.5,0,o.size*0.2,0,Math.PI*2)
-ctx.arc(o.size*0.5,0,o.size*0.2,0,Math.PI*2)
-ctx.fill()
+for(let i=0;i<60;i++){
 
-break
+streams.push({
 
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+speed:Math.random()*4+1,
+length:Math.random()*40+20
 
-case "sword":
-
-ctx.fillStyle="silver"
-ctx.fillRect(-2,-o.size,o.size*0.1,o.size)
-
-ctx.fillStyle="#222"
-ctx.fillRect(-o.size*0.3,0,o.size*0.6,4)
-
-break
-
-
-case "pixel":
-
-ctx.fillStyle="#00ffff"
-ctx.fillRect(-o.size/2,-o.size/2,o.size,o.size)
-
-break
+})
 
 }
 
-ctx.restore()
+
+
+/* PARTICULAS */
+
+let particles=[]
+
+for(let i=0;i<200;i++){
+
+particles.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+speed:Math.random()*0.5,
+size:Math.random()*2
+
+})
+
+}
+
+
+
+/* CIELO */
+
+function drawSky(){
+
+let g=ctx.createLinearGradient(0,0,0,canvas.height)
+
+g.addColorStop(0,"#0a0f2c")
+g.addColorStop(1,"#151c48")
+
+ctx.fillStyle=g
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+}
+
+
+
+/* EDIFICIOS */
+
+function drawBuildings(){
+
+buildings.forEach(b=>{
+
+let x=b.x-cameraX
+
+ctx.fillStyle="#1b2a6d"
+
+ctx.fillRect(
+x,
+canvas.height-b.height,
+b.width,
+b.height
+)
+
+/* ventanas */
+
+for(let i=0;i<b.windows;i++){
+
+let wx=x+10+(i%6)*15
+let wy=canvas.height-b.height+20+Math.floor(i/6)*20
+
+ctx.fillStyle="cyan"
+
+ctx.fillRect(wx,wy,6,10)
+
+}
+
+})
+
+}
+
+
+
+/* PANTALLAS */
+
+function drawBillboards(){
+
+billboards.forEach(b=>{
+
+let x=b.x-cameraX
+
+ctx.fillStyle=b.color
+
+ctx.fillRect(
+x,
+canvas.height-b.y,
+b.width,
+b.height
+)
+
+})
+
+}
+
+
+
+/* TRAFICO DIGITAL */
+
+function drawStreams(){
+
+streams.forEach(s=>{
+
+s.x+=s.speed
+
+if(s.x>canvas.width){
+
+s.x=-100
+s.y=Math.random()*canvas.height
+
+}
+
+ctx.strokeStyle="rgba(0,255,255,0.8)"
+ctx.lineWidth=2
+
+ctx.beginPath()
+
+ctx.moveTo(s.x,s.y)
+ctx.lineTo(s.x-s.length,s.y)
+
+ctx.stroke()
+
+})
+
+}
+
+
+
+/* PARTICULAS */
+
+function drawParticles(){
+
+ctx.fillStyle="white"
+
+particles.forEach(p=>{
+
+p.y+=p.speed
+
+if(p.y>canvas.height){
+
+p.y=0
+p.x=Math.random()*canvas.width
+
+}
+
+ctx.beginPath()
+
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
+
+ctx.fill()
+
+})
+
+}
+
+
+
+/* SUELO */
+
+function drawGround(){
+
+ctx.fillStyle="#0a0f25"
+
+ctx.fillRect(
+0,
+canvas.height-120,
+canvas.width,
+120
+)
 
 }
 
@@ -138,20 +252,14 @@ function animate(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-objects.forEach(o=>{
+cameraX+=0.6
 
-o.y+=o.speedY
-o.x+=o.speedX
-o.angle+=0.01
-
-if(o.y>canvas.height+50){
-o.y=-50
-o.x=Math.random()*canvas.width
-}
-
-drawObject(o)
-
-})
+drawSky()
+drawBuildings()
+drawBillboards()
+drawStreams()
+drawParticles()
+drawGround()
 
 requestAnimationFrame(animate)
 
