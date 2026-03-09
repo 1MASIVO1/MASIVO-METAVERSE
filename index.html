@@ -13,10 +13,11 @@
 
 <script>
 
-const SUPABASE_URL = https://rnkuxwsuztewgbdmjyxt.supabase.co
-const SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4
+const supabaseUrl = "https://rnkuxwsuztewgbdmjyxt.supabase.co"
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
+
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
 </script>
 
@@ -31,8 +32,8 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 <h1 id="tituloLogo" class="titulo">MASIVO METAVERSE</h1>
 
 
-<div class="grid" id="gridNFT">
 
+<div class="grid" id="gridNFT">
 
 <!-- NFT 1 -->
 <div class="nft" data-id="1">
@@ -266,7 +267,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
 </div>
 
-
 </div>
 
 
@@ -292,7 +292,9 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 <!-- SONIDO GLOBAL DE LOGRO -->
 
 <audio id="achievementSound">
+
 <source src="achievement.mp3" type="audio/mpeg">
+
 </audio>
 
 
@@ -300,8 +302,9 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 <!-- SCRIPTS -->
 
 <script src="fireworks.js"></script>
+
 <script src="script.js"></script>
 
-
 </body>
+
 </html>
