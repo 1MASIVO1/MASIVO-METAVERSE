@@ -234,8 +234,6 @@ await supabaseClient
 .update({ logros: logros })
 .eq("id", id)
 
-activarLogroVisual(nft)
-
 }
 
 }
@@ -269,39 +267,42 @@ abrirNFT(img)
 
 
 
-////////////////////////////////////////////////////////
-/////////////  NUEVO SISTEMA DE LOGRO VISUAL  /////////
-////////////////////////////////////////////////////////
+/* ================================
+   NUEVO SISTEMA VISUAL DE LOGROS
+   (NO CAMBIA TU LÓGICA)
+================================ */
+
+const checkLogroOriginal = checkLogro
+
+checkLogro = async function(id,nft,total){
+
+await checkLogroOriginal(id,nft,total)
+
+if(total % 100 === 0){
+
+activarLogroVisual(nft)
+
+}
+
+}
+
+
 
 function activarLogroVisual(nft){
 
 let sound = document.getElementById("achievementSound")
+
 if(sound){
 sound.currentTime = 0
 sound.play()
 }
 
-mostrarVideoSobreNFT(nft)
-
-lanzarFireworks()
-
-}
-
-
-
-function mostrarVideoSobreNFT(nft){
-
-let viejo = nft.querySelector(".achievementVideo")
-if(viejo) viejo.remove()
-
 let video = document.createElement("video")
 
 video.src = "achievement.mp4"
-video.className = "achievementVideo"
-
 video.autoplay = true
 video.muted = true
-video.playsInline = true
+video.className = "achievementVideo"
 
 nft.appendChild(video)
 
@@ -309,61 +310,8 @@ setTimeout(()=>{
 video.remove()
 },4000)
 
-}
-
-
-
-////////////////////////////////////////////////////////
-///////////////   FIREWORKS SYSTEM   //////////////////
-////////////////////////////////////////////////////////
-
-const canvas = document.getElementById("fireworks")
-const ctx = canvas.getContext("2d")
-
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-
-let particles = []
-
-function lanzarFireworks(){
-
-for(let i=0;i<40;i++){
-
-particles.push({
-x: Math.random()*canvas.width,
-y: Math.random()*canvas.height,
-vx:(Math.random()-0.5)*6,
-vy:(Math.random()-0.5)*6,
-life:100
-})
-
+if(window.lanzarFireworks){
+window.lanzarFireworks()
 }
 
 }
-
-function animarFireworks(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-particles.forEach((p,i)=>{
-
-p.x+=p.vx
-p.y+=p.vy
-p.life--
-
-ctx.fillStyle="white"
-ctx.beginPath()
-ctx.arc(p.x,p.y,2,0,Math.PI*2)
-ctx.fill()
-
-if(p.life<=0){
-particles.splice(i,1)
-}
-
-})
-
-requestAnimationFrame(animarFireworks)
-
-}
-
-animarFireworks()
