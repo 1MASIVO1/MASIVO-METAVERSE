@@ -1,3 +1,6 @@
+CODIGO SCRIPT.JS:
+
+
 const supabaseUrl = "https://rnkuxwsuztewgbdmjyxt.supabase.co"
 
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
@@ -218,7 +221,7 @@ checkLogro(id,nft,shares)
 
 
 
-// SISTEMA DE LOGROS (GLOBAL + VIDEO)
+// SISTEMA DE LOGROS (GLOBAL)
 async function checkLogro(id,nft,total){
 
 if(total % 100 === 0){
@@ -233,58 +236,6 @@ await supabaseClient
 .from("nfts")
 .update({ logros: logros })
 .eq("id", id)
-
-mostrarLogro(id,nft)
-
-}
-
-}
-
-
-
-// MOSTRAR VIDEO LOGRO
-function mostrarLogro(id,nft){
-
-let video = document.createElement("video")
-
-video.src = "videos/nft"+id+".mp4"
-
-video.autoplay = true
-video.muted = false
-video.controls = false
-
-video.style.position = "absolute"
-video.style.width = "100%"
-video.style.height = "100%"
-video.style.top = "0"
-video.style.left = "0"
-video.style.objectFit = "cover"
-video.style.zIndex = "999"
-
-nft.appendChild(video)
-
-
-
-// SONIDO GLOBAL
-let sound = document.getElementById("achievementSound")
-
-if(sound){
-sound.currentTime = 0
-sound.play()
-}
-
-
-
-// FUEGOS ARTIFICIALES
-if(typeof lanzarFuegos === "function"){
-lanzarFuegos()
-}
-
-
-
-video.onended = () => {
-
-video.remove()
 
 }
 
