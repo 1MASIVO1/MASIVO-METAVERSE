@@ -1,108 +1,98 @@
 body{
-
 margin:0;
 font-family:Arial;
 background:black;
 color:white;
 text-align:center;
-
+overflow-x:hidden;
 }
 
+#bgCanvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
 
 .titulo{
-
-font-size:100px;
-margin-top:-150px;
-animation: glow 2s infinite alternate;
-
+font-size:110px;
+margin-top:40px;
+background:linear-gradient(90deg,cyan,magenta,cyan);
+background-size:400%;
+-webkit-background-clip:text;
+color:transparent;
+animation:logoMove 6s infinite linear;
 }
 
-
-@keyframes glow{
-
-from{ text-shadow:0 0 10px cyan }
-to{ text-shadow:0 0 30px magenta }
-
+@keyframes logoMove{
+0%{background-position:0%}
+100%{background-position:400%}
 }
-
-
-/* NFT UN POCO MAS PEQUEÑOS */
 
 .grid{
-
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
 gap:30px;
 padding:40px;
 max-width:1200px;
 margin:auto;
-
 }
 
 .nft{
-
 background:#111;
-border-radius:10px;
+border-radius:12px;
 padding:10px;
 transition:0.3s;
-
+position:relative;
+overflow:hidden;
 }
 
+.nft.evolucion1{transform:scale(1.02)}
+.nft.evolucion2{box-shadow:0 0 20px cyan}
+.nft.evolucion3{box-shadow:0 0 30px magenta}
+.nft.evolucion4{box-shadow:0 0 50px gold}
 
 .nft:hover{
-
 transform:scale(1.05);
-
 }
 
-
 .nft img{
-
 width:100%;
 border-radius:10px;
 cursor:pointer;
-
 }
-
 
 .stats{
-
 margin-top:10px;
 font-size:14px;
-
 }
 
-
 .botones button{
-
 margin:5px;
-padding:5px 10px;
+padding:6px 12px;
 border:none;
 border-radius:5px;
 cursor:pointer;
 background:#222;
 color:white;
-
 }
-
 
 .botones button:hover{
-
 background:#444;
-
 }
-
 
 .logros{
-
 font-size:18px;
 margin-top:5px;
-
 }
 
+.rankingBoard{
+margin-top:20px;
+font-size:18px;
+color:gold;
+}
 
 .nftModal{
-
 display:none;
 position:fixed;
 top:0;
@@ -113,130 +103,17 @@ background:rgba(0,0,0,0.9);
 justify-content:center;
 align-items:center;
 z-index:999;
-
 }
-
 
 .nftModal img{
-
 max-width:90%;
 max-height:90%;
-
 }
 
-
 .cerrarNFT{
-
 position:absolute;
 top:20px;
 right:40px;
 font-size:40px;
 cursor:pointer;
-
-}
-
-
-/* ANIMACIONES LOGROS */
-
-.likeAnim{
-animation:likeGlow 1s;
-}
-
-.viewAnim{
-animation:viewGlow 1s;
-}
-
-.downloadAnim{
-animation:downloadGlow 1s;
-}
-
-.shareAnim{
-animation:shareGlow 1s;
-}
-
-
-@keyframes likeGlow{
-
-0%{ box-shadow:0 0 0px red }
-50%{ box-shadow:0 0 40px red }
-100%{ box-shadow:0 0 0px red }
-
-}
-
-
-@keyframes viewGlow{
-
-0%{ box-shadow:0 0 0px cyan }
-50%{ box-shadow:0 0 40px cyan }
-100%{ box-shadow:0 0 0px cyan }
-
-}
-
-
-@keyframes downloadGlow{
-
-0%{ box-shadow:0 0 0px lime }
-50%{ box-shadow:0 0 40px lime }
-100%{ box-shadow:0 0 0px lime }
-
-}
-
-
-@keyframes shareGlow{
-
-0%{ box-shadow:0 0 0px gold }
-50%{ box-shadow:0 0 40px gold }
-100%{ box-shadow:0 0 0px gold }
-
-}
-
-
-
-/* =============================== */
-/* NUEVO: VIDEO DE LOGRO SOBRE NFT */
-/* =============================== */
-
-.nft{
-position:relative;
-overflow:hidden;
-}
-
-.achievementVideo{
-
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-pointer-events:none;
-z-index:10;
-animation: logroFade 4s linear;
-
-}
-
-@keyframes logroFade{
-
-0%{opacity:1}
-80%{opacity:1}
-100%{opacity:0}
-
-}
-
-
-
-/* =============================== */
-/* NUEVO: CANVAS FIREWORKS */
-/* =============================== */
-
-#fireworks{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:-1;
-
 }
