@@ -8,7 +8,6 @@ text-align:center;
 
 }
 
-
 .titulo{
 
 font-size:100px;
@@ -17,14 +16,12 @@ animation: glow 2s infinite alternate;
 
 }
 
-
 @keyframes glow{
 
 from{ text-shadow:0 0 10px cyan }
 to{ text-shadow:0 0 30px magenta }
 
 }
-
 
 /* NFT UN POCO MAS PEQUEÑOS */
 
@@ -48,13 +45,11 @@ transition:0.3s;
 
 }
 
-
 .nft:hover{
 
 transform:scale(1.05);
 
 }
-
 
 .nft img{
 
@@ -64,14 +59,12 @@ cursor:pointer;
 
 }
 
-
 .stats{
 
 margin-top:10px;
 font-size:14px;
 
 }
-
 
 .botones button{
 
@@ -85,13 +78,11 @@ color:white;
 
 }
 
-
 .botones button:hover{
 
 background:#444;
 
 }
-
 
 .logros{
 
@@ -99,7 +90,6 @@ font-size:18px;
 margin-top:5px;
 
 }
-
 
 .nftModal{
 
@@ -116,14 +106,12 @@ z-index:999;
 
 }
 
-
 .nftModal img{
 
 max-width:90%;
 max-height:90%;
 
 }
-
 
 .cerrarNFT{
 
@@ -134,7 +122,6 @@ font-size:40px;
 cursor:pointer;
 
 }
-
 
 /* ANIMACIONES LOGROS */
 
@@ -154,7 +141,6 @@ animation:downloadGlow 1s;
 animation:shareGlow 1s;
 }
 
-
 @keyframes likeGlow{
 
 0%{ box-shadow:0 0 0px red }
@@ -162,7 +148,6 @@ animation:shareGlow 1s;
 100%{ box-shadow:0 0 0px red }
 
 }
-
 
 @keyframes viewGlow{
 
@@ -172,7 +157,6 @@ animation:shareGlow 1s;
 
 }
 
-
 @keyframes downloadGlow{
 
 0%{ box-shadow:0 0 0px lime }
@@ -180,7 +164,6 @@ animation:shareGlow 1s;
 100%{ box-shadow:0 0 0px lime }
 
 }
-
 
 @keyframes shareGlow{
 
@@ -190,72 +173,14 @@ animation:shareGlow 1s;
 
 }
 
-
-/* ============================== */
-/* AGREGADO PARA VIDEO DE LOGROS */
-/* ============================== */
-
-.nft{
-
-position:relative;
-
-}
-
-
-/* CONTENEDOR DEL MEDIA NFT */
-
-.nftMedia{
-
-position:relative;
-width:100%;
-height:auto;
-overflow:hidden;
-border-radius:10px;
-
-}
-
-
-/* VIDEO DE LOGRO SOBRE NFT */
-
-.nft video{
-
-pointer-events:none;
-border-radius:10px;
-
-}
-
-
-
-/* ============================== */
-/* FUEGOS ARTIFICIALES CANVAS */
-/* ============================== */
+/* FIREWORKS */
 
 #fireworks{
-
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
+z-index:-1;
 pointer-events:none;
-z-index:2000;
-
-}
-
-
-
-/* ============================== */
-/* OVERLAY DE LOGROS */
-/* ============================== */
-
-#achievementOverlay{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:1500;
-
 }
