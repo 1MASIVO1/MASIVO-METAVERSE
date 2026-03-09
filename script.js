@@ -34,6 +34,8 @@ card.querySelector(".logroNum").innerText = nft.logros
 
 }
 
+window.addEventListener("load", cargarStats)
+
 
 
 // ABRIR NFT
@@ -216,7 +218,7 @@ checkLogro(id,nft,shares)
 
 
 
-// SISTEMA DE LOGROS
+// SISTEMA DE LOGROS (GLOBAL + VIDEO)
 async function checkLogro(id,nft,total){
 
 if(total % 100 === 0){
@@ -246,6 +248,7 @@ function mostrarLogro(id,nft){
 let video = document.createElement("video")
 
 video.src = "videos/nft"+id+".mp4"
+
 video.autoplay = true
 video.muted = false
 video.controls = false
@@ -280,19 +283,22 @@ lanzarFuegos()
 
 
 video.onended = () => {
+
 video.remove()
-}
 
 }
 
+}
 
 
-// INICIO GLOBAL
-window.addEventListener("load", async () => {
 
-await cargarStats()
+// ABRIR NFT DESDE LINK
+window.onload = function(){
+
+cargarStats()
 
 let params = new URLSearchParams(window.location.search)
+
 let nftID = params.get("nft")
 
 if(nftID){
@@ -309,4 +315,4 @@ abrirNFT(img)
 
 }
 
-})
+}
