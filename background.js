@@ -11,253 +11,122 @@ window.addEventListener("resize", resize)
 
 
 
-/* CAMARA */
+/* OBJETOS GAMER */
 
-let cameraX = 0
+let objects=[]
 
-
-
-/* MONTAÑAS */
-
-let mountains=[]
-
-for(let i=0;i<8;i++){
-mountains.push({
-x:i*600,
-height:Math.random()*200+200
-})
-}
-
-
-
-/* TERRENO */
-
-let ground=[]
-
-for(let i=0;i<120;i++){
-ground.push({
-x:i*120,
-height:Math.random()*80+120
-})
-}
-
-
-
-/* ARBOLES */
-
-let trees=[]
-
-for(let i=0;i<40;i++){
-trees.push({
-x:Math.random()*12000,
-size:Math.random()*40+40
-})
-}
-
-
-
-/* ROCAS */
-
-let rocks=[]
-
-for(let i=0;i<60;i++){
-rocks.push({
-x:Math.random()*12000,
-size:Math.random()*20+10
-})
-}
-
-
-
-/* NUBES */
-
-let clouds=[]
-
-for(let i=0;i<12;i++){
-clouds.push({
-x:Math.random()*canvas.width,
-y:Math.random()*200,
-size:Math.random()*100+80,
-speed:Math.random()*0.3+0.05
-})
-}
-
-
-
-/* PARTICULAS */
-
-let particles=[]
+const types=["controller","coin","heart","star","sword","pixel"]
 
 for(let i=0;i<80;i++){
-particles.push({
+
+objects.push({
+
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-speed:Math.random()*0.5+0.2,
-size:Math.random()*2
+type:types[Math.floor(Math.random()*types.length)],
+size:Math.random()*20+10,
+speedY:Math.random()*0.5+0.2,
+speedX:(Math.random()-0.5)*0.5,
+angle:Math.random()*Math.PI
+
 })
-}
-
-
-
-/* CIELO */
-
-function drawSky(){
-
-let gradient=ctx.createLinearGradient(0,0,0,canvas.height)
-
-gradient.addColorStop(0,"#5fa9ff")
-gradient.addColorStop(1,"#dff4ff")
-
-ctx.fillStyle=gradient
-ctx.fillRect(0,0,canvas.width,canvas.height)
 
 }
 
 
 
-/* MONTAÑAS */
+/* DIBUJAR OBJETOS */
 
-function drawMountains(){
+function drawObject(o){
 
-ctx.fillStyle="#6c7a89"
+ctx.save()
+ctx.translate(o.x,o.y)
+ctx.rotate(o.angle)
 
-mountains.forEach(m=>{
+switch(o.type){
 
-let x=(m.x-cameraX*0.2)
+case "coin":
 
+ctx.fillStyle="gold"
 ctx.beginPath()
-ctx.moveTo(x,canvas.height-200)
-ctx.lineTo(x+300,canvas.height-m.height)
-ctx.lineTo(x+600,canvas.height-200)
+ctx.arc(0,0,o.size,0,Math.PI*2)
 ctx.fill()
 
-})
-
-}
+break
 
 
+case "heart":
 
-/* NUBES */
-
-function drawClouds(){
-
-ctx.fillStyle="white"
-
-clouds.forEach(c=>{
-
-c.x-=c.speed
-
-if(c.x<-c.size) c.x=canvas.width+c.size
+ctx.fillStyle="red"
 
 ctx.beginPath()
-ctx.arc(c.x,c.y,c.size*0.4,0,Math.PI*2)
-ctx.arc(c.x+40,c.y+10,c.size*0.35,0,Math.PI*2)
-ctx.arc(c.x-40,c.y+10,c.size*0.35,0,Math.PI*2)
+ctx.moveTo(0,o.size/2)
+ctx.bezierCurveTo(o.size,o.size*-0.3,o.size*-0.5,o.size*-1.2,0,-o.size*0.4)
+ctx.bezierCurveTo(o.size*0.5,o.size*-1.2,-o.size,o.size*-0.3,0,o.size/2)
 ctx.fill()
 
-})
-
-}
+break
 
 
+case "star":
 
-/* TERRENO */
+ctx.fillStyle="yellow"
 
-function drawGround(){
+for(let i=0;i<5;i++){
 
-ground.forEach(g=>{
-
-let x=g.x-cameraX
-
-ctx.fillStyle="#4c9a2a"
-
-ctx.fillRect(
-x,
-canvas.height-g.height,
-120,
-g.height
+ctx.lineTo(
+Math.cos((18+i*72)/180*Math.PI)*o.size,
+-Math.sin((18+i*72)/180*Math.PI)*o.size
 )
 
-ctx.fillStyle="#2f6d1a"
-
-ctx.fillRect(
-x,
-canvas.height-g.height,
-120,
-25
+ctx.lineTo(
+Math.cos((54+i*72)/180*Math.PI)*(o.size/2),
+-Math.sin((54+i*72)/180*Math.PI)*(o.size/2)
 )
 
-})
-
 }
 
-
-
-/* ARBOLES */
-
-function drawTrees(){
-
-trees.forEach(t=>{
-
-let x=t.x-cameraX
-
-let y=canvas.height-200
-
-ctx.fillStyle="#5b3a1e"
-
-ctx.fillRect(x,y,t.size*0.2,t.size)
-
-ctx.beginPath()
-ctx.fillStyle="#2e7d32"
-ctx.arc(x+t.size*0.1,y,t.size*0.6,0,Math.PI*2)
+ctx.closePath()
 ctx.fill()
 
-})
-
-}
+break
 
 
+case "controller":
 
-/* ROCAS */
+ctx.fillStyle="#444"
+ctx.fillRect(-o.size,o.size*-0.4,o.size*2,o.size*0.8)
 
-function drawRocks(){
-
-rocks.forEach(r=>{
-
-let x=r.x-cameraX
-
-ctx.fillStyle="#555"
-
+ctx.fillStyle="black"
 ctx.beginPath()
-ctx.arc(x,canvas.height-140,r.size,0,Math.PI*2)
+ctx.arc(-o.size*0.5,0,o.size*0.2,0,Math.PI*2)
+ctx.arc(o.size*0.5,0,o.size*0.2,0,Math.PI*2)
 ctx.fill()
 
-})
+break
+
+
+case "sword":
+
+ctx.fillStyle="silver"
+ctx.fillRect(-2,-o.size,o.size*0.1,o.size)
+
+ctx.fillStyle="#222"
+ctx.fillRect(-o.size*0.3,0,o.size*0.6,4)
+
+break
+
+
+case "pixel":
+
+ctx.fillStyle="#00ffff"
+ctx.fillRect(-o.size/2,-o.size/2,o.size,o.size)
+
+break
 
 }
 
-
-
-/* PARTICULAS */
-
-function drawParticles(){
-
-ctx.fillStyle="rgba(255,255,255,0.4)"
-
-particles.forEach(p=>{
-
-p.y+=p.speed
-
-if(p.y>canvas.height){
-p.y=0
-p.x=Math.random()*canvas.width
-}
-
-ctx.beginPath()
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
-ctx.fill()
-
-})
+ctx.restore()
 
 }
 
@@ -269,15 +138,20 @@ function animate(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-cameraX+=1
+objects.forEach(o=>{
 
-drawSky()
-drawMountains()
-drawClouds()
-drawGround()
-drawTrees()
-drawRocks()
-drawParticles()
+o.y+=o.speedY
+o.x+=o.speedX
+o.angle+=0.01
+
+if(o.y>canvas.height+50){
+o.y=-50
+o.x=Math.random()*canvas.width
+}
+
+drawObject(o)
+
+})
 
 requestAnimationFrame(animate)
 
