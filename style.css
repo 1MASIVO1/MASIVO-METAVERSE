@@ -8,6 +8,7 @@ text-align:center;
 
 }
 
+
 .titulo{
 
 font-size:100px;
@@ -15,6 +16,7 @@ margin-top:-150px;
 animation: glow 2s infinite alternate;
 
 }
+
 
 @keyframes glow{
 
@@ -185,131 +187,5 @@ animation:shareGlow 1s;
 0%{ box-shadow:0 0 0px gold }
 50%{ box-shadow:0 0 40px gold }
 100%{ box-shadow:0 0 0px gold }
-
-}
-
-
-/* =============================== */
-/* EXTRA NECESARIO PARA FUNCIONAR */
-/* =============================== */
-
-
-/* centra correctamente el modal */
-
-.nftModal.active{
-
-display:flex;
-
-}
-
-
-/* animación cuando aparece el NFT grande */
-
-.nftModal img{
-
-animation:zoomNFT 0.3s;
-
-}
-
-@keyframes zoomNFT{
-
-from{
-transform:scale(0.7);
-opacity:0;
-}
-
-to{
-transform:scale(1);
-opacity:1;
-}
-
-}
-
-
-/* efecto al hacer click en botones */
-
-.botones button:active{
-
-transform:scale(0.9);
-
-}
-
-
-/* scroll bonito */
-
-::-webkit-scrollbar{
-
-width:8px;
-
-}
-
-::-webkit-scrollbar-track{
-
-background:black;
-
-}
-
-::-webkit-scrollbar-thumb{
-
-background:#333;
-border-radius:10px;
-
-}
-
-::-webkit-scrollbar-thumb:hover{
-
-background:#555;
-
-}
-
-
-
-/* ================================= */
-/* AGREGADO PARA ELEMENTOS DEL INDEX */
-/* ================================= */
-
-
-/* canvas fuegos artificiales */
-
-#fireworks{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:1;
-
-}
-
-
-/* overlay visual */
-
-.overlay{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-background:radial-gradient(circle,transparent 60%,rgba(0,0,0,0.6));
-z-index:2;
-
-}
-
-
-/* overlay logro video */
-
-#achievementOverlay{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:998;
 
 }
