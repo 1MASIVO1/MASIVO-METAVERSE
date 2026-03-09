@@ -1,22 +1,15 @@
 const supabaseUrl = "https://rnkuxwsuztewgbdmjyxt.supabase.co"
-
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJua3V4d3N1enRld2diZG1qeXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODU4MjQsImV4cCI6MjA4NzU2MTgyNH0.mwGzWUk6xOry9BcwqwRnXGFfGMwoetg6D2pxAz7_eN4"
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
 
 
-// CARGAR STATS AL ABRIR
 async function cargarStats(){
 
-const { data, error } = await supabaseClient
+const { data } = await supabaseClient
 .from("nfts")
 .select("*")
-
-if(error){
-console.log(error)
-return
-}
 
 data.forEach(nft => {
 
@@ -30,7 +23,11 @@ card.querySelector(".downloads").innerText = "⬇ " + nft.downloads
 card.querySelector(".shares").innerText = "🔗 " + nft.shares
 card.querySelector(".logroNum").innerText = nft.logros
 
+aplicarEvolucion(card,nft.likes)
+
 })
+
+generarRanking(data)
 
 }
 
@@ -38,7 +35,35 @@ window.addEventListener("load", cargarStats)
 
 
 
-// ABRIR NFT
+function aplicarEvolucion(nft,likes){
+
+if(likes>=1000000) nft.classList.add("evolucion4")
+else if(likes>=100000) nft.classList.add("evolucion3")
+else if(likes>=10000) nft.classList.add("evolucion2")
+else if(likes>=1000) nft.classList.add("evolucion1")
+
+}
+
+
+
+function generarRanking(data){
+
+let orden = [...data].sort((a,b)=>b.likes-a.likes)
+
+let board = document.getElementById("rankingBoard")
+
+board.innerHTML = "🏆 TOP NFTs: "
+
+orden.slice(0,3).forEach((n,i)=>{
+
+board.innerHTML += `#${i+1} NFT ${n.id} (${n.likes} likes) `
+
+})
+
+}
+
+
+
 function abrirNFT(img){
 
 let modal = document.getElementById("nftModal")
@@ -47,57 +72,16 @@ let modalImg = document.getElementById("modalImg")
 modal.style.display = "flex"
 modalImg.src = img.src
 
-let nft = img.closest(".nft")
-let id = nft.dataset.id
-
-sumarView(id,nft)
-
 }
 
 
 
-// CERRAR NFT
 function cerrarNFT(){
 document.getElementById("nftModal").style.display = "none"
 }
 
 
 
-// SUMAR VIEW (ANTI SPAM)
-async function sumarView(id,nft){
-
-if(localStorage.getItem("view_"+id)) return
-
-localStorage.setItem("view_"+id,true)
-
-const { data, error } = await supabaseClient
-.from("nfts")
-.select("views")
-.eq("id", id)
-.single()
-
-if(error){
-console.log(error)
-return
-}
-
-let views = (data.views || 0) + 1
-
-await supabaseClient
-.from("nfts")
-.update({ views: views })
-.eq("id", id)
-
-let span = nft.querySelector(".views")
-span.innerText = "👁 " + views
-
-checkLogro(id,nft,views)
-
-}
-
-
-
-// LIKE (ANTI SPAM)
 async function like(event,btn){
 
 event.stopPropagation()
@@ -105,10 +89,7 @@ event.stopPropagation()
 let nft = btn.closest(".nft")
 let id = nft.dataset.id
 
-if(localStorage.getItem("like_"+id)){
-alert("Ya diste like a este NFT")
-return
-}
+if(localStorage.getItem("like_"+id)) return
 
 localStorage.setItem("like_"+id,true)
 
@@ -125,29 +106,19 @@ await supabaseClient
 .update({ likes: likes })
 .eq("id", id)
 
-let span = nft.querySelector(".likes")
-span.innerText = "❤️ " + likes
+nft.querySelector(".likes").innerText = "❤️ " + likes
 
-checkLogro(id,nft,likes)
+aplicarEvolucion(nft,likes)
 
 }
 
 
 
-// DESCARGAR
-async function descargar(event,btn){
+function descargar(event,btn){
 
 event.stopPropagation()
 
 let nft = btn.closest(".nft")
-let id = nft.dataset.id
-
-if(localStorage.getItem("download_"+id)){
-alert("Ya descargaste este NFT")
-return
-}
-
-localStorage.setItem("download_"+id,true)
 
 let img = nft.querySelector("img").src
 
@@ -156,162 +127,87 @@ a.href = img
 a.download = "nft.png"
 a.click()
 
-const { data } = await supabaseClient
-.from("nfts")
-.select("downloads")
-.eq("id", id)
-.single()
-
-let downloads = (data.downloads || 0) + 1
-
-await supabaseClient
-.from("nfts")
-.update({ downloads: downloads })
-.eq("id", id)
-
-let span = nft.querySelector(".downloads")
-span.innerText = "⬇ " + downloads
-
-checkLogro(id,nft,downloads)
-
 }
 
 
 
-// SHARE
-async function share(event,btn){
+function share(event,btn){
 
 event.stopPropagation()
 
 let nft = btn.closest(".nft")
 let id = nft.dataset.id
 
-let link = window.location.origin + window.location.pathname + "?nft=" + id
-
-navigator.clipboard.writeText(link)
+navigator.clipboard.writeText(window.location.href + "?nft="+id)
 
 alert("Link copiado")
 
-if(localStorage.getItem("share_"+id)) return
+}
 
-localStorage.setItem("share_"+id,true)
 
-const { data } = await supabaseClient
-.from("nfts")
-.select("shares")
-.eq("id", id)
-.single()
 
-let shares = (data.shares || 0) + 1
+function openAchievements(event,btn){
 
-await supabaseClient
-.from("nfts")
-.update({ shares: shares })
-.eq("id", id)
+event.stopPropagation()
 
-let span = nft.querySelector(".shares")
-span.innerText = "🔗 " + shares
+let modal = document.getElementById("achModal")
 
-checkLogro(id,nft,shares)
+modal.style.display="flex"
 
 }
 
 
 
-// SISTEMA DE LOGROS (GLOBAL)
-async function checkLogro(id,nft,total){
+function closeAchievements(){
 
-if(total % 100 === 0){
-
-let logroSpan = nft.querySelector(".logroNum")
-
-let logros = parseInt(logroSpan.innerText) + 1
-
-logroSpan.innerText = logros
-
-await supabaseClient
-.from("nfts")
-.update({ logros: logros })
-.eq("id", id)
-
-}
+document.getElementById("achModal").style.display="none"
 
 }
 
 
 
-// ABRIR NFT DESDE LINK
-window.onload = function(){
+/* BACKGROUND ENGINE */
 
-cargarStats()
+const canvas = document.getElementById("bgCanvas")
+const ctx = canvas.getContext("2d")
 
-let params = new URLSearchParams(window.location.search)
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
 
-let nftID = params.get("nft")
+let particles = []
 
-if(nftID){
+for(let i=0;i<200;i++){
 
-let nft = document.querySelector(`.nft[data-id='${nftID}']`)
-
-if(nft){
-
-let img = nft.querySelector("img")
-
-abrirNFT(img)
-
-}
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2,
+speed:Math.random()*0.3
+})
 
 }
 
-}
+function animateBG(){
 
+ctx.fillStyle="black"
+ctx.fillRect(0,0,canvas.width,canvas.height)
 
+ctx.fillStyle="cyan"
 
-/* ================================
-   NUEVO SISTEMA VISUAL DE LOGROS
-   (NO CAMBIA TU LÓGICA)
-================================ */
+particles.forEach(p=>{
 
-const checkLogroOriginal = checkLogro
+p.y += p.speed
 
-checkLogro = async function(id,nft,total){
+if(p.y > canvas.height) p.y=0
 
-await checkLogroOriginal(id,nft,total)
+ctx.beginPath()
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
+ctx.fill()
 
-if(total % 100 === 0){
+})
 
-activarLogroVisual(nft)
-
-}
-
-}
-
-
-
-function activarLogroVisual(nft){
-
-let sound = document.getElementById("achievementSound")
-
-if(sound){
-sound.currentTime = 0
-sound.play()
-}
-
-let video = document.createElement("video")
-
-video.src = "achievement.mp4"
-video.autoplay = true
-video.muted = true
-video.className = "achievementVideo"
-
-nft.appendChild(video)
-
-setTimeout(()=>{
-video.remove()
-},4000)
-
-if(window.lanzarFireworks){
-window.lanzarFireworks()
-}
+requestAnimationFrame(animateBG)
 
 }
+
+animateBG()
