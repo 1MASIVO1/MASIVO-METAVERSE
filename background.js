@@ -11,41 +11,39 @@ window.addEventListener("resize", resize)
 
 
 
-/* ESTRELLAS */
+/* CAMARA */
 
-let stars=[]
+let cameraX = 0
 
-for(let i=0;i<150;i++){
 
-stars.push({
 
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-speed:Math.random()*0.6+0.2,
-size:Math.random()*2,
-alpha:Math.random(),
-alphaSpeed:Math.random()*0.02
+/* TERRENO */
 
+let ground=[]
+
+for(let i=0;i<60;i++){
+
+ground.push({
+x:i*120,
+height:Math.random()*80+80
 })
 
 }
 
 
 
-/* CUBOS FLOTANTES */
+/* PLATAFORMAS */
 
-let cubes=[]
+let platforms=[]
 
 for(let i=0;i<20;i++){
 
-cubes.push({
+platforms.push({
 
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*30+20,
-vy:Math.random()*0.3+0.1,
-angle:Math.random()*Math.PI,
-rotation:(Math.random()-0.5)*0.01
+x:Math.random()*4000,
+y:Math.random()*300+200,
+width:80,
+height:20
 
 })
 
@@ -53,91 +51,164 @@ rotation:(Math.random()-0.5)*0.01
 
 
 
-/* OBJETOS TIPO METEORO */
+/* MONEDAS */
 
-let meteors=[]
+let coins=[]
 
-function spawnMeteor(){
+for(let i=0;i<30;i++){
 
-meteors.push({
+coins.push({
 
-x:Math.random()*canvas.width,
-y:-20,
-vx:(Math.random()-0.5)*2,
-vy:Math.random()*3+2,
-size:Math.random()*3+2,
-life:200
+x:Math.random()*4000,
+y:Math.random()*300+150,
+size:10,
+angle:Math.random()*Math.PI
 
 })
 
 }
 
-setInterval(spawnMeteor,2000)
+
+
+/* NUBES */
+
+let clouds=[]
+
+for(let i=0;i<10;i++){
+
+clouds.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*200,
+size:Math.random()*80+60,
+speed:Math.random()*0.2+0.05
+
+})
+
+}
 
 
 
-/* GRID TIPO VIDEOJUEGO */
+/* DIBUJAR CIELO */
 
-function drawGrid(){
+function drawSky(){
 
-let gridSize=60
+let gradient=ctx.createLinearGradient(0,0,0,canvas.height)
 
-ctx.strokeStyle="rgba(0,200,200,0.15)"
+gradient.addColorStop(0,"#6ec6ff")
+gradient.addColorStop(1,"#c9f0ff")
 
-for(let x=0;x<canvas.width;x+=gridSize){
+ctx.fillStyle=gradient
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+}
+
+
+
+/* DIBUJAR NUBES */
+
+function drawClouds(){
+
+ctx.fillStyle="white"
+
+clouds.forEach(c=>{
+
+c.x-=c.speed
+
+if(c.x<-c.size) c.x=canvas.width+c.size
 
 ctx.beginPath()
-ctx.moveTo(x,0)
-ctx.lineTo(x,canvas.height)
-ctx.stroke()
+ctx.arc(c.x,c.y,c.size*0.4,0,Math.PI*2)
+ctx.arc(c.x+30,c.y+10,c.size*0.35,0,Math.PI*2)
+ctx.arc(c.x-30,c.y+10,c.size*0.35,0,Math.PI*2)
+ctx.fill()
+
+})
 
 }
 
-for(let y=0;y<canvas.height;y+=gridSize){
+
+
+/* DIBUJAR TERRENO */
+
+function drawGround(){
+
+ground.forEach(g=>{
+
+let x=g.x-cameraX
+
+ctx.fillStyle="#4caf50"
+
+ctx.fillRect(
+x,
+canvas.height-g.height,
+120,
+g.height
+)
+
+ctx.fillStyle="#2e7d32"
+
+ctx.fillRect(
+x,
+canvas.height-g.height,
+120,
+20
+)
+
+})
+
+}
+
+
+
+/* DIBUJAR PLATAFORMAS */
+
+function drawPlatforms(){
+
+ctx.fillStyle="#8d6e63"
+
+platforms.forEach(p=>{
+
+let x=p.x-cameraX
+
+ctx.fillRect(
+x,
+canvas.height-p.y,
+p.width,
+p.height
+)
+
+})
+
+}
+
+
+
+/* DIBUJAR MONEDAS */
+
+function drawCoins(){
+
+coins.forEach(c=>{
+
+c.angle+=0.1
+
+let x=c.x-cameraX
+let y=canvas.height-c.y
+
+ctx.save()
+
+ctx.translate(x,y)
+ctx.rotate(c.angle)
+
+ctx.fillStyle="gold"
 
 ctx.beginPath()
-ctx.moveTo(0,y)
-ctx.lineTo(canvas.width,y)
-ctx.stroke()
+ctx.arc(0,0,c.size,0,Math.PI*2)
+ctx.fill()
 
-}
+ctx.restore()
 
-}
-
-
-
-/* SUELO ESTILO VIDEOJUEGO */
-
-function drawGameFloor(){
-
-let horizon = canvas.height*0.6
-let lines = 40
-
-ctx.strokeStyle="rgba(0,255,255,0.25)"
-
-/* líneas horizontales perspectiva */
-
-for(let i=0;i<lines;i++){
-
-let y = horizon + (i*i*2)
-
-ctx.beginPath()
-ctx.moveTo(0,y)
-ctx.lineTo(canvas.width,y)
-ctx.stroke()
-
-}
-
-/* líneas verticales perspectiva */
-
-for(let x=0;x<canvas.width;x+=80){
-
-ctx.beginPath()
-ctx.moveTo(x,horizon)
-ctx.lineTo(canvas.width/2,canvas.height)
-ctx.stroke()
-
-}
+})
 
 }
 
@@ -149,87 +220,13 @@ function animate(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-/* GRID */
+cameraX+=1.2
 
-drawGrid()
-
-/* SUELO */
-
-drawGameFloor()
-
-
-
-/* ESTRELLAS */
-
-stars.forEach(s=>{
-
-s.y+=s.speed
-
-if(s.y>canvas.height) s.y=0
-
-s.alpha+=s.alphaSpeed
-if(s.alpha>1 || s.alpha<0) s.alphaSpeed*=-1
-
-ctx.beginPath()
-ctx.arc(s.x,s.y,s.size,0,Math.PI*2)
-ctx.fillStyle=`rgba(255,255,255,${s.alpha})`
-ctx.fill()
-
-})
-
-
-
-/* CUBOS */
-
-cubes.forEach(c=>{
-
-c.y-=c.vy
-c.angle+=c.rotation
-
-if(c.y<-c.size) c.y=canvas.height+c.size
-
-ctx.save()
-ctx.translate(c.x,c.y)
-ctx.rotate(c.angle)
-
-ctx.strokeStyle="cyan"
-ctx.strokeRect(-c.size/2,-c.size/2,c.size,c.size)
-
-ctx.restore()
-
-})
-
-
-
-/* METEOROS */
-
-meteors.forEach(m=>{
-
-m.x+=m.vx
-m.y+=m.vy
-m.life--
-
-/* cola */
-
-ctx.beginPath()
-ctx.moveTo(m.x,m.y)
-ctx.lineTo(m.x-m.vx*8,m.y-m.vy*8)
-ctx.strokeStyle="orange"
-ctx.lineWidth=2
-ctx.stroke()
-
-/* núcleo */
-
-ctx.beginPath()
-ctx.arc(m.x,m.y,m.size,0,Math.PI*2)
-ctx.fillStyle="orange"
-ctx.fill()
-
-})
-
-meteors=meteors.filter(m=>m.life>0)
-
-
+drawSky()
+drawClouds()
+drawGround()
+drawPlatforms()
+drawCoins()
 
 requestAnimationFrame(animate)
 
