@@ -11,22 +11,18 @@ window.addEventListener("resize", resize)
 
 
 
-/* PARTICULAS */
+/* ESTRELLAS */
 
-let particles=[]
-const TOTAL=200
+let stars=[]
 
-for(let i=0;i<TOTAL;i++){
+for(let i=0;i<150;i++){
 
-particles.push({
+stars.push({
 
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-
-vx:(Math.random()-0.5)*0.8,
-vy:(Math.random()-0.5)*0.8,
-
-size:Math.random()*2+1
+speed:Math.random()*0.6+0.2,
+size:Math.random()*2
 
 })
 
@@ -34,102 +30,71 @@ size:Math.random()*2+1
 
 
 
-/* COMETAS */
+/* CUBOS FLOTANTES */
 
-let comets=[]
+let cubes=[]
 
-function spawnComet(){
+for(let i=0;i<20;i++){
 
-comets.push({
+cubes.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*30+20,
+vy:Math.random()*0.3+0.1
+
+})
+
+}
+
+
+
+/* OBJETOS TIPO METEORO */
+
+let meteors=[]
+
+function spawnMeteor(){
+
+meteors.push({
 
 x:Math.random()*canvas.width,
 y:-20,
-
 vx:(Math.random()-0.5)*2,
 vy:Math.random()*3+2,
-
+size:Math.random()*3+2,
 life:200
 
 })
 
 }
 
-setInterval(spawnComet,2500)
+setInterval(spawnMeteor,2000)
 
 
 
-/* SIMBOLOS CRYPTO */
+/* GRID TIPO VIDEOJUEGO */
 
-const symbols=["₿","Ξ","◎","⬡","◈","₮","Ł"]
+function drawGrid(){
 
-let floating=[]
-
-for(let i=0;i<30;i++){
-
-floating.push({
-
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-
-vy:Math.random()*0.4+0.2,
-
-symbol:symbols[Math.floor(Math.random()*symbols.length)]
-
-})
-
-}
-
-
-
-/* ONDAS */
-
-let waves=[]
-
-function spawnWave(){
-
-waves.push({
-
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-
-radius:10,
-life:100
-
-})
-
-}
-
-setInterval(spawnWave,3000)
-
-
-
-/* CONEXIONES */
-
-function drawConnections(){
-
-for(let a=0;a<particles.length;a++){
-
-for(let b=a+1;b<particles.length;b++){
-
-let dx=particles[a].x-particles[b].x
-let dy=particles[a].y-particles[b].y
-
-let dist=Math.sqrt(dx*dx+dy*dy)
-
-if(dist<120){
+let gridSize=60
 
 ctx.strokeStyle="rgba(0,200,200,0.15)"
 
+for(let x=0;x<canvas.width;x+=gridSize){
+
 ctx.beginPath()
-
-ctx.moveTo(particles[a].x,particles[a].y)
-ctx.lineTo(particles[b].x,particles[b].y)
-
+ctx.moveTo(x,0)
+ctx.lineTo(x,canvas.height)
 ctx.stroke()
 
 }
 
-}
+for(let y=0;y<canvas.height;y+=gridSize){
+
+ctx.beginPath()
+ctx.moveTo(0,y)
+ctx.lineTo(canvas.width,y)
+ctx.stroke()
 
 }
 
@@ -145,84 +110,61 @@ ctx.clearRect(0,0,canvas.width,canvas.height)
 
 
 
-/* PARTICLES */
+/* GRID */
 
-particles.forEach(p=>{
-
-p.x+=p.vx
-p.y+=p.vy
-
-if(p.x<0||p.x>canvas.width) p.vx*=-1
-if(p.y<0||p.y>canvas.height) p.vy*=-1
-
-ctx.beginPath()
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
-ctx.fillStyle="cyan"
-ctx.fill()
-
-})
+drawGrid()
 
 
 
-drawConnections()
+/* ESTRELLAS */
 
+stars.forEach(s=>{
 
+s.y+=s.speed
 
-/* COMETS */
-
-comets.forEach(c=>{
-
-c.x+=c.vx
-c.y+=c.vy
-c.life--
+if(s.y>canvas.height) s.y=0
 
 ctx.beginPath()
-ctx.arc(c.x,c.y,3,0,Math.PI*2)
+ctx.arc(s.x,s.y,s.size,0,Math.PI*2)
 ctx.fillStyle="white"
 ctx.fill()
 
 })
 
-comets=comets.filter(c=>c.life>0)
 
 
+/* CUBOS */
 
-/* SYMBOLS */
+cubes.forEach(c=>{
 
-ctx.font="14px monospace"
+c.y-=c.vy
 
-floating.forEach(s=>{
+if(c.y<-c.size) c.y=canvas.height+c.size
 
-s.y-=s.vy
+ctx.strokeStyle="cyan"
 
-if(s.y<-20) s.y=canvas.height+20
-
-ctx.fillStyle="gold"
-
-ctx.fillText(s.symbol,s.x,s.y)
+ctx.strokeRect(c.x,c.y,c.size,c.size)
 
 })
 
 
 
-/* WAVES */
+/* METEOROS */
 
-waves.forEach(w=>{
+meteors.forEach(m=>{
 
-w.radius+=2
-w.life--
+m.x+=m.vx
+m.y+=m.vy
+m.life--
 
 ctx.beginPath()
-
-ctx.arc(w.x,w.y,w.radius,0,Math.PI*2)
-
-ctx.strokeStyle="rgba(0,200,200,0.15)"
-
-ctx.stroke()
+ctx.arc(m.x,m.y,m.size,0,Math.PI*2)
+ctx.fillStyle="orange"
+ctx.fill()
 
 })
 
-waves=waves.filter(w=>w.life>0)
+meteors=meteors.filter(m=>m.life>0)
 
 
 
