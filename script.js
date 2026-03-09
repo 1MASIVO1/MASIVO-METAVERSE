@@ -6,7 +6,7 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
 
 
-// CARGAR STATS
+// CARGAR STATS AL ABRIR
 async function cargarStats(){
 
 const { data, error } = await supabaseClient
@@ -24,11 +24,11 @@ let card = document.querySelector(`.nft[data-id='${nft.id}']`)
 
 if(!card) return
 
-card.querySelector(".likes").innerText = "❤️ " + (nft.likes || 0)
-card.querySelector(".views").innerText = "👁 " + (nft.views || 0)
-card.querySelector(".downloads").innerText = "⬇ " + (nft.downloads || 0)
-card.querySelector(".shares").innerText = "🔗 " + (nft.shares || 0)
-card.querySelector(".logroNum").innerText = (nft.logros || 0)
+card.querySelector(".likes").innerText = "❤️ " + nft.likes
+card.querySelector(".views").innerText = "👁 " + nft.views
+card.querySelector(".downloads").innerText = "⬇ " + nft.downloads
+card.querySelector(".shares").innerText = "🔗 " + nft.shares
+card.querySelector(".logroNum").innerText = nft.logros || 0
 
 })
 
@@ -61,7 +61,7 @@ document.getElementById("nftModal").style.display = "none"
 
 
 
-// SUMAR VIEW
+// SUMAR VIEW (ANTI SPAM)
 async function sumarView(id,nft){
 
 if(localStorage.getItem("view_"+id)) return
@@ -79,7 +79,7 @@ console.log(error)
 return
 }
 
-let views = ((data?.views) || 0) + 1
+let views = (data.views || 0) + 1
 
 await supabaseClient
 .from("nfts")
@@ -116,7 +116,7 @@ const { data } = await supabaseClient
 .eq("id", id)
 .single()
 
-let likes = ((data?.likes) || 0) + 1
+let likes = (data.likes || 0) + 1
 
 await supabaseClient
 .from("nfts")
@@ -160,7 +160,7 @@ const { data } = await supabaseClient
 .eq("id", id)
 .single()
 
-let downloads = ((data?.downloads) || 0) + 1
+let downloads = (data.downloads || 0) + 1
 
 await supabaseClient
 .from("nfts")
@@ -200,7 +200,7 @@ const { data } = await supabaseClient
 .eq("id", id)
 .single()
 
-let shares = ((data?.shares) || 0) + 1
+let shares = (data.shares || 0) + 1
 
 await supabaseClient
 .from("nfts")
@@ -216,10 +216,10 @@ checkLogro(id,nft,shares)
 
 
 
-// LOGROS
+// SISTEMA DE LOGROS
 async function checkLogro(id,nft,total){
 
-if(total % 100 === 0){
+if(total % 100 !== 0) return
 
 let logroSpan = nft.querySelector(".logroNum")
 
@@ -232,26 +232,71 @@ await supabaseClient
 .update({ logros: logros })
 .eq("id", id)
 
+mostrarLogro(nft)
+
+}
+
+
+
+// MOSTRAR VIDEO DE LOGRO
+function mostrarLogro(nft){
+
+let cont = nft.querySelector(".videoLogro")
+
+cont.innerHTML = `
+<video autoplay muted playsinline>
+<source src="achievement.mp4" type="video/mp4">
+</video>
+`
+
+setTimeout(()=>{
+cont.innerHTML = ""
+},4000)
+
+
+
+// OVERLAY GLOBAL
+let overlay = document.getElementById("achievementOverlay")
+
+overlay.innerHTML = `
+<video autoplay muted playsinline>
+<source src="achievement.mp4" type="video/mp4">
+</video>
+`
+
+overlay.style.display = "flex"
+
+setTimeout(()=>{
+overlay.style.display = "none"
+overlay.innerHTML = ""
+},4000)
+
+
+
+// SONIDO
+let sonido = document.getElementById("achievementSound")
+
+if(sonido){
+sonido.currentTime = 0
+sonido.play().catch(()=>{})
 }
 
 }
 
 
 
-// CARGA INICIAL + LINK DIRECTO
-window.addEventListener("load", async function(){
-
-await cargarStats()
+// ABRIR NFT DESDE LINK
+function abrirDesdeLink(){
 
 let params = new URLSearchParams(window.location.search)
 
 let nftID = params.get("nft")
 
-if(nftID){
+if(!nftID) return
 
 let nft = document.querySelector(`.nft[data-id='${nftID}']`)
 
-if(nft){
+if(!nft) return
 
 let img = nft.querySelector("img")
 
@@ -259,6 +304,13 @@ abrirNFT(img)
 
 }
 
-}
+
+
+// INICIO
+window.addEventListener("load", () => {
+
+cargarStats()
+
+abrirDesdeLink()
 
 })
