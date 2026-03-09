@@ -58,7 +58,7 @@ if(score > topScore){
 
 let img = card.querySelector("img")
 
-topName = getNFTName(img.src)
+topNombre.textContent = decodeURIComponent(topNFT.nombre)
 
 topScore = score
 
