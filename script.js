@@ -27,9 +27,11 @@ const { data, error } = await supabaseClient
 .select("*")
 
 if(error){
-console.log(error)
+console.log("Supabase error:", error)
 return
 }
+
+if(!data) return
 
 let topScore = 0
 let topName = "---"
@@ -40,13 +42,17 @@ let card = document.querySelector(`.nft[data-id='${nft.id}']`)
 
 if(!card) return
 
-card.querySelector(".likes").innerText = "❤️ " + nft.likes
-card.querySelector(".views").innerText = "👁 " + nft.views
-card.querySelector(".downloads").innerText = "⬇ " + nft.downloads
-card.querySelector(".shares").innerText = "🔗 " + nft.shares
-card.querySelector(".logroNum").innerText = nft.logros
+card.querySelector(".likes").innerText = "❤️ " + (nft.likes || 0)
+card.querySelector(".views").innerText = "👁 " + (nft.views || 0)
+card.querySelector(".downloads").innerText = "⬇ " + (nft.downloads || 0)
+card.querySelector(".shares").innerText = "🔗 " + (nft.shares || 0)
+card.querySelector(".logroNum").innerText = (nft.logros || 0)
 
-let score = nft.likes + nft.views + nft.downloads + nft.shares
+let score =
+(nft.likes || 0) +
+(nft.views || 0) +
+(nft.downloads || 0) +
+(nft.shares || 0)
 
 if(score > topScore){
 
@@ -63,10 +69,6 @@ topScore = score
 document.getElementById("topNombre").innerText = topName
 
 }
-
-
-
-window.addEventListener("load", cargarStats)
 
 
 
@@ -107,7 +109,7 @@ const { data } = await supabaseClient
 .eq("id", id)
 .single()
 
-let views = (data.views || 0) + 1
+let views = ((data && data.views) || 0) + 1
 
 await supabaseClient
 .from("nfts")
@@ -142,7 +144,7 @@ const { data } = await supabaseClient
 .eq("id", id)
 .single()
 
-let likes = (data.likes || 0) + 1
+let likes = ((data && data.likes) || 0) + 1
 
 await supabaseClient
 .from("nfts")
@@ -177,7 +179,7 @@ const { data } = await supabaseClient
 .eq("id", id)
 .single()
 
-let downloads = (data.downloads || 0) + 1
+let downloads = ((data && data.downloads) || 0) + 1
 
 await supabaseClient
 .from("nfts")
@@ -201,7 +203,11 @@ let id = nft.dataset.id
 
 let link = window.location.origin + window.location.pathname + "?nft=" + id
 
+try{
 navigator.clipboard.writeText(link)
+}catch{
+prompt("Copia este link:", link)
+}
 
 alert("Link copiado")
 
@@ -215,7 +221,7 @@ const { data } = await supabaseClient
 .eq("id", id)
 .single()
 
-let shares = (data.shares || 0) + 1
+let shares = ((data && data.shares) || 0) + 1
 
 await supabaseClient
 .from("nfts")
@@ -236,7 +242,7 @@ if(total % 100 !== 0) return
 
 let logroSpan = nft.querySelector(".logroNum")
 
-let logros = parseInt(logroSpan.innerText) + 1
+let logros = parseInt(logroSpan.innerText,10) + 1
 
 logroSpan.innerText = logros
 
@@ -256,11 +262,8 @@ reproducirLogro(nft,id,logros)
 function activarBorde(nft,type){
 
 if(type==="like") nft.classList.add("likeBorder")
-
 if(type==="view") nft.classList.add("viewBorder")
-
 if(type==="download") nft.classList.add("downloadBorder")
-
 if(type==="share") nft.classList.add("shareBorder")
 
 }
@@ -310,7 +313,7 @@ let img = nft.querySelector("img")
 
 let nombre = img.src.split("/").pop().replace(".png","")
 
-let logros = parseInt(nft.querySelector(".logroNum").innerText)
+let logros = parseInt(nft.querySelector(".logroNum").innerText,10)
 
 let achList = document.getElementById("achList")
 
@@ -323,7 +326,6 @@ let div = document.createElement("div")
 div.className="achItem"
 
 div.innerHTML =
-
 "⭐ Logro "+i+
 "<br><button onclick='playAchievement("+id+","+i+")'>▶ Reproducir</button>"+
 "<button onclick=\"downloadAchievement('"+nombre+"_logro"+i+".mp4')\">⬇ Descargar</button>"
@@ -372,7 +374,7 @@ a.click()
 
 
 
-window.onload = function(){
+window.addEventListener("load", function(){
 
 cargarStats()
 
@@ -394,4 +396,4 @@ abrirNFT(img)
 
 }
 
-}
+})
