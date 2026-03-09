@@ -1,51 +1,82 @@
-const canvas=document.getElementById("fireworks")
-const ctx=canvas.getContext("2d")
+const canvas = document.getElementById("fireworks")
+const ctx = canvas.getContext("2d")
 
-canvas.width=window.innerWidth
-canvas.height=200
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
 
-let particles=[]
+let particles = []
 
-function crear(){
+class Particle{
 
-let x=Math.random()*canvas.width
-let y=Math.random()*200
+constructor(x,y){
 
-for(let i=0;i<30;i++){
+this.x = x
+this.y = y
 
-particles.push({
-x:x,
-y:y,
-vx:(Math.random()-0.5)*5,
-vy:(Math.random()-0.5)*5,
-life:60
-})
+this.speedX = (Math.random()-0.5)*6
+this.speedY = (Math.random()-0.5)*6
+
+this.life = 100
+
+}
+
+update(){
+
+this.x += this.speedX
+this.y += this.speedY
+this.life--
+
+}
+
+draw(){
+
+ctx.fillStyle="white"
+
+ctx.beginPath()
+
+ctx.arc(this.x,this.y,2,0,Math.PI*2)
+
+ctx.fill()
 
 }
 
 }
 
-function animar(){
+function explode(x,y){
+
+for(let i=0;i<40;i++){
+
+particles.push(new Particle(x,y))
+
+}
+
+}
+
+function animate(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-particles.forEach(p=>{
+particles.forEach((p,i)=>{
 
-p.x+=p.vx
-p.y+=p.vy
-p.life--
+p.update()
+p.draw()
 
-ctx.fillStyle="cyan"
-ctx.fillRect(p.x,p.y,2,2)
+if(p.life<=0){
 
-})
-
-particles=particles.filter(p=>p.life>0)
-
-requestAnimationFrame(animar)
+particles.splice(i,1)
 
 }
 
-setInterval(crear,2000)
+})
 
-animar()
+requestAnimationFrame(animate)
+
+}
+
+setInterval(()=>{
+
+explode(Math.random()*canvas.width,Math.random()*canvas.height)
+
+},800)
+
+animate()
