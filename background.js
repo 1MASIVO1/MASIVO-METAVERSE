@@ -1,113 +1,174 @@
-// background.js - fondo videojuego AAA solo Canvas 2D
+// background.js - Océano animado con tiburones, ballenas, peces y corales
 
 const canvas = document.getElementById('engineBackground');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-
 document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
 
 // --- CONFIGURACIÓN ---
-const numCharacters = 6;
-const numObjects = 10;
-const numParticles = 80;
+const numSharks = 2;
+const numWhales = 1;
+const numFishes = 20;
+const numBubbles = 50;
+const numCorals = 15;
 
-const characters = [];
-const objects = [];
-const particles = [];
+const sharks = [];
+const whales = [];
+const fishes = [];
+const bubbles = [];
+const corals = [];
 
-// --- PERSONAJES ---
-for(let i=0;i<numCharacters;i++){
-    characters.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height/2 + canvas.height/4,
-        width: 30,
-        height: 50,
-        color: '#00ffff',
-        dx: (Math.random()-0.5)*2,
-        dy: (Math.random()-0.5)*2,
-        angle: Math.random()*Math.PI*2
+// --- FUNCIONES AUXILIARES ---
+function random(min,max){ return Math.random()*(max-min)+min; }
+
+// --- CREAR ELEMENTOS ---
+for(let i=0;i<numSharks;i++){
+    sharks.push({
+        x: random(0,canvas.width),
+        y: random(canvas.height/2,canvas.height*0.9),
+        size: 80,
+        dx: random(0.5,1.5),
+        color:'#444444',
+        angle:0
     });
 }
 
-// --- OBJETOS FLOTANTES ---
-for(let i=0;i<numObjects;i++){
-    objects.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        size: 20 + Math.random()*20,
-        color: 'rgba(255,0,255,0.7)',
-        dx: (Math.random()-0.5)*1,
-        dy: (Math.random()-0.5)*1,
-        angle: Math.random()*Math.PI*2
+for(let i=0;i<numWhales;i++){
+    whales.push({
+        x: random(0,canvas.width),
+        y: random(canvas.height/3,canvas.height*0.7),
+        size:150,
+        dx:0.8,
+        color:'#2255ff',
+        angle:0
     });
 }
 
-// --- PARTICULAS ---
-for(let i=0;i<numParticles;i++){
-    particles.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        radius: 2 + Math.random()*3,
-        color: 'rgba(255,170,0,0.6)',
-        dy: 0.5 + Math.random()
+for(let i=0;i<numFishes;i++){
+    fishes.push({
+        x: random(0,canvas.width),
+        y: random(0,canvas.height),
+        size: 20+random(0,15),
+        dx: random(1,3),
+        dy: Math.sin(Math.random()*Math.PI*2)*0.5,
+        color: `hsl(${random(0,360)}, 80%, 60%)`,
+        angle:0
     });
 }
 
-// --- FUNCIÓN DE DIBUJO ---
+for(let i=0;i<numBubbles;i++){
+    bubbles.push({
+        x: random(0,canvas.width),
+        y: random(0,canvas.height),
+        radius: random(2,6),
+        dy: random(0.5,1.5),
+        alpha: random(0.3,0.8)
+    });
+}
+
+for(let i=0;i<numCorals;i++){
+    corals.push({
+        x: random(0,canvas.width),
+        y: canvas.height-30,
+        width: random(10,30),
+        height: random(20,60),
+        color: `hsl(${random(0,360)}, 70%, 50%)`,
+        sway: random(0.01,0.03),
+        angle:0
+    });
+}
+
+// --- DIBUJO ---
 function drawBackground(){
-    const gradient = ctx.createLinearGradient(0,0,0,canvas.height);
-    gradient.addColorStop(0,'#0d0d1a');
-    gradient.addColorStop(1,'#1a1a3d');
-    ctx.fillStyle = gradient;
+    const grad = ctx.createLinearGradient(0,0,0,canvas.height);
+    grad.addColorStop(0,'#1a9fff');
+    grad.addColorStop(1,'#012a3c');
+    ctx.fillStyle = grad;
     ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
-function drawCharacters(){
-    characters.forEach(c=>{
+function drawSharks(){
+    sharks.forEach(s=>{
+        ctx.save();
+        ctx.translate(s.x,s.y);
+        ctx.rotate(Math.sin(s.angle)*0.1);
+        ctx.fillStyle = s.color;
+        ctx.beginPath();
+        ctx.moveTo(-s.size/2,0);
+        ctx.lineTo(s.size/2,-s.size/4);
+        ctx.lineTo(s.size/2,s.size/4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        s.x += s.dx;
+        s.angle += 0.02;
+        if(s.x > canvas.width + s.size) s.x = -s.size;
+    });
+}
+
+function drawWhales(){
+    whales.forEach(w=>{
+        ctx.save();
+        ctx.translate(w.x,w.y);
+        ctx.rotate(Math.sin(w.angle)*0.05);
+        ctx.fillStyle = w.color;
+        ctx.beginPath();
+        ctx.ellipse(0,0,w.size/2,w.size/4,0,0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+
+        w.x += w.dx;
+        w.angle += 0.01;
+        if(w.x > canvas.width + w.size) w.x = -w.size;
+    });
+}
+
+function drawFishes(){
+    fishes.forEach(f=>{
+        ctx.save();
+        ctx.translate(f.x,f.y);
+        ctx.rotate(Math.sin(f.angle)*0.5);
+        ctx.fillStyle = f.color;
+        ctx.beginPath();
+        ctx.moveTo(-f.size/2,0);
+        ctx.lineTo(f.size/2,-f.size/4);
+        ctx.lineTo(f.size/2,f.size/4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        f.x += f.dx;
+        f.y += f.dy;
+        f.angle += 0.1;
+        if(f.x>canvas.width+f.size) f.x=-f.size;
+        if(f.y>canvas.height) f.y=0;
+        if(f.y<0) f.y=canvas.height;
+    });
+}
+
+function drawBubbles(){
+    bubbles.forEach(b=>{
+        ctx.beginPath();
+        ctx.arc(b.x,b.y,b.radius,0,Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${b.alpha})`;
+        ctx.fill();
+        b.y -= b.dy;
+        if(b.y<0) b.y = canvas.height;
+    });
+}
+
+function drawCorals(){
+    corals.forEach(c=>{
         ctx.save();
         ctx.translate(c.x,c.y);
-        ctx.rotate(Math.sin(Date.now()*0.001 + c.angle)*0.5);
+        ctx.rotate(Math.sin(c.angle)*c.sway);
         ctx.fillStyle = c.color;
-        ctx.fillRect(-c.width/2,-c.height/2,c.width,c.height);
+        ctx.fillRect(-c.width/2,-c.height,c.width,c.height);
         ctx.restore();
-
-        c.x += c.dx;
-        c.y += c.dy;
-        if(c.x<0) c.x=canvas.width;
-        if(c.x>canvas.width) c.x=0;
-        if(c.y<0) c.y=canvas.height;
-        if(c.y>canvas.height) c.y=0;
-    });
-}
-
-function drawObjects(){
-    objects.forEach(o=>{
-        ctx.save();
-        ctx.translate(o.x,o.y);
-        ctx.rotate(Math.sin(Date.now()*0.001 + o.angle));
-        ctx.fillStyle = o.color;
-        ctx.fillRect(-o.size/2,-o.size/2,o.size,o.size);
-        ctx.restore();
-
-        o.x += o.dx;
-        o.y += o.dy;
-        if(o.x<0) o.x=canvas.width;
-        if(o.x>canvas.width) o.x=0;
-        if(o.y<0) o.y=canvas.height;
-        if(o.y>canvas.height) o.y=0;
-    });
-}
-
-function drawParticles(){
-    particles.forEach(p=>{
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        p.y -= p.dy;
-        if(p.y<0) p.y=canvas.height;
+        c.angle += 0.02;
     });
 }
 
@@ -115,9 +176,11 @@ function drawParticles(){
 function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     drawBackground();
-    drawObjects();
-    drawCharacters();
-    drawParticles();
+    drawCorals();
+    drawSharks();
+    drawWhales();
+    drawFishes();
+    drawBubbles();
     requestAnimationFrame(animate);
 }
 
