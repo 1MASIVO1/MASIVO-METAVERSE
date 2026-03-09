@@ -17,55 +17,54 @@ let cameraX = 0
 
 
 
+/* MONTAÑAS */
+
+let mountains=[]
+
+for(let i=0;i<8;i++){
+mountains.push({
+x:i*600,
+height:Math.random()*200+200
+})
+}
+
+
+
 /* TERRENO */
 
 let ground=[]
 
-for(let i=0;i<60;i++){
-
+for(let i=0;i<120;i++){
 ground.push({
 x:i*120,
-height:Math.random()*80+80
+height:Math.random()*80+120
 })
-
 }
 
 
 
-/* PLATAFORMAS */
+/* ARBOLES */
 
-let platforms=[]
+let trees=[]
 
-for(let i=0;i<20;i++){
-
-platforms.push({
-
-x:Math.random()*4000,
-y:Math.random()*300+200,
-width:80,
-height:20
-
+for(let i=0;i<40;i++){
+trees.push({
+x:Math.random()*12000,
+size:Math.random()*40+40
 })
-
 }
 
 
 
-/* MONEDAS */
+/* ROCAS */
 
-let coins=[]
+let rocks=[]
 
-for(let i=0;i<30;i++){
-
-coins.push({
-
-x:Math.random()*4000,
-y:Math.random()*300+150,
-size:10,
-angle:Math.random()*Math.PI
-
+for(let i=0;i<60;i++){
+rocks.push({
+x:Math.random()*12000,
+size:Math.random()*20+10
 })
-
 }
 
 
@@ -74,29 +73,40 @@ angle:Math.random()*Math.PI
 
 let clouds=[]
 
-for(let i=0;i<10;i++){
-
+for(let i=0;i<12;i++){
 clouds.push({
-
 x:Math.random()*canvas.width,
 y:Math.random()*200,
-size:Math.random()*80+60,
-speed:Math.random()*0.2+0.05
-
+size:Math.random()*100+80,
+speed:Math.random()*0.3+0.05
 })
-
 }
 
 
 
-/* DIBUJAR CIELO */
+/* PARTICULAS */
+
+let particles=[]
+
+for(let i=0;i<80;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+speed:Math.random()*0.5+0.2,
+size:Math.random()*2
+})
+}
+
+
+
+/* CIELO */
 
 function drawSky(){
 
 let gradient=ctx.createLinearGradient(0,0,0,canvas.height)
 
-gradient.addColorStop(0,"#6ec6ff")
-gradient.addColorStop(1,"#c9f0ff")
+gradient.addColorStop(0,"#5fa9ff")
+gradient.addColorStop(1,"#dff4ff")
 
 ctx.fillStyle=gradient
 ctx.fillRect(0,0,canvas.width,canvas.height)
@@ -105,7 +115,29 @@ ctx.fillRect(0,0,canvas.width,canvas.height)
 
 
 
-/* DIBUJAR NUBES */
+/* MONTAÑAS */
+
+function drawMountains(){
+
+ctx.fillStyle="#6c7a89"
+
+mountains.forEach(m=>{
+
+let x=(m.x-cameraX*0.2)
+
+ctx.beginPath()
+ctx.moveTo(x,canvas.height-200)
+ctx.lineTo(x+300,canvas.height-m.height)
+ctx.lineTo(x+600,canvas.height-200)
+ctx.fill()
+
+})
+
+}
+
+
+
+/* NUBES */
 
 function drawClouds(){
 
@@ -119,8 +151,8 @@ if(c.x<-c.size) c.x=canvas.width+c.size
 
 ctx.beginPath()
 ctx.arc(c.x,c.y,c.size*0.4,0,Math.PI*2)
-ctx.arc(c.x+30,c.y+10,c.size*0.35,0,Math.PI*2)
-ctx.arc(c.x-30,c.y+10,c.size*0.35,0,Math.PI*2)
+ctx.arc(c.x+40,c.y+10,c.size*0.35,0,Math.PI*2)
+ctx.arc(c.x-40,c.y+10,c.size*0.35,0,Math.PI*2)
 ctx.fill()
 
 })
@@ -129,7 +161,7 @@ ctx.fill()
 
 
 
-/* DIBUJAR TERRENO */
+/* TERRENO */
 
 function drawGround(){
 
@@ -137,7 +169,7 @@ ground.forEach(g=>{
 
 let x=g.x-cameraX
 
-ctx.fillStyle="#4caf50"
+ctx.fillStyle="#4c9a2a"
 
 ctx.fillRect(
 x,
@@ -146,13 +178,13 @@ canvas.height-g.height,
 g.height
 )
 
-ctx.fillStyle="#2e7d32"
+ctx.fillStyle="#2f6d1a"
 
 ctx.fillRect(
 x,
 canvas.height-g.height,
 120,
-20
+25
 )
 
 })
@@ -161,52 +193,69 @@ canvas.height-g.height,
 
 
 
-/* DIBUJAR PLATAFORMAS */
+/* ARBOLES */
 
-function drawPlatforms(){
+function drawTrees(){
 
-ctx.fillStyle="#8d6e63"
+trees.forEach(t=>{
 
-platforms.forEach(p=>{
+let x=t.x-cameraX
 
-let x=p.x-cameraX
+let y=canvas.height-200
 
-ctx.fillRect(
-x,
-canvas.height-p.y,
-p.width,
-p.height
-)
+ctx.fillStyle="#5b3a1e"
 
-})
-
-}
-
-
-
-/* DIBUJAR MONEDAS */
-
-function drawCoins(){
-
-coins.forEach(c=>{
-
-c.angle+=0.1
-
-let x=c.x-cameraX
-let y=canvas.height-c.y
-
-ctx.save()
-
-ctx.translate(x,y)
-ctx.rotate(c.angle)
-
-ctx.fillStyle="gold"
+ctx.fillRect(x,y,t.size*0.2,t.size)
 
 ctx.beginPath()
-ctx.arc(0,0,c.size,0,Math.PI*2)
+ctx.fillStyle="#2e7d32"
+ctx.arc(x+t.size*0.1,y,t.size*0.6,0,Math.PI*2)
 ctx.fill()
 
-ctx.restore()
+})
+
+}
+
+
+
+/* ROCAS */
+
+function drawRocks(){
+
+rocks.forEach(r=>{
+
+let x=r.x-cameraX
+
+ctx.fillStyle="#555"
+
+ctx.beginPath()
+ctx.arc(x,canvas.height-140,r.size,0,Math.PI*2)
+ctx.fill()
+
+})
+
+}
+
+
+
+/* PARTICULAS */
+
+function drawParticles(){
+
+ctx.fillStyle="rgba(255,255,255,0.4)"
+
+particles.forEach(p=>{
+
+p.y+=p.speed
+
+if(p.y>canvas.height){
+p.y=0
+p.x=Math.random()*canvas.width
+}
+
+ctx.beginPath()
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
+ctx.fill()
 
 })
 
@@ -220,13 +269,15 @@ function animate(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-cameraX+=1.2
+cameraX+=1
 
 drawSky()
+drawMountains()
 drawClouds()
 drawGround()
-drawPlatforms()
-drawCoins()
+drawTrees()
+drawRocks()
+drawParticles()
 
 requestAnimationFrame(animate)
 
