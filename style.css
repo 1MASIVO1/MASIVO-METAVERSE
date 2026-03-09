@@ -75,7 +75,7 @@ to{ text-shadow:0 0 30px magenta }
 
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:50px;
+gap:40px;
 padding:30px;
 max-width:1400'px;
 margin:auto;
