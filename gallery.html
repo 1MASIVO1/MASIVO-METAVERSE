@@ -1,1 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+
+<meta charset="UTF-8">
+<title>MASIVO METAVERSE NFTs</title>
+
+<style>
+
+body{
+background:#0a0a0a;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+h1{
+margin-top:40px;
+}
+
+#gallery{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+gap:20px;
+padding:40px;
+}
+
+#gallery img{
+width:100%;
+border-radius:10px;
+transition:0.3s;
+}
+
+#gallery img:hover{
+transform:scale(1.05);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>MASIVO METAVERSE NFT COLLECTION</h1>
+
+<div id="gallery"></div>
+
+<script>
+
+const gallery = document.getElementById("gallery")
+
+const maxNFTs = 1000
+
+for(let i=1;i<=maxNFTs;i++){
+
+const img = document.createElement("img")
+
+img.src = "https://raw.githubusercontent.com/1MASIVO1/MASIVO-METAVERSE/main/images/"+i+".png"
+
+img.onerror = function(){
+img.remove()
+}
+
+gallery.appendChild(img)
+
+}
+
+</script>
+
+</body>
+
+</html>
