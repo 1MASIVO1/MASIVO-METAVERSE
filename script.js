@@ -89,7 +89,7 @@ await supabaseClient
 let span = nft.querySelector(".views")
 span.innerText = "👁 " + views
 
-checkLogro(id,nft,views)
+checkLogro(id,nft)
 
 }
 
@@ -126,7 +126,7 @@ await supabaseClient
 let span = nft.querySelector(".likes")
 span.innerText = "❤️ " + likes
 
-checkLogro(id,nft,likes)
+checkLogro(id,nft)
 
 }
 
@@ -170,7 +170,7 @@ await supabaseClient
 let span = nft.querySelector(".downloads")
 span.innerText = "⬇ " + downloads
 
-checkLogro(id,nft,downloads)
+checkLogro(id,nft)
 
 }
 
@@ -210,26 +210,36 @@ await supabaseClient
 let span = nft.querySelector(".shares")
 span.innerText = "🔗 " + shares
 
-checkLogro(id,nft,shares)
+checkLogro(id,nft)
 
 }
 
 
 
 // SISTEMA DE LOGROS
-async function checkLogro(id,nft,total){
+async function checkLogro(id,nft){
 
-if(total % 100 !== 0) return
+let likes = parseInt(nft.querySelector(".likes").innerText.replace("❤️ ","")) || 0
+let views = parseInt(nft.querySelector(".views").innerText.replace("👁 ","")) || 0
+let downloads = parseInt(nft.querySelector(".downloads").innerText.replace("⬇ ","")) || 0
+let shares = parseInt(nft.querySelector(".shares").innerText.replace("🔗 ","")) || 0
+
+let nuevosLogros =
+Math.floor(likes/100) +
+Math.floor(views/100) +
+Math.floor(downloads/100) +
+Math.floor(shares/100)
 
 let logroSpan = nft.querySelector(".logroNum")
+let logrosActuales = parseInt(logroSpan.innerText) || 0
 
-let logros = parseInt(logroSpan.innerText) + 1
+if(nuevosLogros <= logrosActuales) return
 
-logroSpan.innerText = logros
+logroSpan.innerText = nuevosLogros
 
 await supabaseClient
 .from("nfts")
-.update({ logros: logros })
+.update({ logros: nuevosLogros })
 .eq("id", id)
 
 mostrarLogro(nft)
