@@ -328,3 +328,13 @@ grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 }
 
 }
+
+#background-video{
+position: fixed;
+right: 0;
+bottom: 0;
+min-width: 100%;
+min-height: 100%;
+object-fit: cover;
+z-index: -1;
+}
