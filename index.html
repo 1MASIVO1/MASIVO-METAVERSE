@@ -1,31 +1,349 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>TEST VIDEO</title>
+<title>MASIVO METAVERSE</title>
 
-<style>
-body{
-margin:0;
-}
+<link rel="stylesheet" href="style.css">
 
-#background-video{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-}
-</style>
+<!-- SUPABASE -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 </head>
 
 <body>
-
+ 
 <video id="background-video" autoplay muted loop playsinline>
 <source src="video-bg.mp4" type="video/mp4">
 </video>
-  
+ 
+<!-- FONDO ENGINE -->
+<canvas id="engineBackground"></canvas>
+ 
+<canvas id="fireworks"></canvas>
+ 
+<script src="background.js"></script>
+
+ <div class="overlay"></div>
+
+<h1 id="tituloLogo" class="titulo">MASIVO METAVERSE</h1>
+
+
+<div class="grid" id="gridNFT">
+
+
+<!-- NFT 1 -->
+<div class="nft" data-id="1">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft1 Dragon Armor.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+
+<!-- NFT 2 -->
+<div class="nft" data-id="2">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft2 Void Assassin.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+
+<!-- NFT 3 -->
+<div class="nft" data-id="3">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft3 Storm Warden.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+
+<!-- NFT 4 -->
+<div class="nft" data-id="4">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft4 Shadow Ronin.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+
+<!-- NFT 5 -->
+<div class="nft" data-id="5">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft5 Samurai.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+
+<!-- NFT 6 -->
+<div class="nft" data-id="6">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft6 Iron Titan.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+
+<!-- NFT 7 -->
+<div class="nft" data-id="7">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft7 Inferno Guardian.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+
+<!-- NFT 8 -->
+<div class="nft" data-id="8">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft8 Ghost Flame.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+
+<!-- NFT 9 -->
+<div class="nft" data-id="9">
+
+<div class="videoLogro"></div>
+
+<img src="images/nft9 Frost Hunter.png" onclick="abrirNFT(this)">
+
+<div class="logros">
+⭐ <span class="logroNum">0</span>
+</div>
+
+<div class="stats">
+<span class="likes">❤️ 0</span>
+<span class="views">👁 0</span>
+<span class="downloads">⬇ 0</span>
+<span class="shares">🔗 0</span>
+</div>
+
+<div class="botones">
+<button onclick="like(event,this)">❤️</button>
+<button onclick="descargar(event,this)">⬇</button>
+<button onclick="share(event,this)">🔗</button>
+<button onclick="openAchievements(event,this)">⭐</button>
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- MODAL NFT -->
+
+<div id="nftModal" class="nftModal">
+
+<span class="cerrarNFT" onclick="cerrarNFT()">✖</span>
+
+<img id="modalImg">
+
+</div>
+
+
+
+<!-- MODAL ACHIEVEMENTS -->
+
+<div id="achModal" class="nftModal">
+
+<span class="cerrarNFT" onclick="closeAchievements()">✖</span>
+
+<div id="achContent">
+
+<h2>⭐ Achievements</h2>
+
+<div id="achList"></div>
+
+</div>
+
+</div>
+
+
+
+<!-- VIDEO DE LOGRO GLOBAL -->
+
+<div id="achievementOverlay"></div>
+
+
+
+<!-- SONIDO DE LOGRO GLOBAL -->
+
+<audio id="achievementSound">
+<source src="achievement.mp3" type="audio/mpeg">
+</audio>
+
+
+
+<!-- SCRIPTS -->
+
+<script src="fireworks.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
