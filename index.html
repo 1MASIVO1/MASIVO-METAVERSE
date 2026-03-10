@@ -1,23 +1,8 @@
 <!DOCTYPE html>
-<html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-
-<style>
-body{
-margin:0;
-}
-
-#background-video{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-}
-</style>
 <title>MASIVO METAVERSE</title>
 
 <link rel="stylesheet" href="style.css">
@@ -29,26 +14,23 @@ object-fit:cover;
 
 <body>
 
- 
 <video id="background-video" autoplay muted loop playsinline>
 <source src="video-bg.mp4" type="video/mp4">
 </video>
-  
- 
+
 <!-- FONDO ENGINE -->
 <canvas id="engineBackground"></canvas>
- 
+
 <canvas id="fireworks"></canvas>
- 
+
 <script src="background.js"></script>
 
- <div class="overlay"></div>
+<div class="overlay"></div>
 
 <h1 id="tituloLogo" class="titulo">MASIVO METAVERSE</h1>
 
 
 <div class="grid" id="gridNFT">
-
 
 <!-- NFT 1 -->
 <div class="nft" data-id="1">
@@ -77,8 +59,6 @@ object-fit:cover;
 
 </div>
 
-
-
 <!-- NFT 2 -->
 <div class="nft" data-id="2">
 
@@ -105,8 +85,6 @@ object-fit:cover;
 </div>
 
 </div>
-
-
 
 <!-- NFT 3 -->
 <div class="nft" data-id="3">
@@ -135,8 +113,6 @@ object-fit:cover;
 
 </div>
 
-
-
 <!-- NFT 4 -->
 <div class="nft" data-id="4">
 
@@ -163,8 +139,6 @@ object-fit:cover;
 </div>
 
 </div>
-
-
 
 <!-- NFT 5 -->
 <div class="nft" data-id="5">
@@ -193,8 +167,6 @@ object-fit:cover;
 
 </div>
 
-
-
 <!-- NFT 6 -->
 <div class="nft" data-id="6">
 
@@ -221,8 +193,6 @@ object-fit:cover;
 </div>
 
 </div>
-
-
 
 <!-- NFT 7 -->
 <div class="nft" data-id="7">
@@ -251,8 +221,6 @@ object-fit:cover;
 
 </div>
 
-
-
 <!-- NFT 8 -->
 <div class="nft" data-id="8">
 
@@ -279,8 +247,6 @@ object-fit:cover;
 </div>
 
 </div>
-
-
 
 <!-- NFT 9 -->
 <div class="nft" data-id="9">
@@ -309,56 +275,26 @@ object-fit:cover;
 
 </div>
 
-
 </div>
-
-
-
-<!-- MODAL NFT -->
 
 <div id="nftModal" class="nftModal">
-
 <span class="cerrarNFT" onclick="cerrarNFT()">✖</span>
-
 <img id="modalImg">
-
 </div>
-
-
-
-<!-- MODAL ACHIEVEMENTS -->
 
 <div id="achModal" class="nftModal">
-
 <span class="cerrarNFT" onclick="closeAchievements()">✖</span>
-
 <div id="achContent">
-
 <h2>⭐ Achievements</h2>
-
 <div id="achList"></div>
-
 </div>
-
 </div>
-
-
-
-<!-- VIDEO DE LOGRO GLOBAL -->
 
 <div id="achievementOverlay"></div>
-
-
-
-<!-- SONIDO DE LOGRO GLOBAL -->
 
 <audio id="achievementSound">
 <source src="achievement.mp3" type="audio/mpeg">
 </audio>
-
-
-
-<!-- SCRIPTS -->
 
 <script src="fireworks.js"></script>
 <script src="script.js"></script>
