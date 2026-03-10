@@ -6,6 +6,23 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
 
 
+// ACTUALIZAR TARJETA NFT
+function actualizarCard(nft){
+
+let card = document.querySelector(`.nft[data-id='${nft.id}']`)
+
+if(!card) return
+
+card.querySelector(".likes").innerText = "❤️ " + (nft.likes || 0)
+card.querySelector(".views").innerText = "👁 " + (nft.views || 0)
+card.querySelector(".downloads").innerText = "⬇ " + (nft.downloads || 0)
+card.querySelector(".shares").innerText = "🔗 " + (nft.shares || 0)
+card.querySelector(".logroNum").innerText = nft.logros || 0
+
+}
+
+
+
 // CARGAR STATS AL ABRIR
 async function cargarStats(){
 
@@ -18,19 +35,27 @@ console.log(error)
 return
 }
 
-data.forEach(nft => {
+data.forEach(nft => actualizarCard(nft))
 
-let card = document.querySelector(`.nft[data-id='${nft.id}']`)
+}
 
-if(!card) return
 
-card.querySelector(".likes").innerText = "❤️ " + (nft.likes || 0)
-card.querySelector(".views").innerText = "👁 " + (nft.views || 0)
-card.querySelector(".downloads").innerText = "⬇ " + (nft.downloads || 0)
-card.querySelector(".shares").innerText = "🔗 " + (nft.shares || 0)
-card.querySelector(".logroNum").innerText = nft.logros || 0
 
-})
+// TIEMPO REAL
+function activarRealtime(){
+
+supabaseClient
+.channel('nfts-channel')
+.on(
+'postgres_changes',
+{ event: 'UPDATE', schema: 'public', table: 'nfts' },
+payload => {
+
+actualizarCard(payload.new)
+
+}
+)
+.subscribe()
 
 }
 
@@ -48,7 +73,7 @@ modalImg.src = img.src
 let nft = img.closest(".nft")
 let id = nft.dataset.id
 
-sumarView(id,nft)
+sumarView(id)
 
 }
 
@@ -62,22 +87,17 @@ document.getElementById("nftModal").style.display = "none"
 
 
 // SUMAR VIEW
-async function sumarView(id,nft){
+async function sumarView(id){
 
 if(localStorage.getItem("view_"+id)) return
 
 localStorage.setItem("view_"+id,true)
 
-const { data, error } = await supabaseClient
+const { data } = await supabaseClient
 .from("nfts")
 .select("views")
 .eq("id", id)
 .single()
-
-if(error){
-console.log(error)
-return
-}
 
 let views = (data.views || 0) + 1
 
@@ -86,10 +106,7 @@ await supabaseClient
 .update({ views: views })
 .eq("id", id)
 
-let span = nft.querySelector(".views")
-span.innerText = "👁 " + views
-
-checkLogro(id,nft)
+checkLogro(id)
 
 }
 
@@ -123,10 +140,7 @@ await supabaseClient
 .update({ likes: likes })
 .eq("id", id)
 
-let span = nft.querySelector(".likes")
-span.innerText = "❤️ " + likes
-
-checkLogro(id,nft)
+checkLogro(id)
 
 }
 
@@ -167,10 +181,7 @@ await supabaseClient
 .update({ downloads: downloads })
 .eq("id", id)
 
-let span = nft.querySelector(".downloads")
-span.innerText = "⬇ " + downloads
-
-checkLogro(id,nft)
+checkLogro(id)
 
 }
 
@@ -207,28 +218,20 @@ await supabaseClient
 .update({ shares: shares })
 .eq("id", id)
 
-let span = nft.querySelector(".shares")
-span.innerText = "🔗 " + shares
-
-checkLogro(id,nft)
+checkLogro(id)
 
 }
 
 
 
-// SISTEMA DE LOGROS
-async function checkLogro(id,nft){
+// CALCULAR LOGROS
+async function checkLogro(id){
 
-const { data, error } = await supabaseClient
+const { data } = await supabaseClient
 .from("nfts")
-.select("likes,views,downloads,shares,logros")
+.select("*")
 .eq("id", id)
 .single()
-
-if(error){
-console.log(error)
-return
-}
 
 let likes = data.likes || 0
 let views = data.views || 0
@@ -241,25 +244,24 @@ Math.floor(views/100) +
 Math.floor(downloads/100) +
 Math.floor(shares/100)
 
-let logrosActuales = data.logros || 0
-
-if(nuevosLogros <= logrosActuales) return
+if(nuevosLogros === data.logros) return
 
 await supabaseClient
 .from("nfts")
 .update({ logros: nuevosLogros })
 .eq("id", id)
 
-nft.querySelector(".logroNum").innerText = nuevosLogros
-
-mostrarLogro(nft)
+mostrarLogro(id)
 
 }
 
 
 
-// MOSTRAR VIDEO DE LOGRO
-function mostrarLogro(nft){
+// MOSTRAR LOGRO
+function mostrarLogro(id){
+
+let nft = document.querySelector(`.nft[data-id='${id}']`)
+if(!nft) return
 
 let cont = nft.querySelector(".videoLogro")
 
@@ -272,34 +274,6 @@ cont.innerHTML = `
 setTimeout(()=>{
 cont.innerHTML = ""
 },4000)
-
-
-
-// OVERLAY GLOBAL
-let overlay = document.getElementById("achievementOverlay")
-
-overlay.innerHTML = `
-<video autoplay muted playsinline>
-<source src="achievement.mp4" type="video/mp4">
-</video>
-`
-
-overlay.style.display = "flex"
-
-setTimeout(()=>{
-overlay.style.display = "none"
-overlay.innerHTML = ""
-},4000)
-
-
-
-// SONIDO
-let sonido = document.getElementById("achievementSound")
-
-if(sonido){
-sonido.currentTime = 0
-sonido.play().catch(()=>{})
-}
 
 }
 
@@ -330,6 +304,8 @@ abrirNFT(img)
 window.addEventListener("load", () => {
 
 cargarStats()
+
+activarRealtime()
 
 abrirDesdeLink()
 
