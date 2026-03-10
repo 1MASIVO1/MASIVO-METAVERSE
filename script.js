@@ -24,10 +24,10 @@ let card = document.querySelector(`.nft[data-id='${nft.id}']`)
 
 if(!card) return
 
-card.querySelector(".likes").innerText = "❤️ " + nft.likes
-card.querySelector(".views").innerText = "👁 " + nft.views
-card.querySelector(".downloads").innerText = "⬇ " + nft.downloads
-card.querySelector(".shares").innerText = "🔗 " + nft.shares
+card.querySelector(".likes").innerText = "❤️ " + (nft.likes || 0)
+card.querySelector(".views").innerText = "👁 " + (nft.views || 0)
+card.querySelector(".downloads").innerText = "⬇ " + (nft.downloads || 0)
+card.querySelector(".shares").innerText = "🔗 " + (nft.shares || 0)
 card.querySelector(".logroNum").innerText = nft.logros || 0
 
 })
@@ -61,7 +61,7 @@ document.getElementById("nftModal").style.display = "none"
 
 
 
-// SUMAR VIEW (ANTI SPAM)
+// SUMAR VIEW
 async function sumarView(id,nft){
 
 if(localStorage.getItem("view_"+id)) return
@@ -219,10 +219,21 @@ checkLogro(id,nft)
 // SISTEMA DE LOGROS
 async function checkLogro(id,nft){
 
-let likes = parseInt(nft.querySelector(".likes").innerText.replace("❤️ ","")) || 0
-let views = parseInt(nft.querySelector(".views").innerText.replace("👁 ","")) || 0
-let downloads = parseInt(nft.querySelector(".downloads").innerText.replace("⬇ ","")) || 0
-let shares = parseInt(nft.querySelector(".shares").innerText.replace("🔗 ","")) || 0
+const { data, error } = await supabaseClient
+.from("nfts")
+.select("likes,views,downloads,shares,logros")
+.eq("id", id)
+.single()
+
+if(error){
+console.log(error)
+return
+}
+
+let likes = data.likes || 0
+let views = data.views || 0
+let downloads = data.downloads || 0
+let shares = data.shares || 0
 
 let nuevosLogros =
 Math.floor(likes/100) +
@@ -230,17 +241,16 @@ Math.floor(views/100) +
 Math.floor(downloads/100) +
 Math.floor(shares/100)
 
-let logroSpan = nft.querySelector(".logroNum")
-let logrosActuales = parseInt(logroSpan.innerText) || 0
+let logrosActuales = data.logros || 0
 
 if(nuevosLogros <= logrosActuales) return
-
-logroSpan.innerText = nuevosLogros
 
 await supabaseClient
 .from("nfts")
 .update({ logros: nuevosLogros })
 .eq("id", id)
+
+nft.querySelector(".logroNum").innerText = nuevosLogros
 
 mostrarLogro(nft)
 
